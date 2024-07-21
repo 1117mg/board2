@@ -1,1 +1,1 @@
-# 스프링부트 게시판 만들기 2
+# Spring boot Mybatis 게시판 2
