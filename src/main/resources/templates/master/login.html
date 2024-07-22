@@ -6,6 +6,26 @@
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
 </head>
 <body>
-관리자 로그인 페이지
+<h1>관리자 로그인 페이지</h1>
+<div>
+    <form th:action="@{/master/auth/login}" method="post" th:object="${loginForm}">
+        <!--<div>
+            <div class="alert alert-danger">
+                아이디 또는 비밀번호를 입력해주세요.
+            </div>
+        </div>-->
+        <div class="mb-3">
+            <label for="loginId">아이디</label>
+            <input type="text" name="loginId" id="loginId" th:field="*{loginId}" class="form-control">
+        </div>
+        <div class="mb-3">
+            <label for="loginPw">비밀번호</label>
+            <input type="password" name="loginPw" id="loginPw" th:field="*{loginPw}" class="form-control">
+        </div>
+        <button type="submit" class="btn btn-primary">로그인</button>
+    </form>
+
+    <a th:href="@{/master/auth/join}">회원가입</a>
+</div>
 </body>
 </html>
