@@ -2,6 +2,7 @@ package com.study.board2.controller;
 
 import com.study.board2.dto.JoinForm;
 import com.study.board2.dto.LoginForm;
+import com.study.board2.dto.User;
 import com.study.board2.service.UserService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -30,18 +31,20 @@ public class UserController {
     }
 
     @PostMapping("/auth/join")
-    public String join(JoinForm form){
-        userService.register(form);
+    public String join(JoinForm form) {
+        User user = User.builder()
+                .userId(form.getLoginId())
+                .userPw(form.getLoginPw())
+                .userName(form.getUserName())
+                .userEmail(form.getUserEmail())
+                .userRole("ROLE_USER")
+                .build();
+        userService.register(user);
         return "redirect:/front/auth/login";
     }
 
     @GetMapping("/main")
     public String main(){
         return "front/main";
-    }
-
-    @GetMapping("/main/{boardIdx}")
-    public String postList(@PathVariable("boardIdx") String boardIdx){
-        return "front/postList";
     }
 }

@@ -2,7 +2,8 @@ package com.study.board2.controller;
 
 import com.study.board2.dto.JoinForm;
 import com.study.board2.dto.LoginForm;
-import com.study.board2.service.AdminService;
+import com.study.board2.dto.User;
+import com.study.board2.service.UserService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -17,7 +18,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 public class AdminController {
 
     @Autowired
-    private AdminService adminService;
+    private UserService userService;
 
     @GetMapping("/auth/login")
     public String loginForm(Model model){
@@ -33,7 +34,14 @@ public class AdminController {
 
     @PostMapping("/auth/join")
     public String join(JoinForm form){
-        adminService.register(form);
+        User user = User.builder()
+                .userId(form.getLoginId())
+                .userPw(form.getLoginPw())
+                .userName(form.getUserName())
+                .userEmail(form.getUserEmail())
+                .userRole("ROLE_ADMIN")
+                .build();
+        userService.register(user);
         return "redirect:/master/auth/login";
     }
 
