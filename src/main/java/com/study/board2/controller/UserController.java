@@ -1,7 +1,11 @@
 package com.study.board2.controller;
 
+import com.study.board2.dto.JoinForm;
 import com.study.board2.dto.LoginForm;
+import com.study.board2.dto.User;
+import com.study.board2.service.UserService;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -13,6 +17,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 @Controller
 @Slf4j
 public class UserController {
+
+    @Autowired
+    private UserService userService;
 
     @RequestMapping("/test")
     public String test(Model model){
@@ -28,8 +35,15 @@ public class UserController {
         return "front/login";
     }
 
-    @PostMapping("/auth/login")
-    public String login(@ModelAttribute("loginForm") LoginForm form){
+    @GetMapping("/auth/join")
+    public String joinForm(Model model){
+        model.addAttribute("joinForm",new JoinForm());
+        return "front/join";
+    }
+
+    @PostMapping("/auth/join")
+    public String join(JoinForm form){
+        userService.register(form);
         return "front/main";
     }
 
