@@ -9,4 +9,8 @@
         WHERE user_id=#{userId}
     </select>
 
+    <insert id="insertUser" parameterType="com.study.board2.dto.User">
+        INSERT INTO user (user_id, user_pw, user_name, reg_date, user_email, user_role)
+        VALUES (#{userId}, #{userPw}, #{userName}, now(), #{userEmail}, #{userRole})
+    </insert>
 </mapper>

@@ -25,7 +25,11 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .permitAll()
                 .and()
                 .formLogin()
-                .loginPage("/**/auth/login")
+                .loginPage("/front/auth/login")
+                .loginProcessingUrl("/front/auth/login")
+                .usernameParameter("loginId")  // 로그인 ID 필드 이름 설정
+                .passwordParameter("loginPw") // 비밀번호 필드 이름 설정
+                .defaultSuccessUrl("/front/main")
                 .and()
                 .csrf().disable();
     }

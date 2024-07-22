@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>회원 가입 페이지</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+</head>
+<body>
+회원 가입 페이지
+<div>
+    <form th:action="@{/front/auth/join}" method="post" th:object="${joinForm}">
+        <!--<div>
+            <div class="alert alert-danger">
+                아이디 또는 비밀번호를 입력해주세요.
+            </div>
+        </div>-->
+        <div class="mb-3">
+            <label for="loginId">아이디</label>
+            <input type="text" name="loginId" id="loginId" th:field="*{loginId}" class="form-control">
+        </div>
+        <div class="mb-3">
+            <label for="loginPw">비밀번호</label>
+            <input type="password" name="loginPw" id="loginPw" th:field="*{loginPw}" class="form-control">
+        </div>
+        <div class="mb-3">
+            <label for="loginPwCheck">비밀번호 확인</label>
+            <input type="password" name="loginPwCheck" id="loginPwCheck" th:field="*{loginPwCheck}" class="form-control">
+        </div>
+        <div class="mb-3">
+            <label for="userName">이름</label>
+            <input type="text" name="userName" id="userName" th:field="*{userName}" class="form-control">
+        </div>
+        <div class="mb-3">
+            <label for="userEmail">이메일</label>
+            <input type="text" name="userEmail" id="userEmail" th:field="*{userEmail}" class="form-control">
+        </div>
+        <button type="submit" class="btn btn-primary">가입하기</button>
+    </form>
+</div>
+</body>
+</html>
