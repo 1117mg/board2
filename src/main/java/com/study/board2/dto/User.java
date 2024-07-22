@@ -12,11 +12,14 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 @Builder
 public class User {
+    // User 테이블에 저장될 기본정보
     private int idx;
     private String userId;
     private String userPw;
-    private String userName;
     private LocalDateTime regDate;
-    private String userEmail;
     private String userRole;
+
+    // Member 또는 Admin 테이블에 저장될 세부정보
+    private String userName;
+    private String userEmail;
 }

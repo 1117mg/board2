@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.study.board2.repository.PostMapper">
+    <select id="findByBoardIdx" parameterType="int" resultType="com.study.board2.dto.Post">
+        SELECT * FROM board_post WHERE board_idx = #{boardIdx} AND delete_yn = 0
+    </select>
+
+    <select id="findByIdx" parameterType="int" resultType="com.study.board2.dto.Post">
+        SELECT * FROM board_post WHERE idx = #{idx} AND delete_yn = 0
+    </select>
+
+    <insert id="insertPost" parameterType="com.study.board2.dto.Post">
+        INSERT INTO board_post (board_idx, board_group_idx, user_no, title, content, hits, notice_yn, secret_yn, delete_yn)
+        VALUES (#{boardIdx}, #{boardGroupIdx}, #{userNo}, #{title}, #{content}, #{hits}, #{noticeYn}, #{secretYn}, #{deleteYn})
+    </insert>
+
+    <update id="updatePost" parameterType="com.study.board2.dto.Post">
+        UPDATE board_post
+        SET title = #{title}, content = #{content}
+        WHERE idx = #{idx}
+    </update>
+
+    <delete id="deletePost" parameterType="int">
+        DELETE FROM board_post WHERE idx = #{idx}
+    </delete>
+</mapper>
