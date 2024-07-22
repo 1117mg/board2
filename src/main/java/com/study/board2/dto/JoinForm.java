@@ -9,7 +9,6 @@ public class JoinForm {
     private String loginId;
     private String loginPw;
     private String loginPwCheck;
-
     private String userName;
     private String userEmail;
 }
