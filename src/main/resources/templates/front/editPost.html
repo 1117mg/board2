@@ -8,14 +8,36 @@
 <h1>게시글 수정</h1>
 <form th:action="@{'/front/board/' + ${boardIdx} + '/post/' + ${post.idx} + '/edit'}" method="post" th:object="${post}">
     <input type="hidden" name="boardIdx" th:value="${boardIdx}" />
-    <div>
-        <label for="title">제목:</label>
-        <input type="text" id="title" th:field="*{title}" th:value="${post.title}" />
-    </div>
-    <div>
-        <label for="content">내용:</label>
-        <textarea id="content" th:field="*{content}" th:text="${post.content}"></textarea>
-    </div>
+    <input type="hidden" id="noticeYn" name="noticeYn" th:field="*{noticeYn}"/>
+    <table class="tb tb_row">
+        <colgroup>
+            <col style="width:15%;" /><col style="width:35%;" /><col style="width:15%;" /><col style="width:35%;" />
+        </colgroup>
+        <tbody>
+        <tr th:if="${boardIdx==1}">
+            <th scope="row">공지글</th>
+            <td><span class="chkbox"><input type="checkbox" id="isNotice" name="isNotice" class="chk" /><i></i><label for="isNotice"> 설정</label></span></td>
+
+            <th scope="row">등록일</th>
+            <td colspan="3"><input type="text" id="regDate" name="regDate" th:field="*{regDate}" readonly /></td>
+        </tr>
+
+        <tr>
+            <th>제목</th>
+            <td colspan="3"><input type="text" id="title" name="title" th:field="*{title}" maxlength="50" placeholder="제목을 입력해 주세요." /></td>
+        </tr>
+
+        <tr>
+            <th>작성자</th>
+            <td colspan="3"><input type="text" id="writer" name="writer" th:value="${userId}" maxlength="10" readonly /></td>
+        </tr>
+
+        <tr>
+            <th>내용</th>
+            <td colspan="3"><textarea id="content" name="content" th:field="*{content}" cols="50" rows="10" placeholder="내용을 입력해 주세요."></textarea></td>
+        </tr>
+        </tbody>
+    </table>
     <button type="submit">수정</button>
 </form>
 </body>

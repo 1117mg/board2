@@ -7,8 +7,8 @@
 <body>
 <h1 th:text="${post.title}">게시글 제목</h1>
 <p th:text="${post.content}">게시글 내용</p>
-<a th:href="@{'/front/board/' + ${post.boardIdx} + '/post/' + ${post.idx} + '/edit'}">수정</a>
-<form th:action="@{'/front/board/post/' + ${post.idx} + '/delete'}" method="post">
+<a th:if="${post.userNo==userNo}" th:href="@{'/front/board/' + ${post.boardIdx} + '/post/' + ${post.idx} + '/edit'}">수정</a>
+<form th:if="${post.userNo==userNo}" th:action="@{'/front/board/post/' + ${post.idx} + '/delete'}" method="post">
     <button type="submit">삭제</button>
 </form>
 <a th:href="@{'/front/board/' + ${post.boardIdx} + '/posts'}">목록으로</a>
