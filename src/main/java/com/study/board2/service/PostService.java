@@ -10,6 +10,7 @@ import java.util.List;
 @Service
 @RequiredArgsConstructor
 public class PostService {
+
     private final PostMapper postMapper;
 
     public List<Post> getPostsByBoardId(int boardIdx) {

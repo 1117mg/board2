@@ -26,6 +26,12 @@ public class UserSecurityConfig extends WebSecurityConfigurerAdapter {
                 .passwordParameter("loginPw")
                 .defaultSuccessUrl("/front/main")
                 .and()
-                .csrf().disable();
+                .logout()
+                .logoutUrl("/front/auth/logout")
+                .logoutSuccessUrl("/front/main")  // 로그아웃 성공 후 리다이렉트 설정
+                .deleteCookies("remember-me")
+                .and()
+                .csrf().disable()
+                .rememberMe();
     }
 }

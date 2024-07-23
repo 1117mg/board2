@@ -1,5 +1,6 @@
 <!DOCTYPE html>
-<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 <head>
     <meta charset="UTF-8">
     <title>회원 메인 페이지</title>
@@ -7,6 +8,15 @@
 </head>
 <body>
 <h1>회원 메인 페이지</h1>
-<a th:href="@{/front/auth/login}">로그인</a>
+<div th:if="${username == null}">
+    <a class="text-dark" th:href="@{/front/auth/login}">로그인</a>
+    <span class="text-muted px-2">|</span>
+    <a class="text-dark" th:href="@{/front/auth/join}">회원가입</a>
+</div>
+<div th:if="${username != null}">
+    <a class="text-dark" href="#;" th:text="${username}">회원명</a>
+    <span class="text-muted px-2">|</span>
+    <a class="text-dark" th:href="@{/front/auth/logout}">로그아웃</a>
+</div>
 </body>
 </html>
