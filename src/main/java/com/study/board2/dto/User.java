@@ -19,7 +19,7 @@ public class User {
     private LocalDateTime regDate;
     private String userRole;
 
-    // Member 또는 Admin 테이블에 저장될 세부정보
+    // Member(ROLE_USER) 또는 Admin(ROLE_ADMIN) 테이블에 저장될 세부정보
     private String userName;
     private String userEmail;
 }
