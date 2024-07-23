@@ -1,12 +1,18 @@
 <!DOCTYPE html>
-<html lang="ko" xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="layout/basic">
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
     <title>게시글 작성</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <link rel="stylesheet" th:href="@{/css/layout.css}">
 </head>
 <body>
-<h1>새 글 쓰기</h1>
-<form th:action="@{'/front/board/'+${boardIdx}+'/post/write'}" method="post" th:object="${post}">
+<h1 th:if="${post.userNo!=0}">새 글 쓰기</h1>
+<div th:unless="${post.userNo!=0}" style="text-align: center">
+    <h2>글쓰기 권한이 없습니다.<br> 로그인 해주세요</h2>
+    <a th:href="@{/front/auth/login}">로그인</a>
+</div>
+<form th:if="${post.userNo!=0}" th:action="@{'/front/board/'+${boardIdx}+'/post/write'}" method="post" th:object="${post}">
     <input type="hidden" th:field="*{boardIdx}" value="${post.boardIdx}" />
     <input type="hidden" id="noticeYn" name="noticeYn" th:field="*{noticeYn}"/>
     <input type="hidden" id="userNo" name="userNo" th:field="*{userNo}"/>
@@ -25,7 +31,7 @@
             <td colspan="3"><input type="text" id="title" name="title" th:field="*{title}" maxlength="50" placeholder="제목을 입력해 주세요." /></td>
         </tr>
 
-        <tr th:if="*{userNo!=0}">
+        <tr>
             <th>작성자</th>
             <td colspan="3"><input type="text" id="user" name="user" th:value="${userId}" maxlength="10" readonly /></td>
         </tr>
@@ -36,7 +42,7 @@
         </tr>
         </tbody>
     </table>
-    <button th:if="*{userNo!=0}" type="submit">작성</button>
+    <button type="submit">작성</button>
 </form>
 </body>
 </html>
