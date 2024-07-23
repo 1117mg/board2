@@ -6,8 +6,8 @@
 </head>
 <body>
 <h1>새 글 쓰기</h1>
-<form th:action="@{/front/board/post/write}" method="post" th:object="${post}">
-    <input type="hidden" th:field="*{boardIdx}" value="1" />
+<form th:action="@{'/front/board/'+${boardIdx}+'/post/write'}" method="post" th:object="${post}">
+    <input type="hidden" th:field="*{boardIdx}" value="${post.boardIdx}" />
     <div>
         <label for="title">제목:</label>
         <input type="text" id="title" th:field="*{title}" />
