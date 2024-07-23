@@ -39,39 +39,46 @@ public class BoardController {
     public String postDetail(@PathVariable("postId") int postId, Model model) {
         Post post = postService.getPostById(postId);
         model.addAttribute("post", post);
+        model.addAttribute("boardIdx", post.getBoardIdx());
         return "front/postDetail";
     }
 
-    @GetMapping("/post/write")
-    public String writePostForm(Model model) {
+    @GetMapping("/{boardIdx}/post/write")
+    public String writePostForm(@PathVariable("boardIdx") int boardIdx, Model model) {
+        Post post = new Post();
+        post.setBoardIdx(boardIdx);
         model.addAttribute("post", new Post());
         return "front/writePost";
     }
 
-    @PostMapping("/post/write")
-    public String writePost(@ModelAttribute Post post) {
+    @PostMapping("/{boardIdx}/post/write")
+    public String writePost(@PathVariable("boardIdx") int boardIdx, @ModelAttribute Post post) {
+        post.setBoardIdx(boardIdx);
         postService.createPost(post);
-        return "redirect:/front/board/" + post.getBoardIdx() + "/posts";
+        return "redirect:/front/board/" + boardIdx + "/posts";
     }
 
-    @GetMapping("/post/{postId}/edit")
-    public String editPostForm(@PathVariable("postId") int postId, Model model) {
+    @GetMapping("/{boardIdx}/post/{postId}/edit")
+    public String editPostForm(@PathVariable("boardIdx") int boardIdx, @PathVariable("postId") int postId, Model model) {
         Post post = postService.getPostById(postId);
         model.addAttribute("post", post);
+        model.addAttribute("boardIdx", boardIdx);
         return "front/editPost";
     }
 
-    @PostMapping("/post/{postId}/edit")
-    public String editPost(@PathVariable("postId") int postId, @ModelAttribute Post post) {
+    @PostMapping("/{boardIdx}/post/{postId}/edit")
+    public String editPost(@PathVariable("boardIdx") int boardIdx, @PathVariable("postId") int postId, @ModelAttribute Post post) {
         post.setIdx(postId);
+        post.setBoardIdx(boardIdx);
         postService.updatePost(post);
-        return "redirect:/front/board/" + post.getBoardIdx() + "/posts";
+        return "redirect:/front/board/" + boardIdx + "/posts";
     }
 
     @PostMapping("/post/{postId}/delete")
     public String deletePost(@PathVariable("postId") int postId) {
         Post post = postService.getPostById(postId);
+        int boardIdx = post.getBoardIdx();
         postService.deletePost(postId);
-        return "redirect:/front/board/" + post.getBoardIdx() + "/posts";
+        return "redirect:/front/board/" + boardIdx + "/posts";
     }
 }
