@@ -10,6 +10,7 @@ import java.util.List;
 @Service
 @RequiredArgsConstructor
 public class BoardService {
+
     private final BoardMapper boardMapper;
 
     public List<Board> getAllBoards() {

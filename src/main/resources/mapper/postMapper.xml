@@ -11,8 +11,8 @@
     </select>
 
     <insert id="insertPost" parameterType="com.study.board2.dto.Post">
-        INSERT INTO board_post (board_idx, board_group_idx, user_no, title, content, hits, notice_yn, secret_yn, delete_yn)
-        VALUES (#{boardIdx}, #{boardGroupIdx}, #{userNo}, #{title}, #{content}, #{hits}, #{noticeYn}, #{secretYn}, #{deleteYn})
+        INSERT INTO board_post (board_idx, board_group_idx, user_no, title, content, notice_yn, secret_yn)
+        VALUES (#{boardIdx}, #{boardGroupIdx}, #{userNo}, #{title}, #{content}, #{noticeYn}, #{secretYn})
     </insert>
 
     <update id="updatePost" parameterType="com.study.board2.dto.Post">
@@ -21,7 +21,9 @@
         WHERE idx = #{idx}
     </update>
 
-    <delete id="deletePost" parameterType="int">
-        DELETE FROM board_post WHERE idx = #{idx}
-    </delete>
+    <update id="deletePost" parameterType="int">
+         UPDATE board_post
+         SET delete_yn=1
+         WHERE idx = #{idx}
+    </update>
 </mapper>
