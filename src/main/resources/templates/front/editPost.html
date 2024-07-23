@@ -3,6 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <title>게시글 수정</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <link rel="stylesheet" th:href="@{/css/layout.css}">
 </head>
 <body>
 <h1>게시글 수정</h1>
@@ -14,9 +16,9 @@
             <col style="width:15%;" /><col style="width:35%;" /><col style="width:15%;" /><col style="width:35%;" />
         </colgroup>
         <tbody>
-        <tr th:if="${boardIdx==1}">
-            <th scope="row">공지글</th>
-            <td><span class="chkbox"><input type="checkbox" id="isNotice" name="isNotice" class="chk" /><i></i><label for="isNotice"> 설정</label></span></td>
+        <tr>
+            <th th:if="${boardIdx==1}" scope="row">공지글</th>
+            <td th:if="${boardIdx==1}"><span class="chkbox"><input type="checkbox" id="isNotice" name="isNotice" class="chk" /><i></i><label for="isNotice"> 설정</label></span></td>
 
             <th scope="row">등록일</th>
             <td colspan="3"><input type="text" id="regDate" name="regDate" th:field="*{regDate}" readonly /></td>
