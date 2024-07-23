@@ -2,15 +2,22 @@ package com.study.board2.controller;
 
 import com.study.board2.dto.Board;
 import com.study.board2.dto.Post;
+import com.study.board2.dto.User;
 import com.study.board2.service.BoardService;
 import com.study.board2.service.PostService;
+import com.study.board2.service.UserService;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.security.authentication.AnonymousAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
+@Slf4j
 @RequestMapping("/front/board")
 @Controller
 @RequiredArgsConstructor
@@ -18,6 +25,7 @@ public class BoardController {
 
     private final BoardService boardService;
     private final PostService postService;
+    private final UserService userService;
 
     // 게시판 카테고리 목록
     @GetMapping("/list")
@@ -37,12 +45,20 @@ public class BoardController {
             List<Post> qposts = postService.getQPostsByBoardId(boardIdx);
             model.addAttribute("posts", qposts);
         }
+
         return "front/postList";
     }
 
     // 게시글 상세
     @GetMapping("/post/{postId}")
     public String postDetail(@PathVariable("postId") int postId, Model model) {
+        String userId= userService.getloginUser();
+        User user=userService.findByUserId(userId);
+        if(user!=null){
+            model.addAttribute("userNo", user.getIdx());
+        }else{
+            model.addAttribute("userNo", 0);
+        }
         Post post = postService.getPostById(postId);
         post.setHits(postService.hit(postId));
         model.addAttribute("post", post);
@@ -53,9 +69,15 @@ public class BoardController {
     // 게시글 등록 폼
     @GetMapping("/{boardIdx}/post/write")
     public String writePostForm(@PathVariable("boardIdx") int boardIdx, Model model) {
+        String userId= userService.getloginUser();
+        User user=userService.findByUserId(userId);
+        model.addAttribute("userId",userId);
         Post post = new Post();
         post.setBoardIdx(boardIdx);
-        model.addAttribute("post", new Post());
+        if(user!=null){
+            post.setUserNo(user.getIdx());
+        }
+        model.addAttribute("post", post);
         return "front/writePost";
     }
 
@@ -70,6 +92,8 @@ public class BoardController {
     // 게시글 수정 폼
     @GetMapping("/{boardIdx}/post/{postId}/edit")
     public String editPostForm(@PathVariable("boardIdx") int boardIdx, @PathVariable("postId") int postId, Model model) {
+        String userId= userService.getloginUser();
+        model.addAttribute("userId",userId);
         Post post = postService.getPostById(postId);
         model.addAttribute("post", post);
         model.addAttribute("boardIdx", boardIdx);
