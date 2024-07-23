@@ -9,8 +9,10 @@ import java.util.List;
 @Mapper
 public interface PostMapper {
     List<Post> findByBoardIdx(@Param("boardIdx") int boardIdx);
+    List<Post> findQByBoardIdx(@Param("boardIdx") int boardIdx);
     Post findByIdx(@Param("idx") int idx);
     void insertPost(Post post);
     void updatePost(Post post);
     void deletePost(@Param("idx") int idx);
+    int hit(@Param("idx") int idx);
 }

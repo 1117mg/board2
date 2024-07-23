@@ -7,10 +7,30 @@
 <body>
 <h1>게시글 목록</h1>
 <a th:href="@{'/front/board/'+${boardIdx}+'/post/write'}">새 글 쓰기</a>
-<ul>
-    <li th:each="post : ${posts}">
-        <a th:href="@{'/front/board/post/' + ${post.idx}}" th:text="${post.title}">게시글 제목</a>
-    </li>
-</ul>
+<table>
+    <thead>
+    <tr>
+        <th class="one wide">번호</th>
+        <th class="ten wide">제목</th>
+        <th class="two wide">작성자</th>
+        <th class="three wide">작성일</th>
+        <th class="four wide">조회수</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr th:each="post : ${posts}">
+        <td th:text="${post.idx}">1</td>
+        <td>
+            <a th:href="@{'/front/board/post/' + ${post.idx}}" class="board-title">
+                <!--<span th:if="${post.depth > 0}" th:each="i : ${#numbers.sequence(1, board.depth)}" class="reply">&nbsp;↪RE:</span>-->
+                <span th:text="${post.title}">제목</span>
+            </a>
+        </td>
+        <td th:text="${post.userNo}">작성자</td>
+        <td th:text="${post.regDate}">작성일</td>
+        <td th:text="${post.hits}">조회수</td>
+    </tr>
+    </tbody>
+</table>
 </body>
 </html>

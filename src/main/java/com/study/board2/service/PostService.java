@@ -17,8 +17,16 @@ public class PostService {
         return postMapper.findByBoardIdx(boardIdx);
     }
 
+    public List<Post> getQPostsByBoardId(int boardIdx) {
+        return postMapper.findQByBoardIdx(boardIdx);
+    }
+
     public Post getPostById(int postId) {
         return postMapper.findByIdx(postId);
+    }
+
+    public int hit(int postId) {
+        return postMapper.hit(postId);
     }
 
     public void createPost(Post post) {
