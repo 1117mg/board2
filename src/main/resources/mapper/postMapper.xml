@@ -4,11 +4,23 @@
 <mapper namespace="com.study.board2.repository.PostMapper">
     <select id="findByBoardIdx" parameterType="int" resultType="com.study.board2.dto.Post">
         SELECT * FROM board_post WHERE board_idx = #{boardIdx} AND delete_yn = 0
+        ORDER BY idx DESC
+    </select>
+
+    <select id="findQByBoardIdx" parameterType="int" resultType="com.study.board2.dto.Post">
+        SELECT * FROM board_post WHERE board_idx = #{boardIdx} AND delete_yn = 0
+        ORDER BY idx DESC
     </select>
 
     <select id="findByIdx" parameterType="int" resultType="com.study.board2.dto.Post">
         SELECT * FROM board_post WHERE idx = #{idx} AND delete_yn = 0
     </select>
+
+    <update id="hit" parameterType="int">
+        UPDATE board_post
+        SET hits = hits+1
+        WHERE idx=#{idx}
+    </update>
 
     <insert id="insertPost" parameterType="com.study.board2.dto.Post">
         INSERT INTO board_post (board_idx, board_group_idx, user_no, title, content, notice_yn, secret_yn)
