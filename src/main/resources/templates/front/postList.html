@@ -24,7 +24,7 @@
         <td th:text="${post.idx}">1</td>
         <td>
             <a th:href="@{'/front/board/post/' + ${post.idx}}" class="board-title">
-                <!--<span th:if="${post.depth > 0}" th:each="i : ${#numbers.sequence(1, board.depth)}" class="reply">&nbsp;↪RE:</span>-->
+                <span th:if="${post.depth > 0}" th:each="i : ${#numbers.sequence(1, post.depth)}" class="reply">&nbsp;↪RE:</span>
                 <span th:text="${post.title}">제목</span>
             </a>
         </td>
