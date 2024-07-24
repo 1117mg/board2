@@ -29,7 +29,7 @@
             </a>
         </td>
         <td th:text="${post.userNo}">작성자</td>
-        <td th:text="${post.regDate}">작성일</td>
+        <td th:text="${#temporals.format(post.regDate, 'yyyy-MM-dd')}">작성일</td>
         <td th:text="${post.hits}">조회수</td>
     </tr>
     </tbody>
