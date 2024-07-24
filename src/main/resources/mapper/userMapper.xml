@@ -5,14 +5,7 @@
 
     <select id="findAllMembers" resultType="com.study.board2.dto.User">
         SELECT
-            u.idx AS user_idx,
-            u.user_id,
-            u.user_pw,
-            u.reg_date,
-            u.user_role,
-            m.idx AS member_idx,
-            m.user_name,
-            m.user_email
+            u.*, m.*
         FROM
             user u
                 LEFT JOIN
