@@ -1,5 +1,6 @@
 package com.study.board2.service;
 
+import com.study.board2.dto.Board;
 import com.study.board2.dto.JoinForm;
 import com.study.board2.dto.User;
 import com.study.board2.repository.UserMapper;
@@ -11,6 +12,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
 import java.util.Optional;
 
 @RequiredArgsConstructor
@@ -18,6 +20,10 @@ import java.util.Optional;
 public class UserService {
 
     private final UserMapper userMapper;
+
+    public List<User> getAllMembers() {
+        return userMapper.findAllMembers();
+    }
 
     public User findByUserId(String userName){
         return userMapper.findByUserId(userName);
