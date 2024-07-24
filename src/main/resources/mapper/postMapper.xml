@@ -8,8 +8,26 @@
     </select>
 
     <select id="findQByBoardIdx" parameterType="int" resultType="com.study.board2.dto.Post">
-        SELECT * FROM board_post WHERE board_idx = #{boardIdx} AND delete_yn = 0
-        ORDER BY idx DESC
+        SELECT
+            bp.idx,
+            bp.title,
+            bp.content,
+            bp.user_no,
+            bp.reg_date,
+            bp.hits,
+            bp.notice_yn,
+            bp.secret_yn,
+            hb.parent_id,
+            hb.depth,
+            hb.sorts
+        FROM
+            board_post bp
+                JOIN
+            hierarchical_board hb ON bp.idx = hb.post_idx
+        WHERE
+            bp.board_idx = #{boardIdx}
+        ORDER BY
+            hb.parent_id, hb.depth, hb.sorts, bp.reg_date;
     </select>
 
     <select id="findByIdx" parameterType="int" resultType="com.study.board2.dto.Post">

@@ -17,4 +17,9 @@ public class Post {
     private boolean secretYn;
     private boolean deleteYn;
     private LocalDateTime regDate;
+
+    // 계층 구조 관련 필드
+    private Integer parentIdx;  // 부모 글의 ID
+    private int depth;          // 게시글 깊이
+    private int sorts;       // 같은 깊이 내에서의 순서
 }
