@@ -7,7 +7,8 @@
     <link rel="stylesheet" th:href="@{/css/layout.css}">
 </head>
 <body>
-<h1>게시글 목록</h1>
+<h1 th:if="${boardIdx==1}">공지사항</h1>
+<h1 th:if="${boardIdx==2}">1:1 문의</h1>
 <a th:href="@{'/front/board/'+${boardIdx}+'/post/write'}">글 작성</a>
 <table>
     <thead>
