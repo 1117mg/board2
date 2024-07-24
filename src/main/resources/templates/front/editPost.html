@@ -21,7 +21,9 @@
             <td th:if="${boardIdx==1}"><span class="chkbox"><input type="checkbox" id="isNotice" name="isNotice" class="chk" /><i></i><label for="isNotice"> 설정</label></span></td>
 
             <th scope="row">등록일</th>
-            <td colspan="3"><input type="text" id="regDate" name="regDate" th:field="*{regDate}" readonly /></td>
+            <td colspan="3">
+                <input type="text" id="regDate" name="regDate" th:value="${#temporals.format(post.regDate, 'yyyy-MM-dd')}" readonly />
+            </td>
         </tr>
 
         <tr>
