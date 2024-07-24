@@ -3,6 +3,23 @@
 
 <mapper namespace="com.study.board2.repository.UserMapper">
 
+    <select id="findAllMembers" resultType="com.study.board2.dto.User">
+        SELECT
+            u.idx AS user_idx,
+            u.user_id,
+            u.user_pw,
+            u.reg_date,
+            u.user_role,
+            m.idx AS member_idx,
+            m.user_name,
+            m.user_email
+        FROM
+            user u
+                LEFT JOIN
+            member m ON u.idx = m.idx
+        WHERE u.user_role="ROLE_USER"
+    </select>
+
     <select id="findByUserId" parameterType="String" resultType="com.study.board2.dto.User">
         SELECT *
         FROM user
