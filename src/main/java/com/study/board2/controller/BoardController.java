@@ -42,8 +42,8 @@ public class BoardController {
             List<Post> posts = postService.getPostsByBoardId(boardIdx);
             model.addAttribute("posts", posts);
         }else{              // 1:1 문의 게시판
-            List<Post> qposts = postService.getQPostsByBoardId(boardIdx);
-            model.addAttribute("posts", qposts);
+            List<Post> hposts = postService.getQPostsByBoardId(boardIdx);
+            model.addAttribute("posts", hposts);
         }
 
         return "front/postList";
