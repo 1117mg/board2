@@ -2,25 +2,25 @@
 <html lang="ko" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <title>게시글 수정</title>
+    <title>게시글 작성</title>
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
     <link rel="stylesheet" th:href="@{/css/layout.css}">
 </head>
 <body>
-<h1>게시글 수정</h1>
-<form th:action="@{'/front/board/' + ${boardIdx} + '/post/' + ${post.idx} + '/edit'}" method="post" th:object="${post}">
-    <input type="hidden" name="boardIdx" th:value="${boardIdx}" />
-    <input type="hidden" id="noticeYn" name="noticeYn" th:field="*{noticeYn}"/>
+<h1 th:if="${post.userNo!=0}">답글 쓰기</h1>
+<div th:unless="${post.userNo!=0}" style="text-align: center">
+    <h2>글쓰기 권한이 없습니다.<br> 로그인 해주세요</h2>
+    <a th:href="@{/front/auth/login}">로그인</a>
+</div>
+<form th:if="${post.userNo!=0}" th:action="@{'/front/board/' + ${boardIdx} + '/post/' + ${post.parentIdx} + '/reply'}" method="post" th:object="${post}">
+    <input type="hidden" th:field="*{boardIdx}" value="${post.boardIdx}" />
+    <input type="hidden" name="postId" th:field="*{parentIdx}" value="${post.parentIdx}" />
+    <input type="hidden" id="userNo" name="userNo" th:field="*{userNo}"/>
     <table class="tb tb_row">
         <colgroup>
             <col style="width:15%;" /><col style="width:35%;" /><col style="width:15%;" /><col style="width:35%;" />
         </colgroup>
         <tbody>
-        <tr th:if="${boardIdx==1}">
-            <th scope="row">공지글</th>
-            <td><span class="chkbox"><input type="checkbox" id="isNotice" name="isNotice" class="chk" /><i></i><label for="isNotice"> 설정</label></span></td>
-        </tr>
-
         <tr>
             <th>제목</th>
             <td colspan="3"><input type="text" id="title" name="title" th:field="*{title}" maxlength="50" placeholder="제목을 입력해 주세요." /></td>
@@ -28,7 +28,7 @@
 
         <tr>
             <th>작성자</th>
-            <td colspan="3"><input type="text" id="writer" name="writer" th:value="${userId}" maxlength="10" readonly /></td>
+            <td colspan="3"><input type="text" id="user" name="user" th:value="${userId}" maxlength="10" readonly /></td>
         </tr>
 
         <tr>
@@ -37,7 +37,7 @@
         </tr>
         </tbody>
     </table>
-    <button type="submit">수정</button>
+    <button type="submit">답글 작성</button>
 </form>
 </body>
 </html>
