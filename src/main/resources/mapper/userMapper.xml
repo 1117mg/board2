@@ -19,6 +19,17 @@
         WHERE user_id=#{userId}
     </select>
 
+    <select id="findByIdx" parameterType="int" resultType="com.study.board2.dto.User">
+        SELECT
+            u.*, m.*
+        FROM
+            user u
+                INNER JOIN
+            member m ON u.idx = m.idx
+        WHERE
+            u.idx = #{idx}
+    </select>
+
     <!-- 사용자 데이터 삽입 -->
     <insert id="insertUser" parameterType="com.study.board2.dto.User" useGeneratedKeys="true" keyProperty="idx">
         INSERT INTO user (user_id, user_pw, reg_date, user_role)

@@ -29,6 +29,10 @@ public class UserService {
         return userMapper.findByUserId(userName);
     }
 
+    public User findByIdx(int idx){
+        return userMapper.findByIdx(idx);
+    }
+
     @Transactional
     public void register(User user) {
         userMapper.insertUser(user);
