@@ -25,12 +25,21 @@ public class PostService {
         return postMapper.findByIdx(postId);
     }
 
+    public Post getPostByParentId(int parentId){
+        return postMapper.findByParentId(parentId);
+    }
+
     public int hit(int postId) {
         return postMapper.hit(postId);
     }
 
     public void createPost(Post post) {
         postMapper.insertPost(post);
+    }
+
+    public void replyPost(Post post) {
+        postMapper.insertPost(post);
+        postMapper.replyPost(post);
     }
 
     public void updatePost(Post post) {

@@ -25,13 +25,17 @@
                 JOIN
             hierarchical_board hb ON bp.idx = hb.post_idx
         WHERE
-            bp.board_idx = #{boardIdx}
+            bp.board_idx = #{boardIdx} AND bp.delete_yn=0
         ORDER BY
-            hb.parent_id, hb.depth, hb.sorts, bp.reg_date;
+            hb.sorts, hb.parent_id, hb.depth, bp.reg_date;
     </select>
 
     <select id="findByIdx" parameterType="int" resultType="com.study.board2.dto.Post">
         SELECT * FROM board_post WHERE idx = #{idx} AND delete_yn = 0
+    </select>
+
+    <select id="findByParentId" parameterType="int" resultType="com.study.board2.dto.Post">
+        SELECT * FROM hierarchical_board WHERE post_idx = #{parentIdx}
     </select>
 
     <update id="hit" parameterType="int">
@@ -40,9 +44,25 @@
         WHERE idx=#{idx}
     </update>
 
-    <insert id="insertPost" parameterType="com.study.board2.dto.Post">
+    <insert id="insertPost" parameterType="com.study.board2.dto.Post" useGeneratedKeys="true" keyProperty="idx">
         INSERT INTO board_post (board_idx, board_group_idx, user_no, title, content, notice_yn, secret_yn)
         VALUES (#{boardIdx}, #{boardGroupIdx}, #{userNo}, #{title}, #{content}, #{noticeYn}, #{secretYn})
+    </insert>
+
+    <insert id="replyPost" parameterType="com.study.board2.dto.Post">
+        INSERT INTO hierarchical_board (
+            post_idx, parent_id, depth, sorts
+        ) SELECT
+              #{idx},
+              #{parentIdx},
+              #{depth},
+              COALESCE(MAX(sibling.sorts), 0) + 1
+        FROM
+            hierarchical_board  parent
+                LEFT JOIN
+            hierarchical_board sibling ON parent.post_idx = sibling.parent_id
+        WHERE
+            parent.post_idx = #{parentIdx}
     </insert>
 
     <update id="updatePost" parameterType="com.study.board2.dto.Post">

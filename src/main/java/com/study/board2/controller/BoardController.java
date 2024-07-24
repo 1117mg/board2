@@ -89,6 +89,33 @@ public class BoardController {
         return "redirect:/front/board/" + boardIdx + "/posts";
     }
 
+    // 답글 등록 폼
+    @GetMapping("/{boardIdx}/post/{postId}/reply")
+    public String replyPostForm(@PathVariable("boardIdx") int boardIdx, @PathVariable("postId") int postId, Model model){
+        String userId= userService.getloginUser();
+        User user=userService.findByUserId(userId);
+        model.addAttribute("userId",userId);
+        Post post = new Post();
+        post.setBoardIdx(boardIdx);
+        post.setParentIdx(postId);
+        if(user!=null){
+            post.setUserNo(user.getIdx());
+        }
+        model.addAttribute("post", post);
+        return "front/replyPost";
+    }
+
+    // 답글 등록
+    @PostMapping("/{boardIdx}/post/{postId}/reply")
+    public String replyPost(@PathVariable("boardIdx") int boardIdx, @PathVariable("postId") int postId, @ModelAttribute Post post) {
+        post.setBoardIdx(boardIdx);
+        post.setParentIdx(postId);
+        Post parentPost=postService.getPostByParentId(post.getParentIdx());
+        post.setDepth(parentPost.getDepth()+1);
+        postService.replyPost(post);
+        return "redirect:/front/board/" + boardIdx + "/posts";
+    }
+
     // 게시글 수정 폼
     @GetMapping("/{boardIdx}/post/{postId}/edit")
     public String editPostForm(@PathVariable("boardIdx") int boardIdx, @PathVariable("postId") int postId, Model model) {

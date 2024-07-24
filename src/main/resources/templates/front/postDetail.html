@@ -10,6 +10,7 @@
 <h1 th:text="${post.title}">게시글 제목</h1>
 <p th:text="${post.content}">게시글 내용</p>
 <a th:if="${post.userNo==userNo}" th:href="@{'/front/board/' + ${post.boardIdx} + '/post/' + ${post.idx} + '/edit'}">수정</a>
+<a th:if="${userNo!=0}" th:href="@{'/front/board/' + ${post.boardIdx} + '/post/' + ${post.idx} + '/reply'}">답글쓰기</a>
 <form th:if="${post.userNo==userNo}" th:action="@{'/front/board/post/' + ${post.idx} + '/delete'}" method="post">
     <button type="submit">삭제</button>
 </form>
