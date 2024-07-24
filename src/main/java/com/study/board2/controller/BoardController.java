@@ -42,7 +42,7 @@ public class BoardController {
             List<Post> posts = postService.getPostsByBoardId(boardIdx);
             model.addAttribute("posts", posts);
         }else{              // 1:1 문의 게시판
-            List<Post> hposts = postService.getQPostsByBoardId(boardIdx);
+            List<Post> hposts = postService.getHPostsByBoardId(boardIdx);
             model.addAttribute("posts", hposts);
         }
 
