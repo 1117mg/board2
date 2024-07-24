@@ -7,6 +7,7 @@ import com.study.board2.service.UserService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.authentication.AnonymousAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -19,6 +20,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.util.List;
 
 @RequestMapping("/master")
 @Controller
@@ -31,8 +33,12 @@ public class AdminController {
 
     @GetMapping("/auth/login")
     public String loginForm(Model model){
-        model.addAttribute("loginForm", new LoginForm());
-        return "master/login";
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        log.info(String.valueOf(authentication));
+        if (authentication instanceof AnonymousAuthenticationToken){
+            model.addAttribute("loginForm", new LoginForm());
+            return "master/login";}
+        return "master/main";
     }
 
     @GetMapping("/auth/logout")
@@ -70,9 +76,9 @@ public class AdminController {
     public String main(Model model){
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 
-        if(authentication != null) {
-            String username= authentication.getName();
-            log.info(username);
+        if(authentication != null && authentication.isAuthenticated() && !(authentication instanceof AnonymousAuthenticationToken)) {
+            String username = authentication.getName();
+            log.info("Authenticated user: " + username);
             model.addAttribute("username", username);
         }
         return "master/main";

@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>회원 목록</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <link rel="stylesheet" th:href="@{/css/layout.css}">
+</head>
+<body>
+<h1>회원 목록</h1>
+<table>
+    <thead>
+    <tr>
+        <th class="one wide">번호</th>
+        <th class="ten wide">아이디</th>
+        <th class="two wide">이름</th>
+        <th class="three wide">이메일</th>
+        <th class="four wide">가입일</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr th:each="user : ${users}">
+        <td th:text="${user.idx}">1</td>
+        <td>
+            <a th:href="@{'/front/user/' + ${user.idx}}">
+                <span th:text="${user.userId}">아이디</span>
+            </a>
+        </td>
+        <td th:text="${user.userName}">이름</td>
+        <td th:text="${user.userEmail}">이메일</td>
+        <td th:text="${#temporals.format(user.regDate, 'yyyy-MM-dd')}">가입일</td>
+    </tr>
+    </tbody>
+</table>
+</body>
+</html>

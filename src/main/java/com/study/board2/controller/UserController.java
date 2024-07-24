@@ -18,6 +18,7 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.util.List;
 
 @RequiredArgsConstructor
 @RequestMapping("/front")
@@ -79,6 +80,14 @@ public class UserController {
             model.addAttribute("username", username);
         }
         return "front/main";
+    }
+
+    // 게시판 카테고리 목록
+    @GetMapping("/users")
+    public String userList(Model model) {
+        List<User> users = userService.getAllMembers();
+        model.addAttribute("users", users);
+        return "front/userList";
     }
 
 }
