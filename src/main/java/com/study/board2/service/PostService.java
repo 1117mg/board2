@@ -17,8 +17,8 @@ public class PostService {
         return postMapper.findByBoardIdx(boardIdx);
     }
 
-    public List<Post> getQPostsByBoardId(int boardIdx) {
-        return postMapper.findQByBoardIdx(boardIdx);
+    public List<Post> getHPostsByBoardId(int boardIdx) {
+        return postMapper.findHByBoardIdx(boardIdx);
     }
 
     public Post getPostById(int postId) {
