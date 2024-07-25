@@ -47,4 +47,10 @@
         INSERT INTO admin (idx, user_name, user_email)
         VALUES (#{idx}, #{userName}, #{userEmail})
     </insert>
+
+    <update id="updateMember" parameterType="com.study.board2.dto.User">
+        UPDATE member
+        SET user_name=#{userName}, user_email=#{userEmail}
+        WHERE idx=#{idx}
+    </update>
 </mapper>
