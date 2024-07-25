@@ -25,12 +25,20 @@ public class UserService {
         return userMapper.findAllMembers();
     }
 
+    public List<User> getAllAdmins() {
+        return userMapper.findAllAdmins();
+    }
+
     public User findByUserId(String userName){
         return userMapper.findByUserId(userName);
     }
 
     public User findByIdx(int idx){
         return userMapper.findByIdx(idx);
+    }
+
+    public User findAdminByIdx(int idx){
+        return userMapper.findAdminByIdx(idx);
     }
 
     @Transactional
@@ -59,6 +67,10 @@ public class UserService {
 
     public void updateMember(User user){
         userMapper.updateMember(user);
+    }
+
+    public void updateAdmin(User user){
+        userMapper.updateAdmin(user);
     }
 
 }

@@ -1,5 +1,6 @@
 package com.study.board2.controller;
 
+import com.study.board2.dto.Board;
 import com.study.board2.dto.JoinForm;
 import com.study.board2.dto.LoginForm;
 import com.study.board2.dto.User;
@@ -14,9 +15,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.authentication.logout.SecurityContextLogoutHandler;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -75,5 +74,25 @@ public class AdminController {
     @GetMapping("/main")
     public String main(){
         return "master/main";
+    }
+
+    @GetMapping("/users")
+    public String adminList(Model model) {
+        List<User> users = userService.getAllAdmins();
+        model.addAttribute("users", users);
+        return "master/adminList";
+    }
+
+    @GetMapping("/user/{idx}")
+    public String adminDetail(@PathVariable("idx") int idx, Model model){
+        User user=userService.findAdminByIdx(idx);
+        model.addAttribute("user",user);
+        return "master/adminDetail";
+    }
+
+    @PostMapping("/user/{idx}")
+    public String adminUpdate(@PathVariable("idx") int idx, @ModelAttribute("user") User user){
+        userService.updateAdmin(user);
+        return "redirect:/master/user/"+user.getIdx();
     }
 }
