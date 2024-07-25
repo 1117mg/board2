@@ -23,17 +23,8 @@ import java.util.List;
 @RequiredArgsConstructor
 public class BoardController {
 
-    private final BoardService boardService;
     private final PostService postService;
     private final UserService userService;
-
-    // 게시판 카테고리 목록
-    @GetMapping("/list")
-    public String boardList(Model model) {
-        List<Board> boards = boardService.getAllBoards();
-        model.addAttribute("boards", boards);
-        return "front/boardList";
-    }
 
     // 게시판 글 목록
     @GetMapping("/{boardIdx}/posts")

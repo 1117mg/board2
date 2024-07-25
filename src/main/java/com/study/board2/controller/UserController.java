@@ -1,8 +1,10 @@
 package com.study.board2.controller;
 
+import com.study.board2.dto.Board;
 import com.study.board2.dto.JoinForm;
 import com.study.board2.dto.LoginForm;
 import com.study.board2.dto.User;
+import com.study.board2.service.BoardService;
 import com.study.board2.service.UserService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -26,6 +28,7 @@ import java.util.List;
 @Slf4j
 public class UserController {
 
+    private final BoardService boardService;
     private final UserService userService;
     private final PasswordEncoder passwordEncoder;
 
@@ -71,11 +74,12 @@ public class UserController {
     }
 
     @GetMapping("/main")
-    public String main(){
+    public String main(Model model) {
+        List<Board> boards = boardService.getAllBoards();
+        model.addAttribute("boards", boards);
         return "front/main";
     }
 
-    // 게시판 카테고리 목록
     @GetMapping("/users")
     public String userList(Model model) {
         List<User> users = userService.getAllMembers();
