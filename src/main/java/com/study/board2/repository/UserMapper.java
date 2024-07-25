@@ -13,4 +13,5 @@ public interface UserMapper {
     void insertUser(User user);
     void insertMember(User user);
     void insertAdmin(User user);
+    void updateMember(User user);
 }

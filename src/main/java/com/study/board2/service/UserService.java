@@ -57,4 +57,8 @@ public class UserService {
         }
     }
 
+    public void updateMember(User user){
+        userMapper.updateMember(user);
+    }
+
 }
