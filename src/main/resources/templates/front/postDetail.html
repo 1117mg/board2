@@ -7,7 +7,7 @@
     <link rel="stylesheet" th:href="@{/css/layout.css}">
 </head>
 <body>
-<div th:replace="include/front_header::header"></div>
+<div th:replace="include/header::front"></div>
 
 <h1 th:text="${post.title}">게시글 제목</h1>
 <p th:text="${post.content}">게시글 내용</p>
