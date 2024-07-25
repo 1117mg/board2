@@ -13,6 +13,16 @@
         WHERE u.user_role="ROLE_USER"
     </select>
 
+    <select id="findAllAdmins" resultType="com.study.board2.dto.User">
+        SELECT
+            u.*, a.*
+        FROM
+            user u
+                LEFT JOIN
+            admin a ON u.idx = a.idx
+        WHERE u.user_role="ROLE_ADMIN"
+    </select>
+
     <select id="findByUserId" parameterType="String" resultType="com.study.board2.dto.User">
         SELECT *
         FROM user
@@ -26,6 +36,16 @@
             user u
                 INNER JOIN
             member m ON u.idx = m.idx
+        WHERE
+            u.idx = #{idx}
+    </select>
+
+    <select id="findAdminByIdx" parameterType="int" resultType="com.study.board2.dto.User">
+        SELECT
+            u.*, a.*
+        FROM
+            user u
+                INNER JOIN admin a ON u.idx = a.idx
         WHERE
             u.idx = #{idx}
     </select>
@@ -50,6 +70,12 @@
 
     <update id="updateMember" parameterType="com.study.board2.dto.User">
         UPDATE member
+        SET user_name=#{userName}, user_email=#{userEmail}
+        WHERE idx=#{idx}
+    </update>
+
+    <update id="updateAdmin" parameterType="com.study.board2.dto.User">
+        UPDATE admin
         SET user_name=#{userName}, user_email=#{userEmail}
         WHERE idx=#{idx}
     </update>

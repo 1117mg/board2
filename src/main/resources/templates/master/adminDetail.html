@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>회원 상세</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <link rel="stylesheet" th:href="@{/css/layout.css}">
+</head>
+<body>
+<div th:replace="include/header::front"></div>
+<h1>회원 상세</h1>
+<form th:action="@{'/master/user/' + ${user.idx}}" method="post" th:object="${user}">
+    <table class="tb tb_row">
+        <colgroup>
+            <col style="width:15%;" /><col style="width:35%;" /><col style="width:15%;" /><col style="width:35%;" />
+        </colgroup>
+        <tbody>
+        <tr>
+            <th>번호</th>
+            <td colspan="3"><input type="text" id="idx" name="idx" th:field="*{idx}" maxlength="50" readonly /></td>
+        </tr>
+
+        <tr>
+            <th>아이디</th>
+            <td colspan="3"><input type="text" id="userId" name="userId" th:field="*{userId}" maxlength="50" readonly /></td>
+        </tr>
+
+        <tr>
+            <th>비밀번호</th>
+            <td colspan="3"><input type="password" id="userPw" name="userPw" th:field="*{userPw}" maxlength="50" readonly /></td>
+        </tr>
+
+        <tr>
+            <th>이름</th>
+            <td colspan="3"><input type="text" id="userName" name="userName" th:field="*{userName}" maxlength="50" /></td>
+        </tr>
+
+        <tr>
+            <th>이메일</th>
+            <td colspan="3"><input type="text" id="userEmail" name="userEmail" th:field="*{userEmail}" maxlength="50" /></td>
+        </tr>
+
+        <tr>
+            <th>가입일</th>
+            <td colspan="3" th:text="*{#temporals.format(regDate, 'yyyy-MM-dd')}"></td>
+        </tr>
+        </tbody>
+    </table>
+    <button type="submit">수정</button>
+</form>
+<a th:href="@{'/master/users'}">목록으로</a>
+</body>
+</html>
