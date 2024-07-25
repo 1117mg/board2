@@ -90,4 +90,10 @@ public class UserController {
         return "front/userDetail";
     }
 
+    @PostMapping("/user/{idx}")
+    public String userUpdate(@PathVariable("idx") int idx, @ModelAttribute("user") User user){
+        userService.updateMember(user);
+        return "redirect:/front/user/"+user.getIdx();
+    }
+
 }
