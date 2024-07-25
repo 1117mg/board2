@@ -7,4 +7,5 @@
   <li>SDK: JDK 1.8</li>
   <li>의존성 관리툴: Maven</li>
   <li>DB: MySQL 8.0.24</li>
+  <li>Spring Security : 5.6.2</li>
 </ul>
