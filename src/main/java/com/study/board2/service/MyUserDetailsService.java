@@ -5,15 +5,12 @@ import com.study.board2.dto.User;
 import com.study.board2.repository.UserMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.List;
+import javax.servlet.http.HttpSession;
 
 @Slf4j
 @Service
@@ -21,6 +18,7 @@ import java.util.List;
 public class MyUserDetailsService implements UserDetailsService {
 
     private final UserMapper mapper;
+    private final HttpSession httpSession;
 
     @Override
     public UserDetails loadUserByUsername(String userId) throws UsernameNotFoundException {

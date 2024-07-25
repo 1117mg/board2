@@ -2,6 +2,7 @@ package com.study.board2.security;
 
 import com.study.board2.service.MyUserDetailsService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.annotation.Order;
@@ -11,8 +12,11 @@ import org.springframework.security.config.annotation.web.configuration.WebSecur
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.web.authentication.rememberme.JdbcTokenRepositoryImpl;
+import org.springframework.security.web.authentication.rememberme.PersistentTokenRepository;
 
 import javax.servlet.http.HttpSession;
+import javax.sql.DataSource;
 
 @Configuration
 @EnableWebSecurity
@@ -20,16 +24,14 @@ import javax.servlet.http.HttpSession;
 @Order(0)  // 높은 우선순위
 public class AdminSecurityConfig extends WebSecurityConfigurerAdapter {
 
-    private final MyUserDetailsService userDetailsService;
-
-    @Bean
-    public PasswordEncoder passwordEncoder() {
-        return new BCryptPasswordEncoder();
-    }
-
     @Override
     protected void configure(HttpSecurity http) throws Exception {
         http
+                .rememberMe()
+                .userDetailsService(userDetailsService)
+                .tokenRepository(tokenRepository())
+                .tokenValiditySeconds(604800)
+                .and()
                 .requestMatchers().antMatchers("/master/**")
                 .and()
                 .formLogin()
@@ -42,16 +44,26 @@ public class AdminSecurityConfig extends WebSecurityConfigurerAdapter {
                 .logout()
                 .logoutUrl("/master/auth/logout")
                 .logoutSuccessUrl("/master/main")
-                .addLogoutHandler((request, response, authentication) -> {
-                    HttpSession session = request.getSession();
-                    if(session!=null){
-                        session.invalidate();
-                    }
-                })
-                .logoutSuccessHandler((request, response, authentication) ->
-                        response.sendRedirect("/login"))
-                .deleteCookies("remember-me")
+                .invalidateHttpSession(true)
+                .deleteCookies("remember-me", "JSESSIONID")
                 .and()
                 .csrf().disable();
+    }
+
+    @Qualifier("dataSource")
+    private final DataSource dataSource;
+
+    private final MyUserDetailsService userDetailsService;
+
+    @Bean
+    public PasswordEncoder passwordEncoder() {
+        return new BCryptPasswordEncoder();
+    }
+
+    @Bean
+    public PersistentTokenRepository tokenRepository() {
+        JdbcTokenRepositoryImpl jdbcTokenRepository = new JdbcTokenRepositoryImpl();
+        jdbcTokenRepository.setDataSource(dataSource); // dataSource 주입
+        return jdbcTokenRepository;
     }
 }
