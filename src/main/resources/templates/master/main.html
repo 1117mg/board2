@@ -7,16 +7,7 @@
     <link rel="stylesheet" th:href="@{/css/layout.css}">
 </head>
 <body>
+<div th:replace="include/admin_header::header"></div>
 <h1>관리자 메인 페이지</h1>
-<div th:if="${username == null}">
-    <a class="text-dark" th:href="@{/master/auth/login}">로그인</a>
-    <span class="text-muted px-2">|</span>
-    <a class="text-dark" th:href="@{/master/auth/join}">회원가입</a>
-</div>
-<div th:if="${username != null}">
-    <a class="text-dark" href="#;" th:text="${username}">회원명</a>
-    <span class="text-muted px-2">|</span>
-    <a class="text-dark" th:href="@{/master/auth/logout}">로그아웃</a>
-</div>
 </body>
 </html>
