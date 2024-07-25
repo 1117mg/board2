@@ -71,14 +71,7 @@ public class UserController {
     }
 
     @GetMapping("/main")
-    public String main(Model model){
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-
-        if(authentication != null && authentication.isAuthenticated() && !(authentication instanceof AnonymousAuthenticationToken)) {
-            String username = authentication.getName();
-            log.info("Authenticated user: " + username);
-            model.addAttribute("username", username);
-        }
+    public String main(){
         return "front/main";
     }
 
