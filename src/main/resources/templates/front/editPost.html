@@ -7,6 +7,8 @@
     <link rel="stylesheet" th:href="@{/css/layout.css}">
 </head>
 <body>
+<div th:replace="include/header::header"></div>
+
 <h1>게시글 수정</h1>
 <form th:action="@{'/front/board/' + ${boardIdx} + '/post/' + ${post.idx} + '/edit'}" method="post" th:object="${post}">
     <input type="hidden" name="boardIdx" th:value="${boardIdx}" />
