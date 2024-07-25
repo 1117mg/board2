@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org"  xmlns:sec="http://www.thymeleaf.org/extras/spring-security">>
+<head>
+    <meta charset="UTF-8">
+    <title>header</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <link rel="stylesheet" th:href="@{/css/layout.css}">
+</head>
+<body>
+<div th:fragment="header" style="text-align: end">
+    <div sec:authorize="isAnonymous()">
+        <a class="text-dark" th:href="@{/master/auth/login}">로그인</a>
+        <span class="text-muted px-2">|</span>
+        <a class="text-dark" th:href="@{/master/auth/join}">회원가입</a>
+    </div>
+    <div sec:authorize="isAuthenticated()">
+        <a class="text-dark" th:text="${#authentication.name}">관리자명</a>
+        <span class="text-muted px-2">|</span>
+        <a class="text-dark" th:href="@{/master/auth/logout}">로그아웃</a>
+    </div>
+    <a th:href="@{'/master/main'}">메인으로</a>
+</div>
+</body>
+</html>
