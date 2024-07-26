@@ -4,6 +4,7 @@ import com.study.board2.dto.Board;
 import com.study.board2.dto.JoinForm;
 import com.study.board2.dto.LoginForm;
 import com.study.board2.dto.User;
+import com.study.board2.service.PostService;
 import com.study.board2.service.UserService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -94,5 +95,19 @@ public class AdminController {
     public String adminUpdate(@PathVariable("idx") int idx, @ModelAttribute("user") User user){
         userService.updateAdmin(user);
         return "redirect:/master/user/"+user.getIdx();
+    }
+
+    @GetMapping("/user/new")
+    public String adminNewForm(Model model) {
+        model.addAttribute("user", new User());
+        return "master/adminNew";
+    }
+
+    @PostMapping("/user/new")
+    public String adminNew(@ModelAttribute("user") User user){
+        user.setUserPw(passwordEncoder.encode(user.getUserPw()));
+        user.setUserRole("ROLE_ADMIN");
+        userService.register(user);
+        return "redirect:/master/users";
     }
 }
