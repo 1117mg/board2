@@ -1,9 +1,9 @@
 package com.study.board2.controller;
 
-import com.study.board2.dto.Board;
-import com.study.board2.dto.JoinForm;
-import com.study.board2.dto.LoginForm;
-import com.study.board2.dto.User;
+import com.study.board2.dto.*;
+import com.study.board2.repository.CtgAuthMapper;
+import com.study.board2.service.BoardService;
+import com.study.board2.service.CtgAuthService;
 import com.study.board2.service.PostService;
 import com.study.board2.service.UserService;
 import lombok.RequiredArgsConstructor;
@@ -31,6 +31,8 @@ import java.util.Map;
 public class AdminController {
 
     private final UserService userService;
+    private final CtgAuthService ctgAuthService;
+    private final BoardService boardService;
     private final PasswordEncoder passwordEncoder;
 
     @GetMapping("/auth/login")
@@ -90,15 +92,44 @@ public class AdminController {
     }
 
     @GetMapping("/user/{idx}")
-    public String adminDetail(@PathVariable("idx") int idx, Model model){
-        User user=userService.findAdminByIdx(idx);
-        model.addAttribute("user",user);
+    public String adminDetail(@PathVariable("idx") int idx, Model model) {
+        User user = userService.findAdminByIdx(idx);
+        List<Board> boards = boardService.getAllBoards();
+        model.addAttribute("boards", boards);
+
+        // 사용자 권한 조회
+        List<CtgAuth> ctgAuthList = ctgAuthService.getCtgAuthForUser(idx);
+
+        // readMap 생성
+        Map<Integer, CtgAuth> readMap = new HashMap<>();
+        for (CtgAuth ctgAuth : ctgAuthList) {
+            readMap.put(ctgAuth.getBoardId(), ctgAuth);
+        }
+
+        // 권한이 없는 경우 기본값을 설정하기
+        for (Board board : boards) {
+            if (!readMap.containsKey(board.getIdx())) {
+                // 권한이 없으면 기본값으로 CtgAuth 객체를 생성
+                CtgAuth defaultAuth = new CtgAuth();
+                defaultAuth.setIdx(idx);
+                defaultAuth.setBoardId(board.getIdx());
+                defaultAuth.setRead(false);
+                defaultAuth.setWrite(false);
+                defaultAuth.setDownload(false);
+                readMap.put(board.getIdx(), defaultAuth);
+            }
+        }
+
+        model.addAttribute("readMap", readMap);
+        model.addAttribute("user", user);
         return "master/adminDetail";
     }
 
     @PostMapping("/user/{idx}")
-    public String adminUpdate(@PathVariable("idx") int idx, @ModelAttribute("user") User user){
+    public String adminUpdate(@PathVariable("idx") int idx, @ModelAttribute("user") User user, @RequestParam Map<String, String> params){
         userService.updateAdmin(user);
+        // 권한 업데이트
+        ctgAuthService.updatePermissions(idx, params);
         return "redirect:/master/user/"+user.getIdx();
     }
 

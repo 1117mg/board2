@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.study.board2.repository.CtgAuthMapper">
+
+    <select id="selectCtgAuthByUserId" parameterType="int" resultType="com.study.board2.dto.CtgAuth">
+        SELECT * FROM admin_auth WHERE user_id = #{userId}
+    </select>
+
+    <insert id="insertCtgAuth" parameterType="com.study.board2.dto.CtgAuth">
+        INSERT INTO admin_auth(user_id, board_id,can_read, can_write, can_download)
+        VALUES (#{idx}, #{boardId},#{read},#{write},#{download})
+    </insert>
+
+    <delete id="deleteAllByUserId">
+        DELETE FROM admin_auth WHERE user_id = #{userId}
+    </delete>
+</mapper>
