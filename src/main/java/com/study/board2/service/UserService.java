@@ -33,8 +33,8 @@ public class UserService {
         return userMapper.findByUserId(userName);
     }
 
-    public User findByIdx(int idx){
-        return userMapper.findByIdx(idx);
+    public User findMemberByIdx(int idx){
+        return userMapper.findMemberByIdx(idx);
     }
 
     public User findAdminByIdx(int idx){
