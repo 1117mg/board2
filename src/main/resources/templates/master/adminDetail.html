@@ -7,7 +7,7 @@
     <link rel="stylesheet" th:href="@{/css/layout.css}">
 </head>
 <body>
-<div th:replace="include/header::front"></div>
+<div th:replace="include/header::master"></div>
 <h1>관리자 상세</h1>
 <form th:action="@{'/master/user/' + ${user.idx}}" method="post" th:object="${user}">
     <table class="tb tb_row">
@@ -43,6 +43,48 @@
         <tr>
             <th>가입일</th>
             <td colspan="3" th:text="*{#temporals.format(regDate, 'yyyy-MM-dd')}"></td>
+        </tr>
+        </tbody>
+    </table>
+    <table class="tb tb_row">
+        <thead>
+        <tr>
+            <th class="one wide">메뉴</th>
+            <th class="ten wide">읽기</th>
+            <th class="two wide">쓰기</th>
+            <th class="three wide">다운로드</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="board : ${boards}">
+            <td th:text="${board.boardTitle}"></td>
+            <td>
+                <label>
+                    <input type="checkbox" th:id="'read_' + ${board.idx}"
+                           th:name="${board.idx} + '_read'"
+                           th:value="true"
+                           th:checked="${readMap[board.idx]?.read == 1 ? 'checked' : ''}"/>
+                    읽기
+                </label>
+            </td>
+            <td>
+                <label>
+                    <input type="checkbox" th:id="'write_' + ${board.idx}"
+                           th:name="${board.idx} + '_write'"
+                           th:value="true"
+                           th:checked="${readMap[board.idx]?.write == 1 ? 'checked' : ''}"/>
+                    쓰기
+                </label>
+            </td>
+            <td>
+                <label>
+                    <input type="checkbox" th:id="'download_' + ${board.idx}"
+                           th:name="${board.idx} + '_download'"
+                           th:value="true"
+                           th:checked="${readMap[board.idx]?.download == 1 ? 'checked' : ''}"/>
+                    다운로드
+                </label>
+            </td>
         </tr>
         </tbody>
     </table>
