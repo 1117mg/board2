@@ -29,7 +29,7 @@
         WHERE user_id=#{userId}
     </select>
 
-    <select id="findByIdx" parameterType="int" resultType="com.study.board2.dto.User">
+    <select id="findMemberByIdx" parameterType="int" resultType="com.study.board2.dto.User">
         SELECT
             u.*, m.*
         FROM

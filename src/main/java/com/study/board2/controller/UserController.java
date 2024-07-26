@@ -89,7 +89,7 @@ public class UserController {
 
     @GetMapping("/user/{idx}")
     public String userDetail(@PathVariable("idx") int idx, Model model){
-        User user=userService.findByIdx(idx);
+        User user=userService.findMemberByIdx(idx);
         model.addAttribute("user",user);
         return "front/userDetail";
     }
