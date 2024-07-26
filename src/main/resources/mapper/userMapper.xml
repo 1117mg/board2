@@ -29,6 +29,16 @@
         WHERE user_id=#{userId}
     </select>
 
+    <select id="findByUsername" parameterType="String" resultType="com.study.board2.dto.User">
+        SELECT user_name
+        FROM member
+        WHERE user_name = #{userName}
+        UNION
+        SELECT user_name
+        FROM admin
+        WHERE user_name = #{userName}
+    </select>
+
     <select id="findMemberByIdx" parameterType="int" resultType="com.study.board2.dto.User">
         SELECT
             u.*, m.*

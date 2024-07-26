@@ -20,7 +20,9 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @RequestMapping("/master")
 @Controller
@@ -60,7 +62,10 @@ public class AdminController {
     }
 
     @PostMapping("/auth/join")
-    public String join(JoinForm form){
+    public String join(JoinForm form,Model model){
+        if(userService.findByUserId(form.getLoginId())!=null){
+            model.addAttribute("IdDuplicate",true);
+        }
         User user = User.builder()
                 .userId(form.getLoginId())
                 .userPw(passwordEncoder.encode(form.getLoginPw()))
@@ -99,14 +104,19 @@ public class AdminController {
 
     @GetMapping("/user/new")
     public String adminNewForm(Model model) {
-        model.addAttribute("user", new User());
+        model.addAttribute("joinForm", new JoinForm());
         return "master/adminNew";
     }
 
     @PostMapping("/user/new")
-    public String adminNew(@ModelAttribute("user") User user){
-        user.setUserPw(passwordEncoder.encode(user.getUserPw()));
-        user.setUserRole("ROLE_ADMIN");
+    public String adminNew(JoinForm form){
+        User user = User.builder()
+                .userId(form.getLoginId())
+                .userPw(passwordEncoder.encode(form.getLoginPw()))
+                .userName(form.getUserName())
+                .userEmail(form.getUserEmail())
+                .userRole("ROLE_ADMIN")
+                .build();
         userService.register(user);
         return "redirect:/master/users";
     }

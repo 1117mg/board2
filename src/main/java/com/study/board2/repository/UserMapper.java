@@ -10,6 +10,7 @@ public interface UserMapper {
     List<User> findAllMembers();
     List<User> findAllAdmins();
     User findByUserId(String userId);
+    User findByUsername(String userName);
     User findMemberByIdx(int idx);
     User findAdminByIdx(int idx);
     void insertUser(User user);
