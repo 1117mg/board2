@@ -4,15 +4,31 @@
 <mapper namespace="com.study.board2.repository.CtgAuthMapper">
 
     <select id="selectCtgAuthByUserId" parameterType="int" resultType="com.study.board2.dto.CtgAuth">
-        SELECT * FROM admin_auth WHERE user_id = #{userId}
+        SELECT *
+        FROM admin_auth
+        WHERE user_id = #{userId}
     </select>
 
     <insert id="insertCtgAuth" parameterType="com.study.board2.dto.CtgAuth">
         INSERT INTO admin_auth(user_id, board_id,can_read, can_write, can_download)
-        VALUES (#{idx}, #{boardId},#{read},#{write},#{download})
+        VALUES (#{userId}, #{boardId},#{canRead},#{canWrite},#{canDownload})
     </insert>
+
+    <update id="updateCtgAuth" parameterType="CtgAuth">
+        UPDATE admin_auth
+        SET can_read = #{canRead},
+            can_write = #{canWrite},
+            can_download = #{canDownload}
+        WHERE user_id = #{userId} AND board_id = #{boardId}
+    </update>
 
     <delete id="deleteAllByUserId">
         DELETE FROM admin_auth WHERE user_id = #{userId}
     </delete>
+
+    <select id="existsByUserIdAndBoardId" parameterType="map" resultType="boolean">
+        SELECT COUNT(*)
+        FROM admin_auth
+        WHERE user_id = #{userId} AND board_id = #{boardId}
+    </select>
 </mapper>

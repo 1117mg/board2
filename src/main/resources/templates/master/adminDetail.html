@@ -49,7 +49,7 @@
     <table class="tb tb_row">
         <thead>
         <tr>
-            <th class="one wide">메뉴</th>
+            <th class="one wide">메뉴 접근 권한</th>
             <th class="ten wide">읽기</th>
             <th class="two wide">쓰기</th>
             <th class="three wide">다운로드</th>
@@ -63,7 +63,7 @@
                     <input type="checkbox" th:id="'read_' + ${board.idx}"
                            th:name="${board.idx} + '_read'"
                            th:value="true"
-                           th:checked="${readMap[board.idx]?.read == 1 ? 'checked' : ''}"/>
+                           th:checked="${readMap[board.idx]?.canRead == true}"/>
                     읽기
                 </label>
             </td>
@@ -72,7 +72,7 @@
                     <input type="checkbox" th:id="'write_' + ${board.idx}"
                            th:name="${board.idx} + '_write'"
                            th:value="true"
-                           th:checked="${readMap[board.idx]?.write == 1 ? 'checked' : ''}"/>
+                           th:checked="${readMap[board.idx]?.canWrite == true}"/>
                     쓰기
                 </label>
             </td>
@@ -81,11 +81,12 @@
                     <input type="checkbox" th:id="'download_' + ${board.idx}"
                            th:name="${board.idx} + '_download'"
                            th:value="true"
-                           th:checked="${readMap[board.idx]?.download == 1 ? 'checked' : ''}"/>
+                           th:checked="${readMap[board.idx]?.canDownload == true}"/>
                     다운로드
                 </label>
             </td>
         </tr>
+
         </tbody>
     </table>
     <button type="submit">수정</button>
