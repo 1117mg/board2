@@ -97,25 +97,25 @@ public class AdminController {
         List<Board> boards = boardService.getAllBoards();
         model.addAttribute("boards", boards);
 
-        // 사용자 권한 조회
         List<CtgAuth> ctgAuthList = ctgAuthService.getCtgAuthForUser(idx);
 
-        // readMap 생성
         Map<Integer, CtgAuth> readMap = new HashMap<>();
-        for (CtgAuth ctgAuth : ctgAuthList) {
-            readMap.put(ctgAuth.getBoardId(), ctgAuth);
+
+        for (CtgAuth auth : ctgAuthList) {
+            readMap.put(auth.getBoardId(), auth);
         }
 
-        // 권한이 없는 경우 기본값을 설정하기
         for (Board board : boards) {
             if (!readMap.containsKey(board.getIdx())) {
                 // 권한이 없으면 기본값으로 CtgAuth 객체를 생성
                 CtgAuth defaultAuth = new CtgAuth();
-                defaultAuth.setIdx(idx);
+                defaultAuth.setUserId(idx);
                 defaultAuth.setBoardId(board.getIdx());
-                defaultAuth.setRead(false);
-                defaultAuth.setWrite(false);
-                defaultAuth.setDownload(false);
+                defaultAuth.setCanRead(false);  // 기본값으로 false 설정
+                defaultAuth.setCanWrite(false); // 기본값으로 false 설정
+                defaultAuth.setCanDownload(false); // 기본값으로 false 설정
+
+                // 기본값으로 설정된 CtgAuth를 맵에 추가
                 readMap.put(board.getIdx(), defaultAuth);
             }
         }

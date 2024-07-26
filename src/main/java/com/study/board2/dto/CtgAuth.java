@@ -4,9 +4,9 @@ import lombok.Data;
 
 @Data
 public class CtgAuth {
-    private int idx;
+    private int userId;
     private int boardId;
-    private boolean read;
-    private boolean write;
-    private boolean download;
+    private boolean canRead;
+    private boolean canWrite;
+    private boolean canDownload;
 }

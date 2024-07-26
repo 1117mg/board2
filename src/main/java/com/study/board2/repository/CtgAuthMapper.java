@@ -12,4 +12,6 @@ public interface CtgAuthMapper {
     List<CtgAuth> selectCtgAuthByUserId(int userId);
     void deleteAllByUserId(int userId);
     void insertCtgAuth(CtgAuth ctgAuth);
+    void updateCtgAuth(CtgAuth ctgAuth);
+    boolean existsByUserIdAndBoardId(@Param("userId") int userId, @Param("boardId") int boardId);
 }
