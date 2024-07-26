@@ -12,6 +12,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Optional;
 
@@ -31,6 +32,10 @@ public class UserService {
 
     public User findByUserId(String userName){
         return userMapper.findByUserId(userName);
+    }
+
+    public User findByUsername(String userName){
+        return userMapper.findByUsername(userName);
     }
 
     public User findMemberByIdx(int idx){
@@ -72,5 +77,4 @@ public class UserService {
     public void updateAdmin(User user){
         userMapper.updateAdmin(user);
     }
-
 }

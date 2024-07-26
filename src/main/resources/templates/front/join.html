@@ -3,42 +3,182 @@
 <head>
     <meta charset="UTF-8">
     <title>회원 가입 페이지</title>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
     <link rel="stylesheet" th:href="@{/css/layout.css}">
 </head>
 <body>
+<div th:replace="include/header::front"></div>
 <h1>회원 가입 페이지</h1>
 <div>
-    <form th:action="@{/front/auth/join}" method="post" th:object="${joinForm}">
-        <!--<div>
-            <div class="alert alert-danger">
-                아이디 또는 비밀번호를 입력해주세요.
-            </div>
-        </div>-->
+    <form th:action="@{/front/auth/join}" method="post" id="joinForm" th:object="${joinForm}">
         <div class="mb-3">
             <label for="loginId">아이디</label>
-            <input type="text" name="loginId" id="loginId" th:field="*{loginId}" class="form-control">
+            <input type="text" name="loginId" id="loginId" th:field="*{loginId}" class="form-control" required>
+            <input class="btn btn-outline-primary btn-sm idCheck mx-1" type="button" id="userIdOverlay" onclick="userIdCheck()" value="중복 체크"/>
+            <input class="btn btn-outline-success btn-sm reType" type="button" id="resetUserId" onclick="reUserId()" disabled value="다시입력"/>
         </div>
         <div class="mb-3">
             <label for="loginPw">비밀번호</label>
-            <input type="password" name="loginPw" id="loginPw" th:field="*{loginPw}" class="form-control">
+            <input type="password" name="loginPw" id="loginPw" th:field="*{loginPw}" class="form-control" required>
         </div>
         <div class="mb-3">
             <label for="loginPwCheck">비밀번호 확인</label>
-            <input type="password" name="loginPwCheck" id="loginPwCheck" th:field="*{loginPwCheck}" class="form-control">
+            <input type="password" name="loginPwCheck" id="loginPwCheck" th:field="*{loginPwCheck}" class="form-control" required>
         </div>
         <div class="mb-3">
             <label for="userName">이름</label>
-            <input type="text" name="userName" id="userName" th:field="*{userName}" class="form-control">
+            <input type="text" name="userName" id="userName" th:field="*{userName}" class="form-control" required>
+            <input class="btn btn-outline-primary btn-sm idCheck mx-1" type="button" id="usernameOverlay" onclick="usernameCheck()" value="중복 체크"/>
+            <input class="btn btn-outline-success btn-sm reType" type="button" id="resetUsername" onclick="reUsername()" disabled value="다시입력"/>
         </div>
         <div class="mb-3">
             <label for="userEmail">이메일</label>
-            <input type="text" name="userEmail" id="userEmail" th:field="*{userEmail}" class="form-control">
+            <input type="text" name="userEmail" id="userEmail" th:field="*{userEmail}" class="form-control" required>
         </div>
         <button type="submit" class="btn btn-primary">가입하기</button>
     </form>
 </div>
 <br>
-<a th:href="@{'/front/main'}">메인으로</a>
+<a th:href="@{/front/main}">메인으로</a>
+<script>
+    $(document).ready(function() {
+        function validateForm() {
+            let isValid = true;
+
+            // 모든 필수 입력 필드 체크
+            $('#joinForm input').each(function() {
+                if ($(this).val().trim() === '') {
+                    alert($(this).prev('label').text() + ' 필드는 필수입니다.');
+                    $(this).focus();
+                    isValid = false;
+                    return false;
+                }
+            });
+
+            // 비밀번호와 비밀번호 확인 일치 여부 확인
+            if ($('#loginPw').val().trim() !== $('#loginPwCheck').val().trim()) {
+                alert("비밀번호와 비밀번호 확인이 일치하지 않습니다.");
+                $('#loginPwCheck').focus();
+                isValid = false;
+            }
+
+            return isValid;
+        }
+
+        $('#joinForm').on('submit', function(event) {
+            event.preventDefault(); // 기본 폼 제출 방지
+
+            if (!validateForm()) {
+                return;
+            }
+
+            $.ajax({
+                type: "post",
+                url: $(this).attr('action'),
+                data: $(this).serialize(),
+                success: function(response) {
+                    alert("회원가입이 성공적으로 완료되었습니다.");
+                    window.location.href = "/front/auth/login";
+                },
+                error: function(request, status, error) {
+                    alert("회원가입 실패: " + request.status + " - " + error);
+                }
+            });
+        });
+
+        function userIdCheck() {
+            const userId = $("#loginId").val().trim(); // Trim to remove leading and trailing spaces
+            if (userId === "") {
+                alert("아이디를 입력해주세요!. 필수항목입니다.");
+                $("#loginId").focus();
+                return false;
+            }
+            $.ajax({
+                type: "get",
+                url: "/api/checkUserId",
+                data: { "userId": userId },
+                dataType: "JSON",
+                success: function (result) {
+                    if (result.result === 0) {
+                        if (confirm("이 아이디는 사용 가능합니다. \n사용하시겠습니까?")) {
+                            $("#loginId").attr("readonly", true);
+                            $("#userIdOverlay").attr("disabled", true);
+                            $("#userIdOverlay").css("display", "none");
+                            $("#resetUserId").attr("disabled", false);
+                            $("#resetUserId").css("display", "inline-block");
+                        }
+                    } else if (result.result === 1) {
+                        alert("이미 사용중인 아이디입니다.");
+                        $("#loginId").focus();
+                    } else {
+                        alert("응답값이 잘못되었습니다.");
+                    }
+                },
+                error: function (request, status, error) {
+                    alert("ajax 실행 실패");
+                    alert("code:" + request.status + "\n" + "error :" + error);
+                }
+            });
+        }
+
+        function usernameCheck() {
+            const username = $("#userName").val().trim(); // Trim to remove leading and trailing spaces
+            if (username === "") {
+                alert("이름을 입력해주세요!. 필수항목입니다.");
+                $("#userName").focus();
+                return false;
+            }
+            $.ajax({
+                type: "get",
+                url: "/api/checkUsername",
+                data: { "username": username },
+                dataType: "JSON",
+                success: function (result) {
+                    if (result.result === 0) {
+                        if (confirm("이 이름은 사용 가능합니다. \n사용하시겠습니까?")) {
+                            $("#userName").attr("readonly", true);
+                            $("#usernameOverlay").attr("disabled", true);
+                            $("#usernameOverlay").css("display", "none");
+                            $("#resetUsername").attr("disabled", false);
+                            $("#resetUsername").css("display", "inline-block");
+                        }
+                    } else if (result.result === 1) {
+                        alert("이미 사용중인 이름입니다.");
+                        $("#userName").focus();
+                    } else {
+                        alert("응답값이 잘못되었습니다.");
+                    }
+                },
+                error: function (request, status, error) {
+                    alert("ajax 실행 실패");
+                    alert("code:" + request.status + "\n" + "error :" + error);
+                }
+            });
+        }
+
+        function reUserId() {
+            $("#loginId").attr("readonly", false);
+            $("#userIdOverlay").attr("disabled", false);
+            $("#userIdOverlay").css("display", "inline-block");
+            $("#resetUserId").attr("disabled", true);
+            $("#resetUserId").css("display", "none");
+        }
+
+        function reUsername() {
+            $("#userName").attr("readonly", false);
+            $("#usernameOverlay").attr("disabled", false);
+            $("#usernameOverlay").css("display", "inline-block");
+            $("#resetUsername").attr("disabled", true);
+            $("#resetUsername").css("display", "none");
+        }
+
+        // Function bindings
+        $('#userIdOverlay').on('click', userIdCheck);
+        $('#usernameOverlay').on('click', usernameCheck);
+        $('#resetUserId').on('click', reUserId);
+        $('#resetUsername').on('click', reUsername);
+    });
+</script>
 </body>
 </html>
