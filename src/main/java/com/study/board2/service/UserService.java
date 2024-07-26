@@ -1,8 +1,6 @@
 package com.study.board2.service;
 
-import com.study.board2.dto.Board;
-import com.study.board2.dto.JoinForm;
-import com.study.board2.dto.User;
+import com.study.board2.dto.*;
 import com.study.board2.repository.UserMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
