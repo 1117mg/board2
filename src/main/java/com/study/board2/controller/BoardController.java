@@ -1,5 +1,6 @@
 package com.study.board2.controller;
 
+import com.study.board2.dto.LoginForm;
 import com.study.board2.dto.Post;
 import com.study.board2.dto.User;
 import com.study.board2.service.BoardService;
@@ -7,6 +8,9 @@ import com.study.board2.service.PostService;
 import com.study.board2.service.UserService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.security.authentication.AnonymousAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -28,10 +32,16 @@ public class BoardController {
     public String postList(@PathVariable("boardIdx") int boardIdx, Model model) {
         String boardType= boardService.getBoardType(boardIdx);
         // board_type이 200이면 계층형 게시판
-        if(boardType=="200"){ // 1:1 문의 게시판
+        if("200".equals(boardType)){
+            // 1:1 게시판은 비로그인 시 접근 불가
+            Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+            if (authentication instanceof AnonymousAuthenticationToken) {
+                model.addAttribute("loginForm", new LoginForm());
+                return "front/login";}
             List<Post> hposts = postService.getHPostsByBoardId(boardIdx);
             model.addAttribute("posts", hposts);
-        }else{              // 공지사항 게시판
+        }else{
+            // 공지사항 게시판(board_type=="100")
             List<Post> posts = postService.getPostsByBoardId(boardIdx);
             model.addAttribute("posts", posts);
         }

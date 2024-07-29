@@ -1,6 +1,7 @@
 package com.study.board2.controller;
 
 import com.study.board2.dto.*;
+import com.study.board2.service.AdminService;
 import com.study.board2.service.BoardService;
 import com.study.board2.service.CtgAuthService;
 import com.study.board2.service.UserService;
@@ -27,6 +28,7 @@ import java.util.Map;
 @RequiredArgsConstructor
 public class AdminController {
 
+    private final AdminService adminService;
     private final UserService userService;
     private final CtgAuthService ctgAuthService;
     private final BoardService boardService;
@@ -77,7 +79,10 @@ public class AdminController {
     }
 
     @GetMapping("/main")
-    public String main(){
+    public String main(Model model){
+        int recentJoinedUsers = adminService.getRecentJoinedUsers();
+        // 최근 7일동안 가입한 회원 수
+        model.addAttribute("weekUsers",recentJoinedUsers);
         return "master/main";
     }
 
