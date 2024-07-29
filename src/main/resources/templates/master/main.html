@@ -12,9 +12,10 @@
 <hr>
 <div>
     <a>최근 7일 내에 가입한 회원수: </a>
-    <a th:text="${weekUsers}"></a>
+    <a th:text="${weekJoin}"></a>
     <hr>
-    <a>오늘 기준 회원 로그인한 인원수</a>
+    <a>오늘 기준 회원 로그인한 인원수: </a>
+    <a th:text="${todayLogin}"></a>
     <hr>
     <a class="text-dark" th:href="@{/master/users}">관리자 목록 바로가기</a>
 </div>

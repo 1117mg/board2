@@ -10,7 +10,18 @@ public class AdminService {
 
     private final AdminMapper adminMapper;
 
+    // 7일 내 가입한 회원 수 조회
     public int getRecentJoinedUsers(){
-        return adminMapper.findRecentJoinedUsers();
+        return adminMapper.countRecentJoin();
+    }
+
+    // 오늘 로그인한 회원 수 조회
+    public int getTodayLogin(){
+        return adminMapper.countTodayLogins();
+    }
+
+    // 로그인 기록 저장
+    public void recordLogin(int userIdx){
+        adminMapper.insertLoginHistory(userIdx);
     }
 }

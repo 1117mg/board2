@@ -50,7 +50,7 @@ public class UserController {
             new SecurityContextLogoutHandler().logout(request,response,authentication);
         }
 
-        return "redirect:/master/main";
+        return "redirect:/front/main";
     }
 
     @GetMapping("/auth/join")

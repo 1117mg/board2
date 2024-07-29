@@ -80,9 +80,12 @@ public class AdminController {
 
     @GetMapping("/main")
     public String main(Model model){
-        int recentJoinedUsers = adminService.getRecentJoinedUsers();
         // 최근 7일동안 가입한 회원 수
-        model.addAttribute("weekUsers",recentJoinedUsers);
+        int recentJoins = adminService.getRecentJoinedUsers();
+        // 오늘 로그인한 회원 수
+        int todayLogins = adminService.getTodayLogin();
+        model.addAttribute("weekJoin",recentJoins);
+        model.addAttribute("todayLogin", todayLogins);
         return "master/main";
     }
 
