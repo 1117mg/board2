@@ -1,7 +1,6 @@
 package com.study.board2.service;
 
 import com.study.board2.dto.CtgAuth;
-import com.study.board2.dto.PermissionType;
 import com.study.board2.repository.CtgAuthMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
