@@ -4,5 +4,7 @@ import org.apache.ibatis.annotations.Mapper;
 
 @Mapper
 public interface AdminMapper {
-    int findRecentJoinedUsers();
+    int countRecentJoin();
+    int countTodayLogins();
+    void insertLoginHistory(int userIdx);
 }

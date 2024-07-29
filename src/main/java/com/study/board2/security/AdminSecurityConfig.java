@@ -26,12 +26,8 @@ public class AdminSecurityConfig extends WebSecurityConfigurerAdapter {
     @Override
     protected void configure(HttpSecurity http) throws Exception {
         http
-                .rememberMe()
-                .userDetailsService(userDetailsService)
-                .tokenRepository(tokenRepository())
-                .tokenValiditySeconds(604800)
-                .and()
-                .requestMatchers().antMatchers("/master/**")
+                .requestMatchers()
+                .antMatchers("/css/**","/master/**")
                 .and()
                 .formLogin()
                 .loginPage("/master/auth/login")
@@ -45,6 +41,11 @@ public class AdminSecurityConfig extends WebSecurityConfigurerAdapter {
                 .logoutSuccessUrl("/master/main")
                 .invalidateHttpSession(true)
                 .deleteCookies("remember-me", "JSESSIONID")
+                .and()
+                .rememberMe()
+                .userDetailsService(userDetailsService)
+                .tokenRepository(tokenRepository())
+                .tokenValiditySeconds(604800)
                 .and()
                 .csrf().disable();
     }

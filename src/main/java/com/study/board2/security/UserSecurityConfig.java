@@ -2,6 +2,7 @@ package com.study.board2.security;
 
 import com.study.board2.service.MyUserDetailsService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.annotation.Order;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -18,19 +19,15 @@ public class UserSecurityConfig extends WebSecurityConfigurerAdapter {
     @Override
     protected void configure(HttpSecurity http) throws Exception {
         http
-                .rememberMe()
-                .userDetailsService(userDetailsService)
-                .tokenRepository(tokenRepository)
-                .tokenValiditySeconds(604800)
-                .and()
-                .requestMatchers().antMatchers("/front/**")
+                .requestMatchers()
+                .antMatchers("/css/**","/front/**")
                 .and()
                 .formLogin()
                 .loginPage("/front/auth/login")
                 .loginProcessingUrl("/front/auth/login")
                 .usernameParameter("loginId")
                 .passwordParameter("loginPw")
-                .defaultSuccessUrl("/front/main")
+                .successHandler(successHandler)
                 .and()
                 .logout()
                 .logoutUrl("/front/auth/logout")
@@ -38,11 +35,17 @@ public class UserSecurityConfig extends WebSecurityConfigurerAdapter {
                 .invalidateHttpSession(true)
                 .deleteCookies("remember-me", "JSESSIONID")
                 .and()
-                .csrf().disable()
-                .rememberMe();
+                .rememberMe()
+                .userDetailsService(userDetailsService)
+                .tokenRepository(tokenRepository)
+                .tokenValiditySeconds(604800)
+                .and()
+                .csrf().disable();
     }
+
+    public final LoginSuccessHandler successHandler;
 
     public final MyUserDetailsService userDetailsService;
 
-    private final PersistentTokenRepository tokenRepository;
+    public final PersistentTokenRepository tokenRepository;
 }
