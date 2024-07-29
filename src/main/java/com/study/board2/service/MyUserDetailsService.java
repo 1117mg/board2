@@ -18,7 +18,6 @@ import javax.servlet.http.HttpSession;
 public class MyUserDetailsService implements UserDetailsService {
 
     private final UserMapper mapper;
-    private final HttpSession httpSession;
 
     @Override
     public UserDetails loadUserByUsername(String userId) throws UsernameNotFoundException {

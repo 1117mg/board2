@@ -5,4 +5,8 @@
     <select id="findAll" resultType="com.study.board2.dto.Board">
         SELECT * FROM board WHERE delete_yn = 0
     </select>
+
+    <select id="findBoardTypeByIdx" parameterType="int" resultType="string">
+        SELECT board_type FROM board WHERE idx=#{idx}
+    </select>
 </mapper>

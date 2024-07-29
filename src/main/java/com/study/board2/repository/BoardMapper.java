@@ -8,4 +8,5 @@ import java.util.List;
 @Mapper
 public interface BoardMapper {
     List<Board> findAll();
+    String findBoardTypeByIdx(int idx);
 }
