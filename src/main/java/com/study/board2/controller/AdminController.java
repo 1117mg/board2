@@ -1,14 +1,11 @@
 package com.study.board2.controller;
 
 import com.study.board2.dto.*;
-import com.study.board2.repository.CtgAuthMapper;
 import com.study.board2.service.BoardService;
 import com.study.board2.service.CtgAuthService;
-import com.study.board2.service.PostService;
 import com.study.board2.service.UserService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AnonymousAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;

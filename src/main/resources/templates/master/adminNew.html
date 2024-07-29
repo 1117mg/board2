@@ -85,7 +85,7 @@
         });
 
         function userIdCheck() {
-            const userId = $("#loginId").val().trim(); // Trim to remove leading and trailing spaces
+            const userId = $("#loginId").val().trim();
             if (userId === "") {
                 alert("아이디를 입력해주세요!. 필수항목입니다.");
                 $("#loginId").focus();
@@ -120,7 +120,7 @@
         }
 
         function usernameCheck() {
-            const username = $("#userName").val().trim(); // Trim to remove leading and trailing spaces
+            const username = $("#userName").val().trim();
             if (username === "") {
                 alert("이름을 입력해주세요!. 필수항목입니다.");
                 $("#userName").focus();
@@ -170,7 +170,6 @@
             $("#resetUsername").css("display", "none");
         }
 
-        // Function bindings
         $('#userIdOverlay').on('click', userIdCheck);
         $('#usernameOverlay').on('click', usernameCheck);
         $('#resetUserId').on('click', reUserId);
