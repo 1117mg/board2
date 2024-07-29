@@ -2,6 +2,7 @@ package com.study.board2.controller;
 
 import com.study.board2.dto.Post;
 import com.study.board2.dto.User;
+import com.study.board2.service.BoardService;
 import com.study.board2.service.PostService;
 import com.study.board2.service.UserService;
 import lombok.RequiredArgsConstructor;
@@ -18,18 +19,21 @@ import java.util.List;
 @RequiredArgsConstructor
 public class BoardController {
 
+    private final BoardService boardService;
     private final PostService postService;
     private final UserService userService;
 
     // 게시판 글 목록
     @GetMapping("/{boardIdx}/posts")
     public String postList(@PathVariable("boardIdx") int boardIdx, Model model) {
-        if(boardIdx==1){    // 공지사항 게시판
-            List<Post> posts = postService.getPostsByBoardId(boardIdx);
-            model.addAttribute("posts", posts);
-        }else{              // 1:1 문의 게시판
+        String boardType= boardService.getBoardType(boardIdx);
+        // board_type이 200이면 계층형 게시판
+        if(boardType=="200"){ // 1:1 문의 게시판
             List<Post> hposts = postService.getHPostsByBoardId(boardIdx);
             model.addAttribute("posts", hposts);
+        }else{              // 공지사항 게시판
+            List<Post> posts = postService.getPostsByBoardId(boardIdx);
+            model.addAttribute("posts", posts);
         }
 
         return "front/postList";

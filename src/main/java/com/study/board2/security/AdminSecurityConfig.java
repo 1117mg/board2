@@ -62,7 +62,8 @@ public class AdminSecurityConfig extends WebSecurityConfigurerAdapter {
     @Bean
     public PersistentTokenRepository tokenRepository() {
         JdbcTokenRepositoryImpl jdbcTokenRepository = new JdbcTokenRepositoryImpl();
-        jdbcTokenRepository.setDataSource(dataSource); // dataSource 주입
+        jdbcTokenRepository.setDataSource(dataSource);
+        jdbcTokenRepository.setCreateTableOnStartup(false); // 테이블을 초기화하지 않음
         return jdbcTokenRepository;
     }
 }
