@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.study.board2.repository.AdminMapper">
+    <select id="findRecentJoinedUsers" resultType="int">
+        SELECT count(*) FROM user WHERE reg_date BETWEEN DATE_ADD(NOW(), INTERVAL -1 WEEK) AND NOW()
+        AND user_role = "ROLE_USER"
+    </select>
+</mapper>
