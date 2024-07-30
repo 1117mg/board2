@@ -3,6 +3,7 @@ package com.study.board2.service;
 import com.study.board2.dto.*;
 import com.study.board2.repository.UserMapper;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
@@ -10,11 +11,24 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
+@Slf4j
 @RequiredArgsConstructor
+@Transactional
 @Service
 public class UserService {
 
     private final UserMapper userMapper;
+
+    public boolean userEmailCheck(String userEmail, String userName) {
+
+        User user = userMapper.findByUsername(userName);
+        if(user!=null && user.getUserEmail().equals(userEmail)) {
+            return true;
+        }
+        else {
+            return false;
+        }
+    }
 
     public List<User> getAllMembers() {
         return userMapper.findAllMembers();

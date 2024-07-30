@@ -1,10 +1,8 @@
 package com.study.board2.controller;
 
-import com.study.board2.dto.Board;
-import com.study.board2.dto.JoinForm;
-import com.study.board2.dto.LoginForm;
-import com.study.board2.dto.User;
+import com.study.board2.dto.*;
 import com.study.board2.service.BoardService;
+import com.study.board2.service.SendEmailService;
 import com.study.board2.service.UserService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -19,7 +17,9 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @RequiredArgsConstructor
 @RequestMapping("/front")
@@ -30,6 +30,7 @@ public class UserController {
     private final BoardService boardService;
     private final UserService userService;
     private final PasswordEncoder passwordEncoder;
+    private final SendEmailService sendEmailService;
 
     @GetMapping("/auth/login")
     public String loginForm(Model model){
@@ -99,4 +100,22 @@ public class UserController {
         return "redirect:/front/user/"+user.getIdx();
     }
 
+/*    //Email과 name의 일치여부를 check하는 컨트롤러
+    @GetMapping("/check/findPw")
+    public @ResponseBody Map<String, Boolean> pw_find(String userEmail, String userName){
+        Map<String,Boolean> json = new HashMap<>();
+        boolean pwFindCheck = userService.userEmailCheck(userEmail,userName);
+
+        System.out.println(pwFindCheck);
+        json.put("check", pwFindCheck);
+        return json;
+    }
+
+    //등록된 이메일로 임시비밀번호를 발송하고 발송된 임시비밀번호로 사용자의 pw를 변경하는 컨트롤러
+    @PostMapping("/check/findPw/sendEmail")
+    public @ResponseBody void sendEmail(String userEmail, String userName){
+        Mail dto = sendEmailService.createMailAndChangePassword(userEmail, userName);
+        sendEmailService.mailSend(dto);
+
+    }*/
 }

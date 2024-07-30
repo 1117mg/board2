@@ -30,11 +30,11 @@
     </select>
 
     <select id="findByUsername" parameterType="String" resultType="com.study.board2.dto.User">
-        SELECT user_name
+        SELECT *
         FROM member
         WHERE user_name = #{userName}
         UNION
-        SELECT user_name
+        SELECT *
         FROM admin
         WHERE user_name = #{userName}
     </select>
@@ -87,6 +87,12 @@
     <update id="updateAdmin" parameterType="com.study.board2.dto.User">
         UPDATE admin
         SET user_name=#{userName}, user_email=#{userEmail}
+        WHERE idx=#{idx}
+    </update>
+
+    <update id="updateUserPassword" parameterType="com.study.board2.dto.User">
+        UPDATE user
+        SET user_pw=#{userPw}
         WHERE idx=#{idx}
     </update>
 </mapper>
