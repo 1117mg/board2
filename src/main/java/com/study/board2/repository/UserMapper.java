@@ -5,6 +5,7 @@ import com.study.board2.dto.User;
 import org.apache.ibatis.annotations.Mapper;
 
 import java.util.List;
+import java.util.Optional;
 
 @Mapper
 public interface UserMapper {
@@ -19,4 +20,5 @@ public interface UserMapper {
     void insertAdmin(User user);
     void updateMember(User user);
     void updateAdmin(User user);
+    void updateUserPassword(User user);
 }
