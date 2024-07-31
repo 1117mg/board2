@@ -25,17 +25,17 @@ public class SendEmailService {
     private static final String FROM_ADDRESS = "boardproject11@gmail.com";
 
     public Mail createMailAndChangePassword(String userEmail, String userName) {
-        String tempPassword = getTempPassword();
+        String code = getCode();
         Mail mail = new Mail();
         mail.setAddress(userEmail);
         mail.setTitle("[Board] " + userName + "님의 비밀번호 재설정 안내 이메일 입니다.");
-        mail.setCode(tempPassword);
-        mail.setMessage("안녕하세요. [" + userName + "]님의 비밀번호 재설정 인증번호는 " + tempPassword + " 입니다. 3분 안에 비밀번호 재설정을 완료해주세요.");
+        mail.setCode(code);
+        mail.setMessage("안녕하세요. [" + userName + "]님의 비밀번호 재설정 인증번호는 " + code + " 입니다. 3분 안에 비밀번호 재설정을 완료해주세요.");
 
         return mail;
     }
 
-    public String getTempPassword() {
+    public String getCode() {
         char[] charSet = new char[]{'0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'A', 'B', 'C', 'D', 'E', 'F',
                 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z'};
 
