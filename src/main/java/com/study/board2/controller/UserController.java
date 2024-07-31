@@ -99,23 +99,4 @@ public class UserController {
         userService.updateMember(user);
         return "redirect:/front/user/"+user.getIdx();
     }
-
-/*    //Email과 name의 일치여부를 check하는 컨트롤러
-    @GetMapping("/check/findPw")
-    public @ResponseBody Map<String, Boolean> pw_find(String userEmail, String userName){
-        Map<String,Boolean> json = new HashMap<>();
-        boolean pwFindCheck = userService.userEmailCheck(userEmail,userName);
-
-        System.out.println(pwFindCheck);
-        json.put("check", pwFindCheck);
-        return json;
-    }
-
-    //등록된 이메일로 임시비밀번호를 발송하고 발송된 임시비밀번호로 사용자의 pw를 변경하는 컨트롤러
-    @PostMapping("/check/findPw/sendEmail")
-    public @ResponseBody void sendEmail(String userEmail, String userName){
-        Mail dto = sendEmailService.createMailAndChangePassword(userEmail, userName);
-        sendEmailService.mailSend(dto);
-
-    }*/
 }
