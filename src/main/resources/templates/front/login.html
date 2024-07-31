@@ -84,7 +84,7 @@
 
         $.ajax({
             type: "GET",
-            url: "/api/check/findPw",
+            url: "/api/checkPassword",
             data: {
                 "userEmail": userEmail,
                 "userName": userName
@@ -95,7 +95,7 @@
                         if (OK) {
                             $.ajax({
                                 type: "POST",
-                                url: "/api/check/findPw/sendEmail",
+                                url: "/api/checkPassword/email",
                                 data: {
                                     "userEmail": userEmail,
                                     "userName": userName

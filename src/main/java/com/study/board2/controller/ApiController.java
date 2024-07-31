@@ -17,6 +17,7 @@ public class ApiController {
     private final UserService userService;
     private final SendEmailService sendEmailService;
 
+    // 회원가입 아이디 중복확인
     @GetMapping("/checkUserId")
     public Map<String, Object> checkUserId(@RequestParam("userId") String userId) {
         Map<String, Object> response = new HashMap<>();
@@ -25,6 +26,7 @@ public class ApiController {
         return response;
     }
 
+    // 회원가입 이름 중복확인
     @GetMapping("/checkUsername")
     public Map<String, Object> checkUsername(@RequestParam("username") String username) {
         Map<String, Object> response = new HashMap<>();
@@ -33,7 +35,8 @@ public class ApiController {
         return response;
     }
 
-    @GetMapping("/check/findPw")
+    // 비밀번호 찾기
+    @GetMapping("/checkPassword")
     public @ResponseBody Map<String, Boolean> pw_find(@RequestParam String userEmail, @RequestParam String userName) {
         Map<String, Boolean> json = new HashMap<>();
         boolean pwFindCheck = userService.userEmailCheck(userEmail, userName);
@@ -42,7 +45,8 @@ public class ApiController {
         return json;
     }
 
-    @PostMapping("/check/findPw/sendEmail")
+    // 임시 비밀번호 이메일 전송
+    @PostMapping("/checkPassword/email")
     public @ResponseBody void sendEmail(@RequestParam String userEmail, @RequestParam String userName) {
         Mail dto = sendEmailService.createMailAndChangePassword(userEmail, userName);
         sendEmailService.mailSend(dto);
