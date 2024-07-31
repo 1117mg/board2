@@ -36,7 +36,7 @@ public class ApiController {
     }
 
     // 비밀번호 찾기
-    @GetMapping("/findPassword")
+    @GetMapping("/checkPassword")
     public @ResponseBody Map<String, Boolean> pw_find(@RequestParam String userEmail, @RequestParam String userName) {
         Map<String, Boolean> json = new HashMap<>();
         boolean pwFindCheck = userService.userEmailCheck(userEmail, userName);
@@ -46,7 +46,7 @@ public class ApiController {
     }
 
     // 임시 비밀번호 이메일 전송
-    @PostMapping("/findPassword/email")
+    @PostMapping("/checkPassword/email")
     public @ResponseBody void sendEmail(@RequestParam String userEmail, @RequestParam String userName) {
         Mail dto = sendEmailService.createMailAndChangePassword(userEmail, userName);
         sendEmailService.mailSend(dto);
