@@ -4,6 +4,7 @@ import com.study.board2.dto.Mail;
 import com.study.board2.service.SendEmailService;
 import com.study.board2.service.UserService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.HashMap;
@@ -50,5 +51,34 @@ public class ApiController {
     public @ResponseBody void sendEmail(@RequestParam String userEmail, @RequestParam String userName) {
         Mail dto = sendEmailService.createMailAndChangePassword(userEmail, userName);
         sendEmailService.mailSend(dto);
+    }
+
+    @PostMapping("/findPassword/email/verify")
+    public ResponseEntity<Map<String, Boolean>> verifyEmail(@RequestBody Mail mail) {
+        String userEmail = mail.getAddress();
+        String code = mail.getCode();
+        String savedCode = sendEmailService.getVerificationCode(userEmail);
+
+        boolean verified = code.equals(savedCode);
+        Map<String, Boolean> response = new HashMap<>();
+        response.put("verified", verified);
+
+        return ResponseEntity.ok(response);
+    }
+
+    // 비밀번호 업데이트
+    @PostMapping("/updatePassword")
+    public ResponseEntity<Map<String, Boolean>> updatePassword(@RequestBody Map<String, String> requestBody) {
+        String userEmail = requestBody.get("userEmail");
+        String newPassword = requestBody.get("newPassword");
+        Map<String, Boolean> response = new HashMap<>();
+        try {
+            userService.updateUserPassword(userEmail, newPassword);
+            response.put("success", true);
+        } catch (Exception e) {
+            response.put("success", false);
+            e.printStackTrace();
+        }
+        return ResponseEntity.ok(response);
     }
 }

@@ -11,6 +11,7 @@ public interface UserMapper {
     List<User> findAllAdmins();
     User findByUserId(String userId);
     User findByUsername(String userName);
+    User findByEmail(String userEmail);
     User findMemberByIdx(int idx);
     User findAdminByIdx(int idx);
     void insertUser(User user);

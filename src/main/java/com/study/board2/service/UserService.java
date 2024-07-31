@@ -6,6 +6,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -18,6 +19,7 @@ import java.util.List;
 public class UserService {
 
     private final UserMapper userMapper;
+    private final PasswordEncoder passwordEncoder;
 
     public boolean userEmailCheck(String userEmail, String userName) {
 
@@ -27,6 +29,16 @@ public class UserService {
         }
         else {
             return false;
+        }
+    }
+
+    public void updateUserPassword(String userEmail, String newPassword) {
+        User user = userMapper.findByEmail(userEmail);
+        if (user != null) {
+            user.setUserPw(passwordEncoder.encode(newPassword));
+            userMapper.updateUserPassword(user);
+        } else {
+            throw new RuntimeException("사용자를 찾을 수 없습니다.");
         }
     }
 
