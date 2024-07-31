@@ -43,10 +43,10 @@
             </div>
             <div class="modal-body" style="padding:40px 50px;">
                 <div style="color: #ac2925">
-                    <div style="text-align: center;">입력된 정보로 임시 비밀번호가 전송됩니다.</div>
+                    <div style="text-align: center;">입력된 정보로 인증번호가 전송됩니다.</div>
                 </div>
                 <hr>
-                <form role="form">
+                <form id="passwordRecoveryForm" role="form">
                     <div class="form-group">
                         <label for="userEmail"><span class="glyphicon glyphicon-user"></span> Email</label>
                         <input type="text" class="form-control" id="userEmail" placeholder="가입시 등록한 이메일을 입력하세요.">
@@ -67,48 +67,120 @@
     </div>
 </div>
 
+<!-- 인증번호 입력 모달 -->
+<div class="modal fade" id="verifyModal" tabindex="-1" role="dialog" aria-labelledby="verifyModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header" style="padding:35px 50px;">
+                <h4 class="modal-title" id="verifyModalLabel"><span class="glyphicon glyphicon-lock"></span> 인증번호 확인</h4>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body" style="padding:40px 50px;">
+                <form id="verifyForm" role="form">
+                    <div class="form-group">
+                        <label for="verificationCode"><span class="glyphicon glyphicon-lock"></span> 인증번호</label>
+                        <input type="text" class="form-control" id="verificationCode" placeholder="이메일로 받은 인증번호를 입력하세요.">
+                    </div>
+                    <div class="form-group">
+                        <label for="newPassword"><span class="glyphicon glyphicon-lock"></span> 새 비밀번호</label>
+                        <input type="password" class="form-control" id="newPassword" placeholder="새 비밀번호를 입력하세요.">
+                    </div>
+                    <button type="button" class="btn btn-success btn-block" id="verifyCode">확인</button>
+                </form>
+                <hr>
+                <div class="text-center small mt-2" id="verifyMsg" style="color: red"></div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-danger" data-dismiss="modal"><span class="glyphicon glyphicon-remove"></span> Cancel</button>
+            </div>
+        </div>
+    </div>
+</div>
+
 <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
 <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
 <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
 <script>
-    // 모달 초기화 시 폼 리셋
-    $('.modal').on('hidden.bs.modal', function (e) {
-        console.log('modal close');
-        $(this).find('form')[0].reset();
-    });
+    $(document).ready(function() {
+        // 비밀번호 찾기 버튼 클릭 이벤트 처리
+        $("#checkEmail").click(function () {
+            let userEmail = $("#userEmail").val();
+            let userName = $("#userName").val();
 
-    // 이메일 확인 버튼 클릭 이벤트 처리
-    $("#checkEmail").click(function () {
-        let userEmail = $("#userEmail").val();
-        let userName = $("#userName").val();
-
-        $.ajax({
-            type: "GET",
-            url: "/api/findPassword",
-            data: {
-                "userEmail": userEmail,
-                "userName": userName
-            },
-            success: function (res) {
-                if (res['check']) {
-                    swal("발송 완료!", "입력하신 이메일로 임시비밀번호가 발송되었습니다.", "success").then((OK) => {
-                        if (OK) {
-                            $.ajax({
-                                type: "POST",
-                                url: "/api/findPassword/email",
-                                data: {
-                                    "userEmail": userEmail,
-                                    "userName": userName
-                                }
-                            });
-                            window.location = "/front/auth/login";
-                        }
-                    });
-                    $('#checkMsg').html('<p style="color:darkblue"></p>');
-                } else {
-                    $('#checkMsg').html('<p style="color:red">일치하는 정보가 없습니다.</p>');
+            $.ajax({
+                type: "GET",
+                url: "/api/findPassword",
+                data: {
+                    "userEmail": userEmail,
+                    "userName": userName
+                },
+                success: function (res) {
+                    if (res['check']) {
+                        swal("발송 완료!", "입력하신 이메일로 인증번호가 발송되었습니다.", "success").then((OK) => {
+                            if (OK) {
+                                $.ajax({
+                                    type: "POST",
+                                    url: "/api/findPassword/email",
+                                    data: {
+                                        "userEmail": userEmail,
+                                        "userName": userName
+                                    }
+                                });
+                                $('#myModal').modal('hide');
+                                $('#verifyModal').modal('show'); // 인증번호 입력 모달 표시
+                            }
+                        });
+                        $('#checkMsg').html('<p style="color:darkblue"></p>');
+                    } else {
+                        $('#checkMsg').html('<p style="color:red">일치하는 정보가 없습니다.</p>');
+                    }
                 }
-            }
+            });
+        });
+
+        // 인증번호 확인 버튼 클릭 이벤트 처리
+        $("#verifyCode").click(function () {
+            let verificationCode = $("#verificationCode").val();
+            let newPassword = $("#newPassword").val();
+
+            $.ajax({
+                type: "POST",
+                url: "/api/findPassword/email/verify",
+                contentType: "application/json",
+                data: JSON.stringify({
+                    "address": $("#userEmail").val(),
+                    "code": verificationCode
+                }),
+                success: function (res) {
+                    if (res['verified']) {
+                        $.ajax({
+                            type: "POST",
+                            url: "/api/updatePassword",
+                            contentType: "application/json",
+                            data: JSON.stringify({
+                                "userEmail": $("#userEmail").val(),
+                                "newPassword": newPassword
+                            }),
+                            success: function (res) {
+                                if (res['success']) {
+                                    swal("성공!", "비밀번호가 성공적으로 변경되었습니다.", "success").then((OK) => {
+                                        if (OK) {
+                                            window.location = "/front/auth/login";
+                                        }
+                                    });
+                                    $('#verifyModal').modal('hide');
+                                } else {
+                                    $('#verifyMsg').html('<p style="color:red">' + (res['message'] || '비밀번호 변경에 실패했습니다.') + '</p>');
+                                }
+                            }
+                        });
+                    } else {
+                        $('#verifyMsg').html('<p style="color:red">인증번호가 일치하지 않습니다.</p>');
+                    }
+                }
+            });
         });
     });
 </script>
