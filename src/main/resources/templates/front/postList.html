@@ -5,38 +5,62 @@
     <title>게시글 목록</title>
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
     <link rel="stylesheet" th:href="@{/css/layout.css}">
+    <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 </head>
 <body>
 <div th:replace="include/header::front"></div>
 
-<h1 th:if="${boardIdx==1}">공지사항</h1>
-<h1 th:if="${boardIdx==2}">1:1 문의</h1>
-<a th:href="@{'/front/board/'+${boardIdx}+'/post/write'}">글 작성</a>
-<table>
-    <thead>
-    <tr>
-        <th class="one wide">번호</th>
-        <th class="ten wide">제목</th>
-        <th class="two wide">작성자</th>
-        <th class="three wide">작성일</th>
-        <th class="four wide">조회수</th>
-    </tr>
-    </thead>
-    <tbody>
-    <tr th:each="post : ${posts}">
-        <td th:text="${post.idx}">1</td>
-        <td>
-            <a th:href="@{'/front/board/post/' + ${post.idx}}" class="board-title">
-                <span th:if="${post.depth > 0}" th:each="i : ${#numbers.sequence(1, post.depth)}" class="reply">&nbsp;↪RE:</span>
-                <span th:text="${post.title}">제목</span>
-            </a>
-        </td>
-        <td th:text="${post.userNo}">작성자</td>
-        <td th:text="${#temporals.format(post.regDate, 'yyyy-MM-dd')}">작성일</td>
-        <td th:text="${post.hits}">조회수</td>
-    </tr>
-    </tbody>
-</table>
+<div class="container mt-4">
+    <div class="d-flex justify-content-between align-items-center mb-3">
+        <h1 th:if="${boardIdx == 1}">공지사항</h1>
+        <h1 th:if="${boardIdx == 2}">1:1 문의</h1>
+        <a th:href="@{'/front/board/'+${boardIdx}+'/post/write'}" class="btn btn-primary">글 작성</a>
+    </div>
+    <table class="table table-striped">
+        <thead>
+        <tr>
+            <th class="one wide">번호</th>
+            <th class="ten wide">제목</th>
+            <th class="two wide">작성자</th>
+            <th class="three wide">작성일</th>
+            <th class="four wide">조회수</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="post : ${posts}">
+            <td th:text="${post.idx}">1</td>
+            <td>
+                <a th:href="@{'/front/board/post/' + ${post.idx}}" class="board-title">
+                    <span th:if="${post.depth > 0}" th:each="i : ${#numbers.sequence(1, post.depth)}" class="reply">&nbsp;↪RE:</span>
+                    <span th:text="${post.title}">제목</span>
+                </a>
+            </td>
+            <td th:text="${post.userNo}">작성자</td>
+            <td th:text="${#temporals.format(post.regDate, 'yyyy-MM-dd')}">작성일</td>
+            <td th:text="${post.hits}">조회수</td>
+        </tr>
+        </tbody>
+    </table>
+</div>
+
 <div th:replace="include/footer::front"></div>
+
+<script>
+    $(document).ready(function() {
+        var loginRequired = /*[[${loginRequired}]]*/ false;
+
+        if (loginRequired) {
+            Swal.fire({
+                icon: 'warning',
+                title: '로그인 필요',
+                text: '글 작성 권한이 없습니다. 로그인 페이지로 이동합니다.',
+                confirmButtonText: '확인'
+            }).then(() => {
+                window.location.href = '/front/auth/login';
+            });
+        }
+    });
+</script>
 </body>
 </html>

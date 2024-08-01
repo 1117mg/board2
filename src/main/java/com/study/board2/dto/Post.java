@@ -1,6 +1,7 @@
 package com.study.board2.dto;
 
 import lombok.Data;
+import org.springframework.format.annotation.DateTimeFormat;
 
 import java.time.LocalDateTime;
 
@@ -16,7 +17,11 @@ public class Post {
     private boolean noticeYn;
     private boolean secretYn;
     private boolean deleteYn;
+
+    @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME)
     private LocalDateTime regDate;
+    @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME)
+    private LocalDateTime uploadDate;
 
     // 계층 구조 관련 필드
     private int parentIdx;  // 부모 글의 ID

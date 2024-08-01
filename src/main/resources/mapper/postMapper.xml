@@ -67,8 +67,8 @@
     </update>
 
     <insert id="insertPost" parameterType="com.study.board2.dto.Post" useGeneratedKeys="true" keyProperty="idx">
-        INSERT INTO board_post (board_idx, board_group_idx, user_no, title, content, notice_yn, secret_yn)
-        VALUES (#{boardIdx}, #{boardGroupIdx}, #{userNo}, #{title}, #{content}, #{noticeYn}, #{secretYn})
+        INSERT INTO board_post (board_idx, board_group_idx, user_no, title, content, upload_date, notice_yn, secret_yn)
+        VALUES (#{boardIdx}, #{boardGroupIdx}, #{userNo}, #{title}, #{content}, #{uploadDate}, #{noticeYn}, #{secretYn})
     </insert>
 
     <insert id="replyPost" parameterType="com.study.board2.dto.Post">
@@ -89,7 +89,7 @@
 
     <update id="updatePost" parameterType="com.study.board2.dto.Post">
         UPDATE board_post
-        SET title = #{title}, content = #{content}
+        SET title = #{title}, content = #{content}, upload_date=#{uploadDate}, notice_yn=#{noticeYn}, secret_yn=#{secretYn}
         WHERE idx = #{idx}
     </update>
 

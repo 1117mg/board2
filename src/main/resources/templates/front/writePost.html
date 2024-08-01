@@ -5,26 +5,36 @@
     <title>게시글 작성</title>
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
     <link rel="stylesheet" th:href="@{/css/layout.css}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 </head>
 <body>
 <div th:replace="include/header::front"></div>
-<h1 th:if="${post.userNo!=0}">새 글 쓰기</h1>
-<div th:unless="${post.userNo!=0}" style="text-align: center">
-    <h2>글쓰기 권한이 없습니다.<br> 로그인 해주세요</h2>
-    <a th:href="@{/front/auth/login}">로그인</a>
-</div>
-<form th:if="${post.userNo!=0}" th:action="@{'/front/board/'+${boardIdx}+'/post/write'}" method="post" th:object="${post}">
-    <input type="hidden" th:field="*{boardIdx}" value="${post.boardIdx}" />
+<h1>글 쓰기</h1>
+<form id="writeForm" th:if="${post.userNo!=0}" th:action="@{'/front/board/'+${boardIdx}+'/post/write'}" method="post" th:object="${post}">
+    <input type="hidden" id="boardIdx" name="boardIdx" th:field="*{boardIdx}" th:value="${boardIdx}" />
     <input type="hidden" id="noticeYn" name="noticeYn" th:field="*{noticeYn}"/>
+    <input type="hidden" id="secretYn" name="secretYn" th:field="*{secretYn}"/>
     <input type="hidden" id="userNo" name="userNo" th:field="*{userNo}"/>
+    <div class="table-container">
     <table class="tb tb_row">
         <colgroup>
             <col style="width:15%;" /><col style="width:35%;" /><col style="width:15%;" /><col style="width:35%;" />
         </colgroup>
         <tbody>
         <tr th:if="${boardIdx==1}">
-            <th scope="row">공지글</th>
-            <td><span class="chkbox"><input type="checkbox" id="isNotice" name="isNotice" class="chk" /><i></i><label for="isNotice"> 설정</label></span></td>
+            <th scope="row">공지글 여부*</th>
+            <td>
+                <div class="form-check">
+                    <input type="radio" id="isNotice" name="noticeYn" value="true" class="form-check-input" />
+                    <label for="isNotice" class="form-check-label">공지글</label>
+                </div>
+                <div class="form-check">
+                    <input type="radio" id="notNotice" name="noticeYn" value="false" class="form-check-input" checked />
+                    <label for="notNotice" class="form-check-label">일반글</label>
+                </div>
+            </td>
         </tr>
 
         <tr>
@@ -41,10 +51,125 @@
             <th>내용</th>
             <td colspan="3"><textarea id="content" name="content" th:field="*{content}" cols="50" rows="10" placeholder="내용을 입력해 주세요."></textarea></td>
         </tr>
+
+        <tr>
+            <th>등록일자</th>
+            <td colspan="3">
+                <input type="datetime-local" id="uploadDate" name="uploadDate" th:field="*{uploadDate}" />
+                <button type="button" id="setCurrentDateTime" class="btn btn-secondary mt-2">
+                    <i class="fas fa-sync-alt"></i> 초기화
+                </button>
+            </td>
+        </tr>
+
+        <tr th:if="${boardIdx==1}">
+            <th scope="row">노출 여부*</th>
+            <td>
+                <div class="form-check">
+                    <input type="radio" id="notSecret" name="secretYn" value="false" class="form-check-input" />
+                    <label for="notSecret" class="form-check-label">Y</label>
+                </div>
+                <div class="form-check">
+                    <input type="radio" id="isSecret" name="secretYn" value="true" class="form-check-input" checked />
+                    <label for="isSecret" class="form-check-label">N</label>
+                </div>
+            </td>
+        </tr>
         </tbody>
     </table>
-    <button type="submit">작성</button>
+    </div>
+    <div class="button-container">
+        <button type="submit" class="btn btn-primary">저장</button>
+        <button type="button" id="listButton" class="btn btn-secondary">
+            목록 <i class="fas fa-list"></i>
+        </button>
+    </div>
 </form>
-<div th:replace="include/footer::front"></div>
+
+<script>
+    $(document).ready(function() {
+        $('input[name="noticeYn"]').on('change', function() {
+            $('#noticeYn').val($(this).val());
+        });
+
+        $('input[name="secretYn"]').on('change', function() {
+            $('#secretYn').val($(this).val());
+        });
+
+        $("#setCurrentDateTime").on('click', function() {
+            // 현재 날짜와 시간을 가져와서 입력 필드에 설정
+            var now = new Date();
+            var year = now.getFullYear();
+            var month = ("0" + (now.getMonth() + 1)).slice(-2);
+            var day = ("0" + now.getDate()).slice(-2);
+            var hours = ("0" + now.getHours()).slice(-2);
+            var minutes = ("0" + now.getMinutes()).slice(-2);
+            var datetime = `${year}-${month}-${day}T${hours}:${minutes}`;
+
+            $("#uploadDate").val(datetime);
+        });
+
+        $("#listButton").on('click', function() {
+            window.location.href = "/front/board/" + $("#boardIdx").val() + "/posts";
+        });
+
+        $("#writeForm").on('submit', function(event) {
+            event.preventDefault(); // 기본 폼 제출 방지
+
+            // 제목과 내용 값 가져오기
+            var title = $("#title").val().trim();
+            var content = $("#content").val().trim();
+            var regDate = $("#uploadDate").val();
+            var noticeYn = $("input[name='noticeYn']:checked").val();
+            var secretYn = $("input[name='secretYn']:checked").val();
+
+            // 제목 또는 내용이 비어있는지 체크
+            if (title === "" || content === "" || regDate === "") {
+                Swal.fire({
+                    icon: 'warning',
+                    title: '입력 오류',
+                    text: '제목, 내용, 등록일자는 필수 입력 항목입니다.',
+                    confirmButtonText: '확인'
+                });
+                return;
+            }
+
+            if (noticeYn === undefined || secretYn === undefined) {
+                Swal.fire({
+                    icon: 'warning',
+                    title: '입력 오류',
+                    text: '공지 여부와 비밀 여부를 선택해 주세요.',
+                    confirmButtonText: '확인'
+                });
+                return;
+            }
+
+            // 폼 데이터로 AJAX 요청
+            $.ajax({
+                type: "POST",
+                url: $(this).attr('action'),
+                data: $(this).serialize(),
+                success: function(response) {
+                    Swal.fire({
+                        icon: 'success',
+                        title: '작성 완료!',
+                        text: response.message,
+                        confirmButtonText: '확인'
+                    }).then(() => {
+                        window.location.href = "/front/board/" + $("#boardIdx").val() + "/posts";
+                    });
+                },
+                error: function(request, status, error) {
+                    Swal.fire({
+                        icon: 'error',
+                        title: '작성 실패',
+                        text: request.responseJSON.error || error,
+                        confirmButtonText: '확인'
+                    });
+                }
+            });
+        });
+    });
+</script>
 </body>
 </html>

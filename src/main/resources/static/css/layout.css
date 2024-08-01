@@ -37,7 +37,6 @@ th {
 
 /* 버튼 스타일 */
 button[type="submit"] {
-    background-color: #007BFF;
     color: white;
     padding: 10px 20px;
     border: none;
@@ -46,6 +45,28 @@ button[type="submit"] {
     font-size: 16px;
 }
 
-button[type="submit"]:hover {
-    background-color: #0056b3;
+button[type="button"] {
+    color: white;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 16px;
+}
+
+.button-container {
+    margin-top: 20px; /* 버튼들 사이에 여백 추가 */
+    text-align: center; /* 버튼들을 가운데 정렬 */
+}
+
+.table-container {
+    max-width: 100%; /* 테이블 최대 너비를 100%로 설정 */
+}
+.table-container table {
+    width: 100%; /* 테이블 폭을 100%로 설정 */
+}
+.table-container input[type="text"],
+.table-container textarea {
+    width: 100%; /* 입력 및 텍스트 영역 폭을 100%로 설정 */
+    box-sizing: border-box; /* 패딩과 보더를 포함한 전체 폭을 100%로 설정 */
 }
