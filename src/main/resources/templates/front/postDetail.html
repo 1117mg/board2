@@ -17,5 +17,6 @@
     <button type="submit">삭제</button>
 </form>
 <a th:href="@{'/front/board/' + ${post.boardIdx} + '/posts'}">목록으로</a>
+<div th:replace="include/footer::front"></div>
 </body>
 </html>
