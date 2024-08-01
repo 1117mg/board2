@@ -7,6 +7,8 @@ import com.study.board2.service.CtgAuthService;
 import com.study.board2.service.UserService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AnonymousAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -14,10 +16,12 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.authentication.logout.SecurityContextLogoutHandler;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.validation.Valid;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -145,15 +149,41 @@ public class AdminController {
     }
 
     @PostMapping("/user/new")
-    public String adminNew(JoinForm form){
-        User user = User.builder()
-                .userId(form.getLoginId())
-                .userPw(passwordEncoder.encode(form.getLoginPw()))
-                .userName(form.getUserName())
-                .userEmail(form.getUserEmail())
-                .userRole("ROLE_ADMIN")
-                .build();
-        userService.register(user);
-        return "redirect:/master/users";
+    public ResponseEntity<Map<String, String>> adminNew(@Valid JoinForm form, BindingResult result) {
+        if (result.hasErrors()) {
+            // 폼 입력 값에 문제가 있을 경우
+            Map<String, String> errorResponse = new HashMap<>();
+            errorResponse.put("error", "입력 값이 유효하지 않습니다.");
+            return ResponseEntity.badRequest().body(errorResponse);
+        }
+
+        try {
+            User user = User.builder()
+                    .userId(form.getLoginId())
+                    .userPw(passwordEncoder.encode(form.getLoginPw()))
+                    .userName(form.getUserName())
+                    .userEmail(form.getUserEmail())
+                    .userRole("ROLE_ADMIN")
+                    .build();
+            userService.register(user);
+
+            Map<String, String> response = new HashMap<>();
+            response.put("redirectUrl", "/master/user/" + user.getIdx());
+            return ResponseEntity.ok(response);
+        } catch (Exception e) {
+            // 사용자 등록 중 예외 발생 시 처리
+            Map<String, String> errorResponse = new HashMap<>();
+            errorResponse.put("error", "사용자 등록 중 오류가 발생했습니다.");
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(errorResponse);
+        }
+    }
+
+    // 예외 처리 핸들러 추가 (선택 사항)
+    @ExceptionHandler(Exception.class)
+    @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
+    public ResponseEntity<Map<String, String>> handleAllExceptions(Exception ex) {
+        Map<String, String> errorResponse = new HashMap<>();
+        errorResponse.put("error", "서버 오류가 발생했습니다: " + ex.getMessage());
+        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(errorResponse);
     }
 }

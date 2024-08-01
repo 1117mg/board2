@@ -6,6 +6,7 @@
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
     <link rel="stylesheet" th:href="@{/css/layout.css}">
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.bundle.min.js"></script>
 </head>
 <body>
 <div th:replace="include/header::master"></div>
@@ -38,6 +39,27 @@
     <button type="submit" class="btn btn-primary">등록</button>
 </form>
 <a th:href="@{'/master/users'}">목록으로</a>
+
+<!-- 성공 모달 -->
+<div class="modal fade" id="successModal" tabindex="-1" role="dialog" aria-labelledby="successModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="successModalLabel">등록 성공</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                관리자 등록이 성공적으로 완료되었습니다.
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-primary" id="redirectButton">확인</button>
+            </div>
+        </div>
+    </div>
+</div>
+
 <script>
     $(document).ready(function() {
         function validateForm() {
@@ -75,8 +97,15 @@
                 url: $(this).attr('action'),
                 data: $(this).serialize(),
                 success: function(response) {
-                    alert("관리자 등록이 성공적으로 완료되었습니다.");
-                    window.location.href = "/master/users";
+                    // 성공 모달 표시
+                    $('#successModal').modal('show');
+
+                    // 모달의 확인 버튼 클릭 시 리다이렉트
+                    $('#redirectButton').on('click', function() {
+                        if (response.redirectUrl) {
+                            window.location.href = response.redirectUrl;
+                        }
+                    });
                 },
                 error: function(request, status, error) {
                     alert("관리자 등록 실패: " + request.status + " - " + error);
