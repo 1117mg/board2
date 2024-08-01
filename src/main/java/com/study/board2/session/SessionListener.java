@@ -1,4 +1,4 @@
-package com.study.board2.security;
+package com.study.board2.session;
 
 import javax.servlet.http.HttpSessionEvent;
 import javax.servlet.http.HttpSessionListener;

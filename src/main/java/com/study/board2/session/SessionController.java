@@ -1,4 +1,4 @@
-package com.study.board2.security;
+package com.study.board2.session;
 
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;

@@ -6,6 +6,7 @@
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
     <link rel="stylesheet" th:href="@{/css/layout.css}">
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 </head>
 <body>
 <div th:replace="include/header::front"></div>
@@ -47,8 +48,14 @@
             // 모든 필수 입력 필드 체크
             $('#joinForm input').each(function() {
                 if ($(this).val().trim() === '') {
-                    alert($(this).prev('label').text() + ' 필드는 필수입니다.');
-                    $(this).focus();
+                    Swal.fire({
+                        icon: 'warning',
+                        title: '필수 항목 미입력',
+                        text: $(this).prev('label').text() + ' 필드는 필수입니다.',
+                        confirmButtonText: '확인'
+                    }).then(() => {
+                        $(this).focus();
+                    });
                     isValid = false;
                     return false;
                 }
@@ -56,8 +63,14 @@
 
             // 비밀번호와 비밀번호 확인 일치 여부 확인
             if ($('#loginPw').val().trim() !== $('#loginPwCheck').val().trim()) {
-                alert("비밀번호와 비밀번호 확인이 일치하지 않습니다.");
-                $('#loginPwCheck').focus();
+                Swal.fire({
+                    icon: 'warning',
+                    title: '비밀번호 불일치',
+                    text: '비밀번호와 비밀번호 확인이 일치하지 않습니다.',
+                    confirmButtonText: '확인'
+                }).then(() => {
+                    $('#loginPwCheck').focus();
+                });
                 isValid = false;
             }
 
@@ -65,7 +78,7 @@
         }
 
         $('#joinForm').on('submit', function(event) {
-            event.preventDefault(); // 기본 폼 제출 방지
+            event.preventDefault();
 
             if (!validateForm()) {
                 return;
@@ -76,11 +89,22 @@
                 url: $(this).attr('action'),
                 data: $(this).serialize(),
                 success: function(response) {
-                    alert("회원가입이 성공적으로 완료되었습니다.");
-                    window.location.href = "/front/auth/login";
+                    Swal.fire({
+                        icon: 'success',
+                        title: '회원가입 성공',
+                        text: '회원가입이 성공적으로 완료되었습니다.',
+                        confirmButtonText: '확인'
+                    }).then(() => {
+                        window.location.href = "/front/auth/login";
+                    });
                 },
                 error: function(request, status, error) {
-                    alert("회원가입 실패: " + request.status + " - " + error);
+                    Swal.fire({
+                        icon: 'error',
+                        title: '회원가입 실패',
+                        text: '회원가입 실패: ' + request.status + ' - ' + error,
+                        confirmButtonText: '확인'
+                    });
                 }
             });
         });
@@ -88,8 +112,14 @@
         function userIdCheck() {
             const userId = $("#loginId").val().trim();
             if (userId === "") {
-                alert("아이디를 입력해주세요!. 필수항목입니다.");
-                $("#loginId").focus();
+                Swal.fire({
+                    icon: 'warning',
+                    title: '아이디 입력',
+                    text: '아이디를 입력해주세요! 필수항목입니다.',
+                    confirmButtonText: '확인'
+                }).then(() => {
+                    $("#loginId").focus();
+                });
                 return false;
             }
             $.ajax({
@@ -99,23 +129,45 @@
                 dataType: "JSON",
                 success: function (result) {
                     if (result.result === 0) {
-                        if (confirm("이 아이디는 사용 가능합니다. \n사용하시겠습니까?")) {
-                            $("#loginId").attr("readonly", true);
-                            $("#userIdOverlay").attr("disabled", true);
-                            $("#userIdOverlay").css("display", "none");
-                            $("#resetUserId").attr("disabled", false);
-                            $("#resetUserId").css("display", "inline-block");
-                        }
+                        Swal.fire({
+                            icon: 'success',
+                            title: '아이디 사용 가능',
+                            text: '이 아이디는 사용 가능합니다. 사용하시겠습니까?',
+                            showCancelButton: true,
+                            confirmButtonText: '확인',
+                            cancelButtonText: '취소'
+                        }).then((result) => {
+                            if (result.isConfirmed) {
+                                $("#loginId").attr("readonly", true);
+                                $("#userIdOverlay").attr("disabled", true).hide();
+                                $("#resetUserId").attr("disabled", false).show();
+                            }
+                        });
                     } else if (result.result === 1) {
-                        alert("이미 사용중인 아이디입니다.");
-                        $("#loginId").focus();
+                        Swal.fire({
+                            icon: 'warning',
+                            title: '아이디 사용 불가',
+                            text: '이미 사용중인 아이디입니다.',
+                            confirmButtonText: '확인'
+                        }).then(() => {
+                            $("#loginId").focus();
+                        });
                     } else {
-                        alert("응답값이 잘못되었습니다.");
+                        Swal.fire({
+                            icon: 'error',
+                            title: '오류',
+                            text: '응답값이 잘못되었습니다.',
+                            confirmButtonText: '확인'
+                        });
                     }
                 },
                 error: function (request, status, error) {
-                    alert("ajax 실행 실패");
-                    alert("code:" + request.status + "\n" + "error :" + error);
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'AJAX 실패',
+                        text: 'ajax 실행 실패\ncode:' + request.status + '\nerror :' + error,
+                        confirmButtonText: '확인'
+                    });
                 }
             });
         }
@@ -123,8 +175,14 @@
         function usernameCheck() {
             const username = $("#userName").val().trim();
             if (username === "") {
-                alert("이름을 입력해주세요!. 필수항목입니다.");
-                $("#userName").focus();
+                Swal.fire({
+                    icon: 'warning',
+                    title: '이름 입력',
+                    text: '이름을 입력해주세요! 필수항목입니다.',
+                    confirmButtonText: '확인'
+                }).then(() => {
+                    $("#userName").focus();
+                });
                 return false;
             }
             $.ajax({
@@ -134,41 +192,59 @@
                 dataType: "JSON",
                 success: function (result) {
                     if (result.result === 0) {
-                        if (confirm("이 이름은 사용 가능합니다. \n사용하시겠습니까?")) {
-                            $("#userName").attr("readonly", true);
-                            $("#usernameOverlay").attr("disabled", true);
-                            $("#usernameOverlay").css("display", "none");
-                            $("#resetUsername").attr("disabled", false);
-                            $("#resetUsername").css("display", "inline-block");
-                        }
+                        Swal.fire({
+                            icon: 'success',
+                            title: '이름 사용 가능',
+                            text: '이 이름은 사용 가능합니다. 사용하시겠습니까?',
+                            showCancelButton: true,
+                            confirmButtonText: '확인',
+                            cancelButtonText: '취소'
+                        }).then((result) => {
+                            if (result.isConfirmed) {
+                                $("#userName").attr("readonly", true);
+                                $("#usernameOverlay").attr("disabled", true).hide();
+                                $("#resetUsername").attr("disabled", false).show();
+                            }
+                        });
                     } else if (result.result === 1) {
-                        alert("이미 사용중인 이름입니다.");
-                        $("#userName").focus();
+                        Swal.fire({
+                            icon: 'warning',
+                            title: '이름 사용 불가',
+                            text: '이미 사용중인 이름입니다.',
+                            confirmButtonText: '확인'
+                        }).then(() => {
+                            $("#userName").focus();
+                        });
                     } else {
-                        alert("응답값이 잘못되었습니다.");
+                        Swal.fire({
+                            icon: 'error',
+                            title: '오류',
+                            text: '응답값이 잘못되었습니다.',
+                            confirmButtonText: '확인'
+                        });
                     }
                 },
                 error: function (request, status, error) {
-                    alert("ajax 실행 실패");
-                    alert("code:" + request.status + "\n" + "error :" + error);
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'AJAX 실패',
+                        text: 'ajax 실행 실패\ncode:' + request.status + '\nerror :' + error,
+                        confirmButtonText: '확인'
+                    });
                 }
             });
         }
 
         function reUserId() {
             $("#loginId").attr("readonly", false);
-            $("#userIdOverlay").attr("disabled", false);
-            $("#userIdOverlay").css("display", "inline-block");
-            $("#resetUserId").attr("disabled", true);
-            $("#resetUserId").css("display", "none");
+            $("#userIdOverlay").attr("disabled", false).show();
+            $("#resetUserId").attr("disabled", true).hide();
         }
 
         function reUsername() {
             $("#userName").attr("readonly", false);
-            $("#usernameOverlay").attr("disabled", false);
-            $("#usernameOverlay").css("display", "inline-block");
-            $("#resetUsername").attr("disabled", true);
-            $("#resetUsername").css("display", "none");
+            $("#usernameOverlay").attr("disabled", false).show();
+            $("#resetUsername").attr("disabled", true).hide();
         }
 
         $('#userIdOverlay').on('click', userIdCheck);

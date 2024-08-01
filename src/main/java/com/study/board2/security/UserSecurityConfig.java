@@ -9,11 +9,16 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.web.authentication.rememberme.PersistentTokenRepository;
 
-@RequiredArgsConstructor
 @Configuration
 @EnableWebSecurity
+@RequiredArgsConstructor
 @Order(1)  // 낮은 우선순위
 public class UserSecurityConfig extends WebSecurityConfigurerAdapter {
+
+    private final LoginSuccessHandler successHandler;
+    private final LoginFailureHandler failureHandler;
+    private final MyUserDetailsService userDetailsService;
+    private final PersistentTokenRepository tokenRepository;
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
@@ -26,11 +31,12 @@ public class UserSecurityConfig extends WebSecurityConfigurerAdapter {
                 .loginProcessingUrl("/front/auth/login")
                 .usernameParameter("loginId")
                 .passwordParameter("loginPw")
+                .failureHandler(failureHandler)
                 .successHandler(successHandler)
                 .and()
                 .logout()
                 .logoutUrl("/front/auth/logout")
-                .logoutSuccessUrl("/front/main")  // 로그아웃 성공 후 리다이렉트 설정
+                .logoutSuccessUrl("/front/main")
                 .invalidateHttpSession(true)
                 .deleteCookies("remember-me", "JSESSIONID")
                 .and()
@@ -41,10 +47,4 @@ public class UserSecurityConfig extends WebSecurityConfigurerAdapter {
                 .and()
                 .csrf().disable();
     }
-
-    public final LoginSuccessHandler successHandler;
-
-    public final MyUserDetailsService userDetailsService;
-
-    public final PersistentTokenRepository tokenRepository;
 }

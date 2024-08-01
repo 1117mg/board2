@@ -2,25 +2,23 @@ package com.study.board2.security;
 
 import com.study.board2.service.MyUserDetailsService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.annotation.Order;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.security.web.authentication.rememberme.JdbcTokenRepositoryImpl;
 import org.springframework.security.web.authentication.rememberme.PersistentTokenRepository;
-
-import javax.sql.DataSource;
 
 @Configuration
 @EnableWebSecurity
 @RequiredArgsConstructor
 @Order(0)  // 높은 우선순위
 public class AdminSecurityConfig extends WebSecurityConfigurerAdapter {
+
+    private final LoginSuccessHandler successHandler;
+    private final LoginFailureHandler failureHandler;
+    private final MyUserDetailsService userDetailsService;
+    private final PersistentTokenRepository tokenRepository;
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
@@ -33,7 +31,8 @@ public class AdminSecurityConfig extends WebSecurityConfigurerAdapter {
                 .loginProcessingUrl("/master/auth/login")
                 .usernameParameter("loginId")
                 .passwordParameter("loginPw")
-                .defaultSuccessUrl("/master/main")
+                .failureHandler(failureHandler)
+                .successHandler(successHandler)
                 .and()
                 .logout()
                 .logoutUrl("/master/auth/logout")
@@ -43,27 +42,9 @@ public class AdminSecurityConfig extends WebSecurityConfigurerAdapter {
                 .and()
                 .rememberMe()
                 .userDetailsService(userDetailsService)
-                .tokenRepository(tokenRepository())
+                .tokenRepository(tokenRepository)
                 .tokenValiditySeconds(604800)
                 .and()
                 .csrf().disable();
-    }
-
-    @Qualifier("dataSource")
-    private final DataSource dataSource;
-
-    private final MyUserDetailsService userDetailsService;
-
-    @Bean
-    public PasswordEncoder passwordEncoder() {
-        return new BCryptPasswordEncoder();
-    }
-
-    @Bean
-    public PersistentTokenRepository tokenRepository() {
-        JdbcTokenRepositoryImpl jdbcTokenRepository = new JdbcTokenRepositoryImpl();
-        jdbcTokenRepository.setDataSource(dataSource);
-        jdbcTokenRepository.setCreateTableOnStartup(false); // 테이블을 초기화하지 않음
-        return jdbcTokenRepository;
     }
 }

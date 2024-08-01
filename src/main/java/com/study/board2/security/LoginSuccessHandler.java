@@ -8,13 +8,11 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.web.DefaultRedirectStrategy;
 import org.springframework.security.web.RedirectStrategy;
-import org.springframework.security.web.WebAttributes;
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
 import org.springframework.stereotype.Component;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpSession;
 import java.io.IOException;
 import java.util.Collection;
 
@@ -26,42 +24,37 @@ public class LoginSuccessHandler implements AuthenticationSuccessHandler {
     private final UserService userService;
 
     private RedirectStrategy redirectStrategy = new DefaultRedirectStrategy();
+
     @Override
     public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response, Authentication authentication) throws IOException {
         handle(request, response, authentication);
-        clearAuthenticationAttributes(request);
     }
 
-    private void handle(HttpServletRequest request,
-                        HttpServletResponse response, Authentication authentication)
-            throws IOException {
-        String targetUrl = determineTargetUrl(authentication);
-
-        User user=userService.findByUserId(authentication.getName());
+    private void handle(HttpServletRequest request, HttpServletResponse response, Authentication authentication) throws IOException {
+        User user = userService.findByUserId(authentication.getName());
 
         // 로그인 기록 저장
-        if("ROLE_USER".equals(user.getUserRole())){
+        if ("ROLE_USER".equals(user.getUserRole())) {
             adminService.recordLogin(user.getIdx());
         }
 
-        System.out.println("Login successful for user: " + authentication.getName());
-
-        redirectStrategy.sendRedirect(request, response, targetUrl);
-    }
-
-    private void clearAuthenticationAttributes(HttpServletRequest request) {
-        HttpSession session = request.getSession(false);
-        if (session == null) {
-            return;
+        // AJAX 요청 여부 확인
+        if ("XMLHttpRequest".equals(request.getHeader("X-Requested-With"))) {
+            // AJAX 요청인 경우 JSON 응답
+            response.setContentType("application/json");
+            response.setCharacterEncoding("UTF-8");
+            response.getWriter().write("{\"success\": true}");
+        } else {
+            // 일반 요청인 경우 리다이렉션
+            String targetUrl = determineTargetUrl(authentication);
+            redirectStrategy.sendRedirect(request, response, targetUrl);
         }
-        session.removeAttribute(WebAttributes.AUTHENTICATION_EXCEPTION);
     }
 
     private String determineTargetUrl(Authentication authentication) {
         boolean isUser = false;
         boolean isAdmin = false;
-        Collection<? extends GrantedAuthority> authorities
-                = authentication.getAuthorities();
+        Collection<? extends GrantedAuthority> authorities = authentication.getAuthorities();
         for (GrantedAuthority grantedAuthority : authorities) {
             if (grantedAuthority.getAuthority().equals("ROLE_USER")) {
                 isUser = true;
@@ -74,13 +67,10 @@ public class LoginSuccessHandler implements AuthenticationSuccessHandler {
 
         if (isUser) {
             return "/front/main";
-        } else
-
-        if (isAdmin) {
+        } else if (isAdmin) {
             return "/master/main";
         } else {
             throw new IllegalStateException();
         }
     }
-
 }
