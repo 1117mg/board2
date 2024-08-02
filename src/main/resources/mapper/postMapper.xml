@@ -3,9 +3,11 @@
 
 <mapper namespace="com.study.board2.repository.PostMapper">
     <select id="findByBoardIdx" parameterType="int" resultType="com.study.board2.dto.Post">
-        SELECT * FROM board_post WHERE board_idx = #{boardIdx} AND delete_yn = 0
-        ORDER BY idx DESC
-        LIMIT #{offset}, #{pageSize}
+        SELECT * FROM board_post
+        WHERE board_idx = #{boardIdx}
+          AND delete_yn = 0 AND secret_yn=0
+        ORDER BY notice_yn DESC, idx DESC
+            LIMIT #{offset}, #{pageSize}
     </select>
 
     <select id="findHByBoardIdx" parameterType="int" resultType="com.study.board2.dto.Post">
