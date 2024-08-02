@@ -80,7 +80,7 @@
                 });
             });
         } else {
-            $('#editButton, #deleteButton').show().click(function() {
+            $('#editButton, #deleteButton').click(function() {
                 Swal.fire({
                     icon: 'warning',
                     title: '권한 없음',
@@ -94,15 +94,6 @@
         if (canReply) {
             $('#replyButton').show().on('click', function() {
                 window.location.href = '/front/board/' + boardIdx + '/post/' + postIdx + '/reply';
-            });
-        } else {
-            $('#replyButton').show().click(function() {
-                Swal.fire({
-                    icon: 'warning',
-                    title: '권한 없음',
-                    text: '답글 작성 권한이 없습니다.',
-                    confirmButtonText: '확인'
-                });
             });
         }
 

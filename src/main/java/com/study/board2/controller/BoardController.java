@@ -82,13 +82,14 @@ public class BoardController {
         post.setHits(postService.hit(postId));
         model.addAttribute("post", post);
         model.addAttribute("boardIdx", post.getBoardIdx());
+        String boardType= boardService.getBoardType(post.getBoardIdx());
 
         // 권한 체크
         boolean hasEditPermission = (post.getUserNo() == userNo);
         model.addAttribute("hasEditPermission", hasEditPermission);
 
         // 답글 작성 권한 체크
-        boolean canReply = (userNo != 0);
+        boolean canReply = (userNo != 0 && "200".equals(boardType));
         model.addAttribute("canReply", canReply);
 
         return "front/postDetail";
@@ -153,13 +154,44 @@ public class BoardController {
 
     // 답글 등록
     @PostMapping("/{boardIdx}/post/{postId}/reply")
-    public String replyPost(@PathVariable("boardIdx") int boardIdx, @PathVariable("postId") int postId, @ModelAttribute Post post) {
-        post.setBoardIdx(boardIdx);
-        post.setParentIdx(postId);
-        Post parentPost=postService.getPostByParentId(post.getParentIdx());
-        post.setDepth(parentPost.getDepth()+1);
-        postService.replyPost(post);
-        return "redirect:/front/board/" + boardIdx + "/posts";
+    @ResponseBody
+    public ResponseEntity<Map<String, String>> replyPost(@PathVariable("boardIdx") int boardIdx,
+                                                         @PathVariable("postId") int postId,
+                                                         @ModelAttribute Post post) {
+        Map<String, String> response = new HashMap<>();
+
+        // 유효성 검사
+        if (post.getTitle() == null || post.getTitle().trim().isEmpty() ||
+                post.getContent() == null || post.getContent().trim().isEmpty() ||
+                post.getUploadDate() == null) {
+            response.put("error", "제목, 내용, 등록일자는 필수 입력 항목입니다.");
+            return ResponseEntity.badRequest().body(response);
+        }
+
+        try {
+            // 게시글 설정
+            post.setBoardIdx(boardIdx);
+            post.setParentIdx(postId);
+
+            // 부모 게시글의 존재 여부 확인
+            Post parentPost = postService.getPostByParentId(post.getParentIdx());
+            if (parentPost == null) {
+                response.put("error", "부모 게시글이 존재하지 않습니다.");
+                return ResponseEntity.badRequest().body(response);
+            }
+
+            // 부모 게시글의 깊이 가져오기
+            post.setDepth(parentPost.getDepth() + 1);
+
+            // 답글 저장
+            postService.replyPost(post);
+
+            response.put("message", "답글 작성 완료!");
+            return ResponseEntity.ok(response);
+        } catch (Exception e) {
+            response.put("error", "작성 실패: " + e.getMessage());
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(response);
+        }
     }
 
     // 게시글 수정 폼

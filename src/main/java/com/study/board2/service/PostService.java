@@ -30,14 +30,6 @@ public class PostService {
         return new Page<>(posts, pageNumber, pageSize, totalElements);
     }
 
-    /*public List<Post> getPostsByBoardId(int boardIdx) {
-        return postMapper.findByBoardIdx(boardIdx);
-    }
-
-    public List<Post> getHPostsByBoardId(int boardIdx) {
-        return postMapper.findHByBoardIdx(boardIdx);
-    }*/
-
     public Post getPostById(int postId) {
         return postMapper.findByIdx(postId);
     }
