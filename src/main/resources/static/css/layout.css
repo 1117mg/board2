@@ -27,6 +27,21 @@ th {
     background-color: #f4f4f4;
 }
 
+thead th {
+    text-align: center; /* 중앙 정렬 */
+}
+
+.table th:nth-child(2),
+.table td:nth-child(2) {
+    width: 400px; /* 폭 조정 (원하는 크기로 변경 가능) */
+}
+
+/* 조회수 열 폭 조정 */
+.table th:nth-child(5),
+.table td:nth-child(5) {
+    width: 100px; /* 폭 조정 (원하는 크기로 변경 가능) */
+}
+
 .chkbox input[type="checkbox"] {
     margin-right: 5px;
 }
