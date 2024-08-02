@@ -3,9 +3,9 @@
 <head>
     <meta charset="UTF-8">
     <title>관리자 가입</title>
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
     <link rel="stylesheet" th:href="@{/css/join.css}">
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 </head>
 <body>
@@ -18,8 +18,8 @@
                 <div class="input-group">
                     <input type="text" name="loginId" id="loginId" th:field="*{loginId}" class="form-control" required>
                     <div class="input-group-append">
-                        <input class="btn btn-outline-primary btn-sm idCheck" type="button" id="userIdOverlay" onclick="userIdCheck()" value="중복 체크"/>
-                        <input class="btn btn-outline-success btn-sm reType" type="button" id="resetUserId" onclick="reUserId()" disabled value="다시입력"/>
+                        <input class="btn btn-outline-primary btn-sm idCheck" type="button" id="userIdOverlay" value="중복 체크"/>
+                        <input class="btn btn-outline-success btn-sm reType" type="button" id="resetUserId" disabled value="다시입력"/>
                     </div>
                 </div>
             </div>
@@ -36,8 +36,8 @@
                 <div class="input-group">
                     <input type="text" name="userName" id="userName" th:field="*{userName}" class="form-control" required>
                     <div class="input-group-append">
-                        <input class="btn btn-outline-primary btn-sm idCheck" type="button" id="usernameOverlay" onclick="usernameCheck()" value="중복 체크"/>
-                        <input class="btn btn-outline-success btn-sm reType" type="button" id="resetUsername" onclick="reUsername()" disabled value="다시입력"/>
+                        <input class="btn btn-outline-primary btn-sm idCheck" type="button" id="usernameOverlay" value="중복 체크"/>
+                        <input class="btn btn-outline-success btn-sm reType" type="button" id="resetUsername" disabled value="다시입력"/>
                     </div>
                 </div>
             </div>
@@ -83,6 +83,15 @@
             $('#userEmailDomainId').prop('readonly', false);
         } else {
             $('#userEmailDomainId').val(initialValue).prop('readonly', true);
+        }
+
+        function updateEmailField() {
+            var emailId = $('#userEmailId').val().trim();
+            var emailDomain = $('#userEmailDomain').val();
+            if (emailDomain === 'custom') {
+                emailDomain = $('#userEmailDomainId').val().trim();
+            }
+            $('#userEmailId').val(emailId + '@' + emailDomain);
         }
 
         function validateForm() {
@@ -145,6 +154,9 @@
             if (!validateForm()) {
                 return;
             }
+
+            // 이메일 필드 업데이트
+            updateEmailField();
 
             $.ajax({
                 type: "post",

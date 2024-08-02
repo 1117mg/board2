@@ -30,11 +30,11 @@
     </select>
 
     <select id="findByUsername" parameterType="String" resultType="com.study.board2.dto.User">
-        SELECT *
+        SELECT idx, user_name, user_email
         FROM member
         WHERE user_name = #{userName}
         UNION
-        SELECT *
+        SELECT idx, user_name, user_email
         FROM admin
         WHERE user_name = #{userName}
     </select>
@@ -85,7 +85,7 @@
     <!-- 관리자 데이터 삽입 -->
     <insert id="insertAdmin" parameterType="com.study.board2.dto.User">
         INSERT INTO admin (idx, user_name, user_email, use_yn)
-        VALUES (#{idx}, #{userName}, #{userEmail}, true)
+        VALUES (#{idx}, #{userName}, #{userEmail}, default)
     </insert>
 
     <update id="updateMember" parameterType="com.study.board2.dto.User">
