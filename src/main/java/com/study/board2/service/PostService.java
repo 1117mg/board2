@@ -2,6 +2,7 @@ package com.study.board2.service;
 
 import com.study.board2.dto.Post;
 import com.study.board2.repository.PostMapper;
+import com.study.board2.util.Page;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -13,13 +14,29 @@ public class PostService {
 
     private final PostMapper postMapper;
 
-    public List<Post> getPostsByBoardId(int boardIdx) {
+    public Page<Post> getPostsPageByBoardId(int boardIdx, int pageNumber, int pageSize) {
+        int offset = (pageNumber - 1) * pageSize;
+        List<Post> posts = postMapper.findByBoardIdx(boardIdx, offset, pageSize);
+        int totalElements = postMapper.countPostsByBoardId(boardIdx);
+
+        return new Page<>(posts, pageNumber, pageSize, totalElements);
+    }
+
+    public Page<Post> getHPostsPageByBoardId(int boardIdx, int pageNumber, int pageSize) {
+        int offset = (pageNumber - 1) * pageSize;
+        List<Post> posts = postMapper.findHByBoardIdx(boardIdx, offset, pageSize);
+        int totalElements = postMapper.countPostsByBoardId(boardIdx);
+
+        return new Page<>(posts, pageNumber, pageSize, totalElements);
+    }
+
+    /*public List<Post> getPostsByBoardId(int boardIdx) {
         return postMapper.findByBoardIdx(boardIdx);
     }
 
     public List<Post> getHPostsByBoardId(int boardIdx) {
         return postMapper.findHByBoardIdx(boardIdx);
-    }
+    }*/
 
     public Post getPostById(int postId) {
         return postMapper.findByIdx(postId);

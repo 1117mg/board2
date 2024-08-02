@@ -5,6 +5,10 @@ import com.study.board2.service.AdminService;
 import com.study.board2.service.BoardService;
 import com.study.board2.service.CtgAuthService;
 import com.study.board2.service.UserService;
+import com.study.board2.util.JoinForm;
+import com.study.board2.util.LoginForm;
+import com.study.board2.util.Page;
+import com.study.board2.util.UpdateStatusRequest;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -22,7 +26,6 @@ import org.springframework.web.bind.annotation.*;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -95,9 +98,12 @@ public class AdminController {
     }
 
     @GetMapping("/users")
-    public String adminList(Model model) {
-        List<User> users = userService.getAllAdmins();
-        model.addAttribute("users", users);
+    public String adminList(@RequestParam(value = "page", defaultValue = "1") int page, Model model) {
+        int pageSize = 7;
+        Page<User> users = userService.getAllAdmins(page, pageSize);
+        model.addAttribute("users", users.getContent());
+        model.addAttribute("currentPage", users.getPageNumber());
+        model.addAttribute("totalPages", users.getTotalPages());
         return "master/adminList";
     }
 

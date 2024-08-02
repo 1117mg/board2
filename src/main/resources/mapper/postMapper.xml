@@ -5,6 +5,7 @@
     <select id="findByBoardIdx" parameterType="int" resultType="com.study.board2.dto.Post">
         SELECT * FROM board_post WHERE board_idx = #{boardIdx} AND delete_yn = 0
         ORDER BY idx DESC
+        LIMIT #{offset}, #{pageSize}
     </select>
 
     <select id="findHByBoardIdx" parameterType="int" resultType="com.study.board2.dto.Post">
@@ -49,7 +50,12 @@
             Hierarchy
         ORDER BY
             hierarchy_path,  -- 계층 경로로 정렬하여 부모 글 아래 자식 글이 위치
-            sorts DESC       -- 동일 부모 아래에서 sorts로 내림차순 정렬
+            sorts DESC       -- 동일 부모 아래에서 sorts로 내림차순
+        LIMIT #{offset}, #{pageSize}
+    </select>
+
+    <select id="countPostsByBoardId" resultType="int">
+        SELECT COUNT(*) FROM board_post WHERE board_idx = #{boardIdx}
     </select>
 
     <select id="findByIdx" parameterType="int" resultType="com.study.board2.dto.Post">

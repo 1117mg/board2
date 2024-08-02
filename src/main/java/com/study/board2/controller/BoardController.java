@@ -1,11 +1,12 @@
 package com.study.board2.controller;
 
-import com.study.board2.dto.LoginForm;
+import com.study.board2.util.LoginForm;
 import com.study.board2.dto.Post;
 import com.study.board2.dto.User;
 import com.study.board2.service.BoardService;
 import com.study.board2.service.PostService;
 import com.study.board2.service.UserService;
+import com.study.board2.util.Page;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -34,24 +35,35 @@ public class BoardController {
 
     // 게시판 글 목록
     @GetMapping("/{boardIdx}/posts")
-    public String postList(@PathVariable("boardIdx") int boardIdx, Model model, HttpServletRequest request) {
+    public String postList(@PathVariable("boardIdx") int boardIdx, @RequestParam(value = "page", defaultValue = "1") int page, Model model) {
         String boardType = boardService.getBoardType(boardIdx);
+
+        int pageSize = 7;
+
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 
         // board_type이 200이면 계층형 게시판
         if ("200".equals(boardType)) {
             // 1:1 게시판은 비로그인 시 접근 불가
-            Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
             if (authentication instanceof AnonymousAuthenticationToken) {
                 model.addAttribute("loginForm", new LoginForm());
-                model.addAttribute("loginRequired", true);
-                return "front/postList";
+                return "front/login";
             }
-            List<Post> hposts = postService.getHPostsByBoardId(boardIdx);
-            model.addAttribute("posts", hposts);
+            Page<Post> hposts = postService.getHPostsPageByBoardId(boardIdx, page, pageSize);
+            model.addAttribute("posts", hposts.getContent());
+            model.addAttribute("currentPage", hposts.getPageNumber());
+            model.addAttribute("totalPages", hposts.getTotalPages());
+            model.addAttribute("boardIdx", boardIdx);
         } else {
+            if (authentication instanceof AnonymousAuthenticationToken) {
+                model.addAttribute("loginRequired", true);
+            }
             // 공지사항 게시판(board_type=="100")
-            List<Post> posts = postService.getPostsByBoardId(boardIdx);
-            model.addAttribute("posts", posts);
+            Page<Post> posts = postService.getPostsPageByBoardId(boardIdx, page, pageSize);
+            model.addAttribute("posts", posts.getContent());
+            model.addAttribute("currentPage", posts.getPageNumber());
+            model.addAttribute("totalPages", posts.getTotalPages());
+            model.addAttribute("boardIdx", boardIdx);
         }
 
         return "front/postList";

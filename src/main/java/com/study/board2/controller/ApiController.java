@@ -1,6 +1,6 @@
 package com.study.board2.controller;
 
-import com.study.board2.dto.Mail;
+import com.study.board2.util.Mail;
 import com.study.board2.service.SendEmailService;
 import com.study.board2.service.UserService;
 import lombok.RequiredArgsConstructor;

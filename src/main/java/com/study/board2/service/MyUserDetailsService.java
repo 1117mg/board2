@@ -1,6 +1,6 @@
 package com.study.board2.service;
 
-import com.study.board2.dto.MemberDetails;
+import com.study.board2.util.MemberDetails;
 import com.study.board2.dto.User;
 import com.study.board2.repository.UserMapper;
 import lombok.RequiredArgsConstructor;

@@ -4,6 +4,9 @@ import com.study.board2.dto.*;
 import com.study.board2.service.BoardService;
 import com.study.board2.service.SendEmailService;
 import com.study.board2.service.UserService;
+import com.study.board2.util.JoinForm;
+import com.study.board2.util.LoginForm;
+import com.study.board2.util.Page;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.authentication.AnonymousAuthenticationToken;
@@ -17,9 +20,7 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 @RequiredArgsConstructor
 @RequestMapping("/front")
@@ -81,9 +82,12 @@ public class UserController {
     }
 
     @GetMapping("/users")
-    public String userList(Model model) {
-        List<User> users = userService.getAllMembers();
-        model.addAttribute("users", users);
+    public String userList(@RequestParam(value = "page", defaultValue = "1") int page, Model model) {
+        int pageSize = 7;
+        Page<User> users = userService.getAllMembers(page, pageSize);
+        model.addAttribute("users", users.getContent());
+        model.addAttribute("currentPage", users.getPageNumber());
+        model.addAttribute("totalPages", users.getTotalPages());
         return "front/userList";
     }
 

@@ -2,6 +2,7 @@ package com.study.board2.service;
 
 import com.study.board2.dto.*;
 import com.study.board2.repository.UserMapper;
+import com.study.board2.util.Page;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.Authentication;
@@ -42,12 +43,20 @@ public class UserService {
         }
     }
 
-    public List<User> getAllMembers() {
-        return userMapper.findAllMembers();
+    public Page<User> getAllMembers(int pageNumber, int pageSize) {
+        int offset = (pageNumber - 1) * pageSize;
+        List<User> users = userMapper.findAllMembers(offset, pageSize);
+        int totalElements = userMapper.countMembers();
+
+        return new Page<>(users, pageNumber, pageSize, totalElements);
     }
 
-    public List<User> getAllAdmins() {
-        return userMapper.findAllAdmins();
+    public Page<User> getAllAdmins(int pageNumber, int pageSize) {
+        int offset = (pageNumber - 1) * pageSize;
+        List<User> users = userMapper.findAllAdmins(offset, pageSize);
+        int totalElements = userMapper.countAdmins();
+
+        return new Page<>(users, pageNumber, pageSize, totalElements);
     }
 
     public User findByUserId(String userName){

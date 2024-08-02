@@ -1,5 +1,6 @@
-package com.study.board2.dto;
+package com.study.board2.util;
 
+import com.study.board2.dto.User;
 import lombok.Data;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;

@@ -18,7 +18,7 @@
         VALUES (#{idx}, NOW())
     </insert>
 
-    <update id="updateUseYn" parameterType="com.study.board2.dto.UpdateStatusRequest">
+    <update id="updateUseYn" parameterType="com.study.board2.util.UpdateStatusRequest">
         UPDATE admin
         SET use_yn = #{useYn}
         WHERE idx IN

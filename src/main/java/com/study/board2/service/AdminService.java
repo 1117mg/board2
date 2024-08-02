@@ -1,12 +1,10 @@
 package com.study.board2.service;
 
-import com.study.board2.dto.UpdateStatusRequest;
+import com.study.board2.util.UpdateStatusRequest;
 import com.study.board2.repository.AdminMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.util.List;
 
 @RequiredArgsConstructor
 @Service

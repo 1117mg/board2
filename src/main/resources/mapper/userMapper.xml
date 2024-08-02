@@ -11,6 +11,7 @@
                 LEFT JOIN
             member m ON u.idx = m.idx
         WHERE u.user_role="ROLE_USER"
+        LIMIT #{offset}, #{pageSize}
     </select>
 
     <select id="findAllAdmins" resultType="com.study.board2.dto.User">
@@ -21,6 +22,15 @@
                 LEFT JOIN
             admin a ON u.idx = a.idx
         WHERE u.user_role="ROLE_ADMIN"
+        LIMIT #{offset}, #{pageSize}
+    </select>
+
+    <select id="countMembers" resultType="int">
+        SELECT COUNT(*) FROM member
+    </select>
+
+    <select id="countAdmins" resultType="int">
+        SELECT COUNT(*) FROM admin
     </select>
 
     <select id="findByUserId" parameterType="String" resultType="com.study.board2.dto.User">

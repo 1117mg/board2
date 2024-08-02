@@ -1,15 +1,12 @@
 package com.study.board2.service;
 
 
-import com.study.board2.dto.Mail;
-import com.study.board2.dto.User;
-import com.study.board2.repository.UserMapper;
+import com.study.board2.util.Mail;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.concurrent.TimeUnit;

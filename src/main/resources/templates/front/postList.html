@@ -15,7 +15,7 @@
     <div class="d-flex justify-content-between align-items-center mb-3">
         <h1 th:if="${boardIdx == 1}">공지사항</h1>
         <h1 th:if="${boardIdx == 2}">1:1 문의</h1>
-        <a th:href="@{'/front/board/'+${boardIdx}+'/post/write'}" class="btn btn-primary">글 작성</a>
+        <a id="writePostBtn" th:href="@{'/front/board/' + ${boardIdx} + '/post/write'}" class="btn btn-primary">글 작성</a>
     </div>
     <table class="table table-striped">
         <thead>
@@ -42,24 +42,52 @@
         </tr>
         </tbody>
     </table>
-</div>
 
+    <nav aria-label="Page navigation">
+        <ul class="pagination justify-content-center">
+            <!-- 이전 페이지 버튼 -->
+            <li class="page-item" th:classappend="${currentPage == 1} ? 'disabled'">
+                <a class="page-link" th:href="@{|/front/board/${boardIdx}/posts?page=${currentPage > 1 ? currentPage - 1 : 1}|}" aria-label="Previous">
+                    <span aria-hidden="true">&laquo;</span>
+                </a>
+            </li>
+
+            <!-- 페이지 번호 버튼들 -->
+            <li class="page-item" th:each="pageNum : ${#numbers.sequence(1, totalPages)}"
+                th:classappend="${pageNum == currentPage} ? 'active'">
+                <a class="page-link" th:href="@{'/front/board/' + ${boardIdx} + '/posts?page=' + ${pageNum}}" th:text="${pageNum}">1</a>
+            </li>
+
+            <!-- 다음 페이지 버튼 -->
+            <li class="page-item" th:classappend="${currentPage == totalPages} ? 'disabled'">
+                <a class="page-link" th:href="@{|/front/board/${boardIdx}/posts?page=${currentPage < totalPages ? currentPage + 1 : totalPages}|}" aria-label="Next">
+                    <span aria-hidden="true">&raquo;</span>
+                </a>
+            </li>
+        </ul>
+    </nav>
+</div>
+<input type="hidden" id="loginRequired" name="loginRequired" th:value="${loginRequired}">
 <div th:replace="include/footer::front"></div>
 
 <script>
     $(document).ready(function() {
-        var loginRequired = /*[[${loginRequired}]]*/ false;
+        var loginRequired = $("#loginRequired").val();
+        console.log('Login Required:', loginRequired);  // 값을 콘솔에 출력해 확인
 
-        if (loginRequired) {
-            Swal.fire({
-                icon: 'warning',
-                title: '로그인 필요',
-                text: '글 작성 권한이 없습니다. 로그인 페이지로 이동합니다.',
-                confirmButtonText: '확인'
-            }).then(() => {
-                window.location.href = '/front/auth/login';
-            });
-        }
+        $('#writePostBtn').click(function(event) {
+            if (loginRequired) {
+                event.preventDefault();  // 기본 동작 방지
+                Swal.fire({
+                    icon: 'warning',
+                    title: '로그인 필요',
+                    text: '글 작성 권한이 없습니다. 로그인 페이지로 이동합니다.',
+                    confirmButtonText: '확인'
+                }).then(() => {
+                    window.location.href = '/front/auth/login';
+                });
+            }
+        });
     });
 </script>
 </body>

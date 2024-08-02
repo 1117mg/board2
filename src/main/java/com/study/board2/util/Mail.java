@@ -1,4 +1,4 @@
-package com.study.board2.dto;
+package com.study.board2.util;
 
 import lombok.Getter;
 import lombok.NoArgsConstructor;
