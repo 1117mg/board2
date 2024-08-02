@@ -1,4 +1,4 @@
-package com.study.board2.email;
+package com.study.board2.global;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
