@@ -22,4 +22,7 @@ public class User {
     // Member(ROLE_USER) 또는 Admin(ROLE_ADMIN) 테이블에 저장될 세부정보
     private String userName;
     private String userEmail;
+
+    // 관리자 사용 여부
+    private boolean useYn;
 }

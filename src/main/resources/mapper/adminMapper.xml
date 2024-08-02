@@ -17,4 +17,13 @@
         INSERT INTO login_history (user_idx, login_time)
         VALUES (#{idx}, NOW())
     </insert>
+
+    <update id="updateUseYn" parameterType="com.study.board2.dto.UpdateStatusRequest">
+        UPDATE admin
+        SET use_yn = #{useYn}
+        WHERE idx IN
+        <foreach item="id" index="index" collection="ids" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </update>
 </mapper>

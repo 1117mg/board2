@@ -5,6 +5,8 @@
     <title>관리자 목록</title>
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
     <link rel="stylesheet" th:href="@{/css/layout.css}">
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 </head>
 <body>
 <div th:replace="include/header::master"></div>
@@ -14,18 +16,24 @@
         <h1>관리자 목록</h1>
         <a th:href="@{'/master/user/new'}" class="btn btn-primary">관리자 등록</a>
     </div>
+    <div>
+        <button type="button" id="selectUseButton" class="btn btn-success">선택 사용</button>
+        <button type="button" id="selectNotUseButton" class="btn btn-danger">선택 미사용</button>
+    </div>
     <table class="table table-striped">
         <thead>
         <tr>
-            <th class="one wide">번호</th>
-            <th class="ten wide">아이디</th>
-            <th class="two wide">이름</th>
-            <th class="three wide">이메일</th>
-            <th class="four wide">가입일</th>
+            <th class="one wide"><input type="checkbox" id="selectAll"></th>
+            <th class="ten wide">번호</th>
+            <th class="two wide">아이디</th>
+            <th class="three wide">이름</th>
+            <th class="four wide">이메일</th>
+            <th class="five wide">가입일</th>
         </tr>
         </thead>
         <tbody>
         <tr th:each="user : ${users}">
+            <td><input type="checkbox" class="user-checkbox" th:data-idx="${user.idx}" th:data-checked="${user.useYn}"></td>
             <td th:text="${user.idx}">1</td>
             <td>
                 <a th:href="@{'/master/user/' + ${user.idx}}">
@@ -40,5 +48,86 @@
     </table>
 </div>
 <div th:replace="include/footer::master"></div>
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const selectAllCheckbox = document.getElementById('selectAll');
+        const checkboxes = document.querySelectorAll('.user-checkbox');
+
+        // 전체 선택 체크박스 이벤트 리스너
+        selectAllCheckbox.addEventListener('change', function() {
+            checkboxes.forEach(checkbox => {
+                checkbox.checked = selectAllCheckbox.checked;
+            });
+        });
+
+        // 각 체크박스의 상태를 변경했을 때 thead 체크박스 상태를 업데이트
+        checkboxes.forEach(checkbox => {
+            checkbox.addEventListener('change', function() {
+                updateSelectAllCheckbox();
+            });
+        });
+
+        // 초기 상태 설정
+        function updateSelectAllCheckbox() {
+            const allChecked = Array.from(checkboxes).every(checkbox => checkbox.checked);
+            selectAllCheckbox.checked = allChecked;
+        }
+
+        // 선택 사용 버튼 클릭 이벤트
+        document.getElementById('selectUseButton').addEventListener('click', function() {
+            updateUseYn(true);
+        });
+
+        // 선택 미사용 버튼 클릭 이벤트
+        document.getElementById('selectNotUseButton').addEventListener('click', function() {
+            updateUseYn(false);
+        });
+
+        // useYn 값을 업데이트하는 함수
+        function updateUseYn(useYn) {
+            const selectedIds = Array.from(checkboxes)
+                .filter(checkbox => checkbox.checked)
+                .map(checkbox => checkbox.dataset.idx);
+
+            if (selectedIds.length === 0) {
+                Swal.fire({
+                    icon: 'error',
+                    title: '선택 오류',
+                    text: '선택된 항목이 없습니다.',
+                });
+                return;
+            }
+
+            $.ajax({
+                url: '/master/user/updateStatus',
+                method: 'POST',
+                contentType: 'application/json',
+                data: JSON.stringify({
+                    ids: selectedIds,
+                    useYn: useYn
+                }),
+                success: function(response) {
+                    Swal.fire({
+                        icon: 'success',
+                        title: '업데이트 완료',
+                        text: '업데이트가 완료되었습니다.',
+                    }).then(() => {
+                        location.reload(); // 페이지 새로 고침
+                    });
+                },
+                error: function() {
+                    Swal.fire({
+                        icon: 'error',
+                        title: '업데이트 실패',
+                        text: '업데이트에 실패했습니다.',
+                    });
+                }
+            });
+        }
+
+        // 초기 상태 설정
+        updateSelectAllCheckbox();
+    });
+</script>
 </body>
 </html>

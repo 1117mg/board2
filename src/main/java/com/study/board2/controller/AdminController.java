@@ -22,6 +22,7 @@ import org.springframework.web.bind.annotation.*;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -98,6 +99,16 @@ public class AdminController {
         List<User> users = userService.getAllAdmins();
         model.addAttribute("users", users);
         return "master/adminList";
+    }
+
+    @PostMapping("/user/updateStatus")
+    public ResponseEntity<?> updateStatus(@RequestBody UpdateStatusRequest request) {
+        try {
+            adminService.updateAdminStatus(request);
+            return new ResponseEntity<>(HttpStatus.OK);
+        } catch (Exception e) {
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+        }
     }
 
     @GetMapping("/user/{idx}")
@@ -178,7 +189,6 @@ public class AdminController {
         }
     }
 
-    // 예외 처리 핸들러 추가 (선택 사항)
     @ExceptionHandler(Exception.class)
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
     public ResponseEntity<Map<String, String>> handleAllExceptions(Exception ex) {

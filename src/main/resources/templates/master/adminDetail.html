@@ -12,7 +12,7 @@
 <body>
 <div th:replace="include/header::master"></div>
 <h1>관리자 상세</h1>
-<form th:action="@{'/master/user/' + ${user.idx}}" method="post" th:object="${user}">
+<form id="adminForm" th:action="@{'/master/user/' + ${user.idx}}" method="post" th:object="${user}">
     <table class="tb tb_row">
         <colgroup>
             <col style="width:15%;" /><col style="width:35%;" /><col style="width:15%;" /><col style="width:35%;" />
@@ -46,6 +46,22 @@
         <tr>
             <th>가입일</th>
             <td colspan="3" th:text="*{#temporals.format(regDate, 'yyyy-MM-dd')}"></td>
+        </tr>
+
+        <tr>
+            <th>사용 여부</th>
+            <td>
+                <div class="form-check">
+                    <input type="radio" id="Use" name="useYn" value="true" class="form-check-input"
+                           th:checked="*{useYn}" />
+                    <label for="Use" class="form-check-label">사용</label>
+                </div>
+                <div class="form-check">
+                    <input type="radio" id="notUse" name="useYn" value="false" class="form-check-input"
+                           th:checked="*{!useYn}" />
+                    <label for="notUse" class="form-check-label">미사용</label>
+                </div>
+            </td>
         </tr>
         </tbody>
     </table>
@@ -102,8 +118,50 @@
 <div th:replace="include/footer::master"></div>
 <script>
     $(document).ready(function() {
+        // 목록 버튼 클릭 이벤트
         $("#listButton").on('click', function () {
             window.location.href = "/master/users";
+        });
+
+        // 폼 제출 이벤트
+        $("#adminForm").on('submit', function(event) {
+            event.preventDefault(); // 기본 폼 제출 방지
+
+            // 입력 값 검증
+            const userName = $("#userName").val().trim();
+            const userEmail = $("#userEmail").val().trim();
+
+            if (!userName || !userEmail) {
+                Swal.fire({
+                    icon: 'error',
+                    title: '입력 오류',
+                    text: '모든 필드를 올바르게 입력해 주세요.',
+                });
+                return;
+            }
+
+            // 폼 데이터 전송
+            $.ajax({
+                url: $(this).attr('action'),
+                method: 'POST',
+                data: $(this).serialize(),
+                success: function(response) {
+                    Swal.fire({
+                        icon: 'success',
+                        title: '수정 완료',
+                        text: '사용자 정보가 성공적으로 수정되었습니다.',
+                    }).then(() => {
+                        window.location.href = "/master/user/"+$("#idx").val(); // 수정 완료 후 목록 페이지로 이동
+                    });
+                },
+                error: function() {
+                    Swal.fire({
+                        icon: 'error',
+                        title: '수정 실패',
+                        text: '사용자 정보 수정 중 오류가 발생했습니다.',
+                    });
+                }
+            });
         });
     });
 </script>

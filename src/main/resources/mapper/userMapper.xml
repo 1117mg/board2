@@ -84,8 +84,8 @@
 
     <!-- 관리자 데이터 삽입 -->
     <insert id="insertAdmin" parameterType="com.study.board2.dto.User">
-        INSERT INTO admin (idx, user_name, user_email)
-        VALUES (#{idx}, #{userName}, #{userEmail})
+        INSERT INTO admin (idx, user_name, user_email, use_yn)
+        VALUES (#{idx}, #{userName}, #{userEmail}, true)
     </insert>
 
     <update id="updateMember" parameterType="com.study.board2.dto.User">
@@ -96,7 +96,7 @@
 
     <update id="updateAdmin" parameterType="com.study.board2.dto.User">
         UPDATE admin
-        SET user_name=#{userName}, user_email=#{userEmail}
+        SET user_name=#{userName}, user_email=#{userEmail}, use_yn=#{useYn}
         WHERE idx=#{idx}
     </update>
 
