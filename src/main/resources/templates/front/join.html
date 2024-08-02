@@ -2,47 +2,89 @@
 <html lang="ko" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <title>회원 가입 페이지</title>
+    <title>회원 가입</title>
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
-    <link rel="stylesheet" th:href="@{/css/layout.css}">
+    <link rel="stylesheet" th:href="@{/css/join.css}">
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 </head>
 <body>
-<div th:replace="include/header::front"></div>
-<h1>회원 가입 페이지</h1>
-<div>
-    <form th:action="@{/front/auth/join}" method="post" id="joinForm" th:object="${joinForm}">
-        <div class="mb-3">
-            <label for="loginId">아이디</label>
-            <input type="text" name="loginId" id="loginId" th:field="*{loginId}" class="form-control" required>
-            <input class="btn btn-outline-primary btn-sm idCheck mx-1" type="button" id="userIdOverlay" onclick="userIdCheck()" value="중복 체크"/>
-            <input class="btn btn-outline-success btn-sm reType" type="button" id="resetUserId" onclick="reUserId()" disabled value="다시입력"/>
-        </div>
-        <div class="mb-3">
-            <label for="loginPw">비밀번호</label>
-            <input type="password" name="loginPw" id="loginPw" th:field="*{loginPw}" class="form-control" required>
-        </div>
-        <div class="mb-3">
-            <label for="loginPwCheck">비밀번호 확인</label>
-            <input type="password" name="loginPwCheck" id="loginPwCheck" th:field="*{loginPwCheck}" class="form-control" required>
-        </div>
-        <div class="mb-3">
-            <label for="userName">이름</label>
-            <input type="text" name="userName" id="userName" th:field="*{userName}" class="form-control" required>
-            <input class="btn btn-outline-primary btn-sm idCheck mx-1" type="button" id="usernameOverlay" onclick="usernameCheck()" value="중복 체크"/>
-            <input class="btn btn-outline-success btn-sm reType" type="button" id="resetUsername" onclick="reUsername()" disabled value="다시입력"/>
-        </div>
-        <div class="mb-3">
-            <label for="userEmail">이메일</label>
-            <input type="text" name="userEmail" id="userEmail" th:field="*{userEmail}" class="form-control" required>
-        </div>
-        <button type="submit" class="btn btn-primary">가입하기</button>
-    </form>
+<div class="container">
+    <h1>회원 가입</h1>
+    <div>
+        <form th:action="@{/front/auth/join}" method="post" id="joinForm" th:object="${joinForm}">
+            <div class="mb-3">
+                <label for="loginId">아이디</label>
+                <div class="input-group">
+                    <input type="text" name="loginId" id="loginId" th:field="*{loginId}" class="form-control" required>
+                    <div class="input-group-append">
+                        <input class="btn btn-outline-primary btn-sm idCheck" type="button" id="userIdOverlay" onclick="userIdCheck()" value="중복 체크"/>
+                        <input class="btn btn-outline-success btn-sm reType" type="button" id="resetUserId" onclick="reUserId()" disabled value="다시입력"/>
+                    </div>
+                </div>
+            </div>
+            <div class="mb-3">
+                <label for="loginPw">비밀번호</label>
+                <input type="password" name="loginPw" id="loginPw" th:field="*{loginPw}" class="form-control" required>
+            </div>
+            <div class="mb-3">
+                <label for="loginPwCheck">비밀번호 확인</label>
+                <input type="password" name="loginPwCheck" id="loginPwCheck" th:field="*{loginPwCheck}" class="form-control" required>
+            </div>
+            <div class="mb-3">
+                <label for="userName">이름</label>
+                <div class="input-group">
+                    <input type="text" name="userName" id="userName" th:field="*{userName}" class="form-control" required>
+                    <div class="input-group-append">
+                        <input class="btn btn-outline-primary btn-sm idCheck" type="button" id="usernameOverlay" onclick="usernameCheck()" value="중복 체크"/>
+                        <input class="btn btn-outline-success btn-sm reType" type="button" id="resetUsername" onclick="reUsername()" disabled value="다시입력"/>
+                    </div>
+                </div>
+            </div>
+            <div class="mb-3">
+                <label for="userEmailId">이메일</label>
+                <div class="email-input-group">
+                    <input type="text" name="userEmail" id="userEmailId" class="form-control email-input" placeholder="example" required>
+                    <span>@</span>
+                    <input type="text" id="userEmailDomainId" class="form-control email-domain-input" placeholder="domain.com" required readonly>
+                    <select name="userEmailDomain" id="userEmailDomain" class="form-control email-domain-select" required>
+                        <option value="custom">직접 입력</option>
+                        <option value="naver.com">naver.com</option>
+                        <option value="gmail.com">gmail.com</option>
+                        <option value="nate.com">nate.com</option>
+                        <option value="kakao.com">kakao.com</option>
+                        <option value="hanmail.net">hanmail.net</option>
+                    </select>
+                </div>
+            </div>
+            <div class="button-container">
+                <button type="submit" class="btn btn-primary">가입하기</button>
+            </div>
+        </form>
+    </div>
+    <div th:replace="include/footer::front"></div>
 </div>
-<div th:replace="include/footer::front"></div>
 <script>
     $(document).ready(function() {
+        let isUserIdChecked = false;
+        let isUsernameChecked = false;
+
+        $('#userEmailDomain').change(function() {
+            var selectedValue = $(this).val();
+            if (selectedValue === 'custom') {
+                $('#userEmailDomainId').prop('readonly', false).focus();
+            } else {
+                $('#userEmailDomainId').val(selectedValue).prop('readonly', true);
+            }
+        });
+
+        var initialValue = $('#userEmailDomain').val();
+        if (initialValue === 'custom') {
+            $('#userEmailDomainId').prop('readonly', false);
+        } else {
+            $('#userEmailDomainId').val(initialValue).prop('readonly', true);
+        }
+
         function validateForm() {
             let isValid = true;
 
@@ -71,6 +113,25 @@
                     confirmButtonText: '확인'
                 }).then(() => {
                     $('#loginPwCheck').focus();
+                });
+                isValid = false;
+            }
+
+            // 중복 체크 완료 여부 확인
+            if (!isUserIdChecked) {
+                Swal.fire({
+                    icon: 'error',
+                    title: '중복 체크 필요',
+                    text: "아이디 중복 체크를 완료해주세요.",
+                });
+                isValid = false;
+            }
+
+            if (!isUsernameChecked) {
+                Swal.fire({
+                    icon: 'error',
+                    title: '중복 체크 필요',
+                    text: "이름 중복 체크를 완료해주세요.",
                 });
                 isValid = false;
             }
@@ -142,6 +203,7 @@
                                 $("#loginId").attr("readonly", true);
                                 $("#userIdOverlay").attr("disabled", true).hide();
                                 $("#resetUserId").attr("disabled", false).show();
+                                isUserIdChecked = true;
                             }
                         });
                     } else if (result.result === 1) {
@@ -205,6 +267,7 @@
                                 $("#userName").attr("readonly", true);
                                 $("#usernameOverlay").attr("disabled", true).hide();
                                 $("#resetUsername").attr("disabled", false).show();
+                                isUsernameChecked = true;
                             }
                         });
                     } else if (result.result === 1) {

@@ -5,73 +5,113 @@
     <title>관리자 등록</title>
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
-    <link rel="stylesheet" th:href="@{/css/layout.css}">
+    <link rel="stylesheet" th:href="@{/css/join.css}">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
     <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.bundle.min.js"></script>
 </head>
 <body>
-<div th:replace="include/header::master"></div>
-<h1>관리자 등록</h1>
-<form th:action="@{/master/user/new}" method="post" id="joinForm" th:object="${joinForm}">
-    <div class="mb-3">
-        <label for="loginId">아이디</label>
-        <input type="text" name="loginId" id="loginId" th:field="*{loginId}" class="form-control" required>
-        <input class="btn btn-outline-primary btn-sm idCheck mx-1" type="button" id="userIdOverlay" onclick="userIdCheck()" value="중복 체크"/>
-        <input class="btn btn-outline-success btn-sm reType" type="button" id="resetUserId" onclick="reUserId()" disabled value="다시입력"/>
-    </div>
-    <div class="mb-3">
-        <label for="loginPw">비밀번호</label>
-        <input type="password" name="loginPw" id="loginPw" th:field="*{loginPw}" class="form-control" required>
-    </div>
-    <div class="mb-3">
-        <label for="loginPwCheck">비밀번호 확인</label>
-        <input type="password" name="loginPwCheck" id="loginPwCheck" th:field="*{loginPwCheck}" class="form-control" required>
-    </div>
-    <div class="mb-3">
-        <label for="userName">이름</label>
-        <input type="text" name="userName" id="userName" th:field="*{userName}" class="form-control" required>
-        <input class="btn btn-outline-primary btn-sm idCheck mx-1" type="button" id="usernameOverlay" onclick="usernameCheck()" value="중복 체크"/>
-        <input class="btn btn-outline-success btn-sm reType" type="button" id="resetUsername" onclick="reUsername()" disabled value="다시입력"/>
-    </div>
-    <div class="mb-3">
-        <label for="userEmail">이메일</label>
-        <input type="text" name="userEmail" id="userEmail" th:field="*{userEmail}" class="form-control">
-    </div>
-    <div class="button-container">
-        <button type="submit" class="btn btn-primary">등록</button>
-        <button type="button" id="listButton" class="btn btn-secondary">
-            목록 <i class="fas fa-list"></i>
-        </button>
-    </div>
-</form>
+<div class="container">
+    <h1>관리자 등록</h1>
+    <form th:action="@{/master/user/new}" method="post" id="joinForm" th:object="${joinForm}">
+        <div class="mb-3">
+            <label for="loginId">아이디</label>
+            <div class="input-group">
+                <input type="text" name="loginId" id="loginId" th:field="*{loginId}" class="form-control" required>
+                <div class="input-group-append">
+                    <input class="btn btn-outline-primary btn-sm idCheck" type="button" id="userIdOverlay" onclick="userIdCheck()" value="중복 체크"/>
+                    <input class="btn btn-outline-success btn-sm reType" type="button" id="resetUserId" onclick="reUserId()" disabled value="다시입력"/>
+                </div>
+            </div>
+        </div>
+        <div class="mb-3">
+            <label for="loginPw">비밀번호</label>
+            <input type="password" name="loginPw" id="loginPw" th:field="*{loginPw}" class="form-control" required>
+        </div>
+        <div class="mb-3">
+            <label for="loginPwCheck">비밀번호 확인</label>
+            <input type="password" name="loginPwCheck" id="loginPwCheck" th:field="*{loginPwCheck}" class="form-control" required>
+        </div>
+        <div class="mb-3">
+            <label for="userName">이름</label>
+            <div class="input-group">
+                <input type="text" name="userName" id="userName" th:field="*{userName}" class="form-control" required>
+                <div class="input-group-append">
+                    <input class="btn btn-outline-primary btn-sm idCheck" type="button" id="usernameOverlay" onclick="usernameCheck()" value="중복 체크"/>
+                    <input class="btn btn-outline-success btn-sm reType" type="button" id="resetUsername" onclick="reUsername()" disabled value="다시입력"/>
+                </div>
+            </div>
+        </div>
+        <div class="mb-3">
+            <label for="userEmailId">이메일</label>
+            <div class="email-input-group">
+                <input type="text" name="userEmail" id="userEmailId" class="form-control email-input" placeholder="example" required>
+                <span>@</span>
+                <input type="text" id="userEmailDomainId" class="form-control email-domain-input" placeholder="domain.com" required readonly>
+                <select name="userEmailDomain" id="userEmailDomain" class="form-control email-domain-select" required>
+                    <option value="custom">직접 입력</option>
+                    <option value="naver.com">naver.com</option>
+                    <option value="gmail.com">gmail.com</option>
+                    <option value="nate.com">nate.com</option>
+                    <option value="kakao.com">kakao.com</option>
+                    <option value="hanmail.net">hanmail.net</option>
+                </select>
+            </div>
+        </div>
+        <div class="button-container">
+            <button type="submit" class="btn btn-success btn-custom">등록</button>
+            <button type="button" id="listButton" class="btn btn-secondary btn-custom">
+                <i class="fas fa-list"></i>
+            </button>
+        </div>
+    </form>
 
-<!-- 성공 모달 -->
-<div class="modal fade" id="successModal" tabindex="-1" role="dialog" aria-labelledby="successModalLabel" aria-hidden="true">
-    <div class="modal-dialog" role="document">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="successModalLabel">등록 성공</h5>
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
-                </button>
-            </div>
-            <div class="modal-body">
-                관리자 등록이 성공적으로 완료되었습니다.
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-primary" id="redirectButton">확인</button>
+    <!-- 성공 모달 -->
+    <div class="modal fade" id="successModal" tabindex="-1" role="dialog" aria-labelledby="successModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="successModalLabel">등록 성공</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    관리자 등록이 성공적으로 완료되었습니다.
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-primary" id="redirectButton">확인</button>
+                </div>
             </div>
         </div>
     </div>
+    <div th:replace="include/footer::master"></div>
 </div>
-<div th:replace="include/footer::master"></div>
 <script>
     $(document).ready(function() {
+        let isUserIdChecked = false;
+        let isUsernameChecked = false;
+
         $("#listButton").on('click', function() {
             window.location.href = "/master/users";
         });
+
+        $('#userEmailDomain').change(function() {
+            var selectedValue = $(this).val();
+            if (selectedValue === 'custom') {
+                $('#userEmailDomainId').prop('readonly', false).focus();
+            } else {
+                $('#userEmailDomainId').val(selectedValue).prop('readonly', true);
+            }
+        });
+
+        var initialValue = $('#userEmailDomain').val();
+        if (initialValue === 'custom') {
+            $('#userEmailDomainId').prop('readonly', false);
+        } else {
+            $('#userEmailDomainId').val(initialValue).prop('readonly', true);
+        }
 
         function validateForm() {
             let isValid = true;
@@ -79,7 +119,11 @@
             // 모든 필수 입력 필드 체크
             $('#joinForm input').each(function() {
                 if ($(this).val().trim() === '') {
-                    alert($(this).prev('label').text() + ' 필드는 필수입니다.');
+                    Swal.fire({
+                        icon: 'error',
+                        title: '입력 오류',
+                        text: $(this).prev('label').text() + ' 필드는 필수입니다.',
+                    });
                     $(this).focus();
                     isValid = false;
                     return false;
@@ -88,13 +132,37 @@
 
             // 비밀번호와 비밀번호 확인 일치 여부 확인
             if ($('#loginPw').val().trim() !== $('#loginPwCheck').val().trim()) {
-                alert("비밀번호와 비밀번호 확인이 일치하지 않습니다.");
+                Swal.fire({
+                    icon: 'error',
+                    title: '비밀번호 오류',
+                    text: "비밀번호와 비밀번호 확인이 일치하지 않습니다.",
+                });
                 $('#loginPwCheck').focus();
+                isValid = false;
+            }
+
+            // 중복 체크 완료 여부 확인
+            if (!isUserIdChecked) {
+                Swal.fire({
+                    icon: 'error',
+                    title: '중복 체크 필요',
+                    text: "아이디 중복 체크를 완료해주세요.",
+                });
+                isValid = false;
+            }
+
+            if (!isUsernameChecked) {
+                Swal.fire({
+                    icon: 'error',
+                    title: '중복 체크 필요',
+                    text: "이름 중복 체크를 완료해주세요.",
+                });
                 isValid = false;
             }
 
             return isValid;
         }
+
 
         $('#joinForm').on('submit', function(event) {
             event.preventDefault(); // 기본 폼 제출 방지
@@ -108,10 +176,8 @@
                 url: $(this).attr('action'),
                 data: $(this).serialize(),
                 success: function(response) {
-                    // 성공 모달 표시
                     $('#successModal').modal('show');
 
-                    // 모달의 확인 버튼 클릭 시 리다이렉트
                     $('#redirectButton').on('click', function() {
                         if (response.redirectUrl) {
                             window.location.href = response.redirectUrl;
@@ -119,7 +185,11 @@
                     });
                 },
                 error: function(request, status, error) {
-                    alert("관리자 등록 실패: " + request.status + " - " + error);
+                    Swal.fire({
+                        icon: 'error',
+                        title: '등록 실패',
+                        text: "관리자 등록 실패: " + request.status + " - " + error,
+                    });
                 }
             });
         });
@@ -127,7 +197,11 @@
         function userIdCheck() {
             const userId = $("#loginId").val().trim();
             if (userId === "") {
-                alert("아이디를 입력해주세요!. 필수항목입니다.");
+                Swal.fire({
+                    icon: 'error',
+                    title: '입력 오류',
+                    text: "아이디를 입력해주세요! 필수항목입니다.",
+                });
                 $("#loginId").focus();
                 return false;
             }
@@ -138,23 +212,42 @@
                 dataType: "JSON",
                 success: function (result) {
                     if (result.result === 0) {
-                        if (confirm("이 아이디는 사용 가능합니다. \n사용하시겠습니까?")) {
-                            $("#loginId").attr("readonly", true);
-                            $("#userIdOverlay").attr("disabled", true);
-                            $("#userIdOverlay").css("display", "none");
-                            $("#resetUserId").attr("disabled", false);
-                            $("#resetUserId").css("display", "inline-block");
-                        }
+                        Swal.fire({
+                            icon: 'success',
+                            title: '사용 가능',
+                            text: "이 아이디는 사용 가능합니다. \n사용하시겠습니까?",
+                            showCancelButton: true,
+                            confirmButtonText: '사용',
+                            cancelButtonText: '취소'
+                        }).then((result) => {
+                            if (result.isConfirmed) {
+                                $("#loginId").attr("readonly", true);
+                                $("#userIdOverlay").attr("disabled", true).hide();
+                                $("#resetUserId").attr("disabled", false).show();
+                                isUserIdChecked = true;
+                            }
+                        });
                     } else if (result.result === 1) {
-                        alert("이미 사용중인 아이디입니다.");
+                        Swal.fire({
+                            icon: 'error',
+                            title: '중복 오류',
+                            text: "이미 사용중인 아이디입니다.",
+                        });
                         $("#loginId").focus();
                     } else {
-                        alert("응답값이 잘못되었습니다.");
+                        Swal.fire({
+                            icon: 'error',
+                            title: '응답 오류',
+                            text: "응답값이 잘못되었습니다.",
+                        });
                     }
                 },
                 error: function (request, status, error) {
-                    alert("ajax 실행 실패");
-                    alert("code:" + request.status + "\n" + "error :" + error);
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'AJAX 실패',
+                        text: "ajax 실행 실패\ncode:" + request.status + "\nerror :" + error,
+                    });
                 }
             });
         }
@@ -162,7 +255,11 @@
         function usernameCheck() {
             const username = $("#userName").val().trim();
             if (username === "") {
-                alert("이름을 입력해주세요!. 필수항목입니다.");
+                Swal.fire({
+                    icon: 'error',
+                    title: '입력 오류',
+                    text: "이름을 입력해주세요! 필수항목입니다.",
+                });
                 $("#userName").focus();
                 return false;
             }
@@ -173,41 +270,56 @@
                 dataType: "JSON",
                 success: function (result) {
                     if (result.result === 0) {
-                        if (confirm("이 이름은 사용 가능합니다. \n사용하시겠습니까?")) {
-                            $("#userName").attr("readonly", true);
-                            $("#usernameOverlay").attr("disabled", true);
-                            $("#usernameOverlay").css("display", "none");
-                            $("#resetUsername").attr("disabled", false);
-                            $("#resetUsername").css("display", "inline-block");
-                        }
+                        Swal.fire({
+                            icon: 'success',
+                            title: '사용 가능',
+                            text: "이 이름은 사용 가능합니다. \n사용하시겠습니까?",
+                            showCancelButton: true,
+                            confirmButtonText: '사용',
+                            cancelButtonText: '취소'
+                        }).then((result) => {
+                            if (result.isConfirmed) {
+                                $("#userName").attr("readonly", true);
+                                $("#usernameOverlay").attr("disabled", true).hide();
+                                $("#resetUsername").attr("disabled", false).show();
+                                isUsernameChecked = true;
+                            }
+                        });
                     } else if (result.result === 1) {
-                        alert("이미 사용중인 이름입니다.");
+                        Swal.fire({
+                            icon: 'error',
+                            title: '중복 오류',
+                            text: "이미 사용중인 이름입니다.",
+                        });
                         $("#userName").focus();
                     } else {
-                        alert("응답값이 잘못되었습니다.");
+                        Swal.fire({
+                            icon: 'error',
+                            title: '응답 오류',
+                            text: "응답값이 잘못되었습니다.",
+                        });
                     }
                 },
                 error: function (request, status, error) {
-                    alert("ajax 실행 실패");
-                    alert("code:" + request.status + "\n" + "error :" + error);
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'AJAX 실패',
+                        text: "ajax 실행 실패\ncode:" + request.status + "\nerror :" + error,
+                    });
                 }
             });
         }
 
         function reUserId() {
             $("#loginId").attr("readonly", false);
-            $("#userIdOverlay").attr("disabled", false);
-            $("#userIdOverlay").css("display", "inline-block");
-            $("#resetUserId").attr("disabled", true);
-            $("#resetUserId").css("display", "none");
+            $("#userIdOverlay").attr("disabled", false).show();
+            $("#resetUserId").attr("disabled", true).hide();
         }
 
         function reUsername() {
             $("#userName").attr("readonly", false);
-            $("#usernameOverlay").attr("disabled", false);
-            $("#usernameOverlay").css("display", "inline-block");
-            $("#resetUsername").attr("disabled", true);
-            $("#resetUsername").css("display", "none");
+            $("#usernameOverlay").attr("disabled", false).show();
+            $("#resetUsername").attr("disabled", true).hide();
         }
 
         $('#userIdOverlay').on('click', userIdCheck);
