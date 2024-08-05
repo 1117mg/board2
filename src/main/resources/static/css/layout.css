@@ -115,10 +115,6 @@ button[type="button"] {
     margin-right: 10px; /* 아이콘과 텍스트 사이 여백 */
 }
 
-.post-info {
-    font-size: 0.9rem; /* 글자 크기 줄이기 */
-    color: #6c757d; /* 회색으로 설정 */
-}
 .btn-icon {
     width: 30px;
     height: 30px;
