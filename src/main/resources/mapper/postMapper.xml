@@ -57,11 +57,19 @@
     </select>
 
     <select id="countPostsByBoardId" resultType="int">
-        SELECT COUNT(*) FROM board_post WHERE board_idx = #{boardIdx}
+        SELECT COUNT(*) FROM board_post WHERE board_idx = #{boardIdx} AND delete_yn = 0
     </select>
 
-    <select id="findByIdx" parameterType="int" resultType="com.study.board2.dto.Post">
+    <select id="findPostByIdx" parameterType="int" resultType="com.study.board2.dto.Post">
         SELECT * FROM board_post WHERE idx = #{idx} AND delete_yn = 0
+    </select>
+
+    <select id="findPrevIdx" parameterType="int" resultType="int">
+        SELECT MAX(idx) FROM board_post WHERE board_idx = #{boardIdx} AND idx &lt; #{postId} AND delete_yn = 0
+    </select>
+
+    <select id="findNextIdx" parameterType="map" resultType="int">
+        SELECT MIN(idx) FROM board_post WHERE board_idx = #{boardIdx} AND idx &gt; #{postId} AND delete_yn = 0
     </select>
 
     <select id="findByParentId" parameterType="int" resultType="com.study.board2.dto.Post">

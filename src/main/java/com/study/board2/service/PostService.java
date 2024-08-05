@@ -31,7 +31,15 @@ public class PostService {
     }
 
     public Post getPostById(int postId) {
-        return postMapper.findByIdx(postId);
+        return postMapper.findPostByIdx(postId);
+    }
+
+    public Integer findPrevIdx(int boardIdx, int postId) {
+        return postMapper.findPrevIdx(boardIdx, postId);
+    }
+
+    public Integer findNextIdx(int boardIdx, int postId) {
+        return postMapper.findNextIdx(boardIdx, postId);
     }
 
     public Post getPostByParentId(int parentId){

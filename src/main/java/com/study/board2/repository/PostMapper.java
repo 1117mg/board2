@@ -15,7 +15,9 @@ public interface PostMapper {
                                @Param("offset") int offset,
                                @Param("pageSize") int pageSize);
     int countPostsByBoardId(@Param("boardIdx") int boardIdx);
-    Post findByIdx(@Param("idx") int idx);
+    Post findPostByIdx(@Param("idx") int idx);
+    Integer findPrevIdx(int boardIdx, int postId);
+    Integer findNextIdx(int boardIdx, int postId);
     Post findByParentId(@Param("parentIdx") int parentIdx);
     void insertPost(Post post);
     void replyPost(Post post);

@@ -14,6 +14,7 @@ public interface UserMapper {
                              @Param("pageSize") int pageSize);
     int countMembers();
     int countAdmins();
+    User findUserByIdx(int idx);
     User findByUserId(String userId);
     User findByUsername(String userName);
     User findByEmail(String userEmail);

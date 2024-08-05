@@ -59,6 +59,8 @@ public class UserService {
         return new Page<>(users, pageNumber, pageSize, totalElements);
     }
 
+    public User findUserByIdx(int idx){return userMapper.findUserByIdx(idx);}
+
     public User findByUserId(String userName){
         return userMapper.findByUserId(userName);
     }

@@ -6,6 +6,7 @@ import com.study.board2.dto.User;
 import com.study.board2.service.BoardService;
 import com.study.board2.service.PostService;
 import com.study.board2.service.UserService;
+import com.study.board2.util.MemberDetails;
 import com.study.board2.util.Page;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -41,6 +42,14 @@ public class BoardController {
         int pageSize = 7;
 
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        boolean isAuthenticated = !(authentication instanceof AnonymousAuthenticationToken);
+        Integer currentUserIdx = null;
+        String userRole = null;
+
+        if (isAuthenticated) {
+            currentUserIdx = ((MemberDetails) authentication.getPrincipal()).getUser().getIdx();
+            userRole = ((MemberDetails) authentication.getPrincipal()).getUser().getUserRole();
+        }
 
         // board_type이 200이면 계층형 게시판
         if ("200".equals(boardType)) {
@@ -54,6 +63,8 @@ public class BoardController {
             model.addAttribute("currentPage", hposts.getPageNumber());
             model.addAttribute("totalPages", hposts.getTotalPages());
             model.addAttribute("boardIdx", boardIdx);
+            model.addAttribute("currentUserIdx", currentUserIdx);
+            model.addAttribute("userRole", userRole);
         } else {
             if (authentication instanceof AnonymousAuthenticationToken) {
                 model.addAttribute("loginRequired", true);
@@ -64,6 +75,8 @@ public class BoardController {
             model.addAttribute("currentPage", posts.getPageNumber());
             model.addAttribute("totalPages", posts.getTotalPages());
             model.addAttribute("boardIdx", boardIdx);
+            model.addAttribute("currentUserIdx", currentUserIdx);
+            model.addAttribute("userRole", userRole);
         }
 
         return "front/postList";
@@ -84,13 +97,28 @@ public class BoardController {
         model.addAttribute("boardIdx", post.getBoardIdx());
         String boardType= boardService.getBoardType(post.getBoardIdx());
 
+        User writer=userService.findUserByIdx(post.getUserNo());
+        User writerDetail;
+        if("ROLE_USER".equals(writer.getUserRole())){
+            writerDetail = userService.findMemberByIdx(writer.getIdx());
+        }else{
+            writerDetail = userService.findAdminByIdx(writer.getIdx());
+        }
+        model.addAttribute("writer", writerDetail);
+
         // 권한 체크
-        boolean hasEditPermission = (post.getUserNo() == userNo);
+        boolean hasEditPermission = (writer.getIdx() == userNo);
         model.addAttribute("hasEditPermission", hasEditPermission);
 
         // 답글 작성 권한 체크
         boolean canReply = (userNo != 0 && "200".equals(boardType));
         model.addAttribute("canReply", canReply);
+
+        // 이전글 및 다음글 가져오기
+        Integer prevPostId = postService.findPrevIdx(post.getBoardIdx(), postId);
+        Integer nextPostId = postService.findNextIdx(post.getBoardIdx(), postId);
+        model.addAttribute("prevPostId", prevPostId);
+        model.addAttribute("nextPostId", nextPostId);
 
         return "front/postDetail";
     }

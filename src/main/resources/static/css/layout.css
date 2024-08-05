@@ -31,14 +31,14 @@ thead th {
     text-align: center; /* 중앙 정렬 */
 }
 
-.table th:nth-child(2),
-.table td:nth-child(2) {
+.board th:nth-child(2),
+.board td:nth-child(2) {
     width: 400px; /* 폭 조정 (원하는 크기로 변경 가능) */
 }
 
 /* 조회수 열 폭 조정 */
-.table th:nth-child(5),
-.table td:nth-child(5) {
+.board th:nth-child(5),
+.board td:nth-child(5) {
     width: 100px; /* 폭 조정 (원하는 크기로 변경 가능) */
 }
 
@@ -113,4 +113,43 @@ button[type="button"] {
     color: gray; /* 오렌지색 아이콘 */
     font-size: 1.1em; /* 아이콘 크기 */
     margin-right: 10px; /* 아이콘과 텍스트 사이 여백 */
+}
+
+.post-info {
+    font-size: 0.9rem; /* 글자 크기 줄이기 */
+    color: #6c757d; /* 회색으로 설정 */
+}
+.btn-icon {
+    width: 30px;
+    height: 30px;
+    padding: 0;
+    border: none;
+    background: transparent;
+}
+.btn-icon i {
+    font-size: 1.2rem; /* 아이콘 크기 설정 */
+    color: #007bff; /* 아이콘 색상 설정 */
+}
+.btn-icon:focus {
+    box-shadow: none; /* 포커스 시 외곽선 제거 */
+}
+
+.nav-buttons {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 1rem;
+}
+.nav-buttons button {
+    width: 120px; /* 버튼 너비 설정 */
+}
+
+/* 비밀글일 때 내용 숨기기 => 글 상세 */
+.hidden-content {
+    display: none;
+}
+
+/* 비밀글 표시 스타일 => 글 목록 */
+.secret-post-title {
+    color: gray;
+    font-style: italic;
 }

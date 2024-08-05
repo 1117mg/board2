@@ -33,6 +33,12 @@
         SELECT COUNT(*) FROM admin
     </select>
 
+    <select id="findUserByIdx" parameterType="int" resultType="com.study.board2.dto.User">
+        SELECT *
+        FROM user
+        WHERE idx=#{idx}
+    </select>
+
     <select id="findByUserId" parameterType="String" resultType="com.study.board2.dto.User">
         SELECT *
         FROM user

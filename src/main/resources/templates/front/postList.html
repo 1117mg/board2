@@ -18,7 +18,7 @@
         <h1 th:if="${boardIdx == 2}">1:1 문의</h1>
         <a id="writePostBtn" th:href="@{'/front/board/' + ${boardIdx} + '/post/write'}" class="btn btn-primary">글 작성</a>
     </div>
-    <table class="table">
+    <table class="table board">
         <thead>
         <tr>
             <th class="one wide">번호</th>
@@ -40,7 +40,11 @@
                         <i class="fas fa-bullhorn"></i> <!-- 공지 아이콘 -->
                     </span>
                     <span th:if="${post.depth > 0}" th:each="i : ${#numbers.sequence(1, post.depth)}" class="reply">&nbsp;↪RE:</span>
-                    <span th:text="${post.title}">제목</span>
+                    <!-- 비밀글 처리 -->
+                    <span th:if="${post.secretYn == true && (currentUserIdx == null || currentUserIdx != post.userNo) && userRole != 'ROLE_ADMIN'}" class="secret-post-title">
+                        비밀글입니다
+                    </span>
+                    <span th:unless="${post.secretYn == true && (currentUserIdx == null || currentUserIdx != post.userNo) && userRole != 'ROLE_ADMIN'}" th:text="${post.title}">제목</span>
                 </a>
             </td>
             <td th:text="${post.userNo}">작성자</td>
