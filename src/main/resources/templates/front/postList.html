@@ -41,8 +41,8 @@
                     </span>
                     <span th:if="${post.depth > 0}" th:each="i : ${#numbers.sequence(1, post.depth)}" class="reply">&nbsp;↪RE:</span>
                     <!-- 비밀글 처리 -->
-                    <span th:if="${post.secretYn == true && (currentUserIdx == null || currentUserIdx != post.userNo) && userRole != 'ROLE_ADMIN'}" class="secret-post-title">
-                        비밀글입니다
+                    <span th:if="${post.secretYn == true && (currentUserIdx == null || currentUserIdx != post.userNo) && userRole != 'ROLE_ADMIN'}" class="text-muted small">
+                        <i class="fas fa-lock"></i>비밀글
                     </span>
                     <span th:unless="${post.secretYn == true && (currentUserIdx == null || currentUserIdx != post.userNo) && userRole != 'ROLE_ADMIN'}" th:text="${post.title}">제목</span>
                 </a>

@@ -147,9 +147,3 @@ button[type="button"] {
 .hidden-content {
     display: none;
 }
-
-/* 비밀글 표시 스타일 => 글 목록 */
-.secret-post-title {
-    color: gray;
-    font-style: italic;
-}

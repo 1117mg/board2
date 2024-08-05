@@ -58,6 +58,7 @@ public class BoardController {
                 model.addAttribute("loginForm", new LoginForm());
                 return "front/login";
             }
+
             Page<Post> hposts = postService.getHPostsPageByBoardId(boardIdx, page, pageSize);
             model.addAttribute("posts", hposts.getContent());
             model.addAttribute("currentPage", hposts.getPageNumber());
