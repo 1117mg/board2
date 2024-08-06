@@ -16,6 +16,10 @@
     <div class="d-flex align-items-center">
         <h5 class="badge badge-primary mr-2" th:if="${boardIdx==1}">공지사항</h5>
         <h5 class="badge badge-primary mr-2" th:if="${boardIdx==2}">1:1문의</h5>
+        <span th:if="${post.noticeYn == true}" class="notice-icon">
+                        <i class="fas fa-bullhorn"></i> <!-- 공지 아이콘 -->
+                    </span>
+        <span th:if="${post.depth > 0}" th:each="i : ${#numbers.sequence(1, post.depth)}" class="reply">&nbsp;↪RE:</span>
         <h1 th:text="${post.title}">게시글 제목</h1>
     </div>
 
@@ -56,19 +60,36 @@
         </ul>
     </div>
 
-    <div class="nav-buttons">
-        <button type="button" class="btn btn-light" id="prevPostButton"
+    <!--일반 게시판-->
+    <div class="nav-buttons" th:if="${boardType=='100'}">
+        <button type="button" class="btn" id="prevPostButton"
                 th:if="${prevPostId != null}"
                 th:data-post-id="${prevPostId}"
                 style="display: block;">
             이전 글
         </button>
 
-        <button type="button" class="btn btn-light" id="nextPostButton"
+        <button type="button" class="btn" id="nextPostButton"
                 th:if="${nextPostId != null}"
                 th:data-post-id="${nextPostId}"
                 style="display: block;">
             다음 글
+        </button>
+    </div>
+
+    <!--계층형 게시판-->
+    <div class="nav-buttons" th:if="${boardType=='200'}">
+        <button type="button" class="btn" id="parentPostButton"
+                th:if="${parentPostId != null}"
+                th:data-post-id="${parentPostId}"
+                style="display: block;">
+            이전 글
+        </button>
+        <button type="button" class="btn" id="replyPostButton"
+                th:if="${replyPostId != null}"
+                th:data-post-id="${replyPostId}"
+                style="display: block;">
+            답변 글
         </button>
     </div>
 </div>
@@ -178,6 +199,20 @@
                 var nextPostId = $(this).data('post-id');
                 if (nextPostId) {
                     window.location.href = '/front/board/post/' + nextPostId;
+                }
+            });
+
+            $("#parentPostButton").on('click', function() {
+                var parentPostId = $(this).data('post-id');
+                if (parentPostId) {
+                    window.location.href = '/front/board/post/' + parentPostId;
+                }
+            });
+
+            $("#replyPostButton").on('click', function() {
+                var replyPostId = $(this).data('post-id');
+                if (replyPostId) {
+                    window.location.href = '/front/board/post/' + replyPostId;
                 }
             });
         }

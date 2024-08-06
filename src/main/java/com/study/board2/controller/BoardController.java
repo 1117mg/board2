@@ -93,10 +93,16 @@ public class BoardController {
         model.addAttribute("userNo", userNo);
 
         Post post = postService.getPostById(postId);
+        Post postInfo = postService.getHierarchy(postId);
+        if(postInfo!=null){
+            post.setDepth(postInfo.getDepth());
+            post.setParentIdx(postInfo.getParentIdx());
+        }
         post.setHits(postService.hit(postId));
         model.addAttribute("post", post);
         model.addAttribute("boardIdx", post.getBoardIdx());
         String boardType= boardService.getBoardType(post.getBoardIdx());
+        model.addAttribute("boardType",boardType);
 
         User writer=userService.findUserByIdx(post.getUserNo());
         User writerDetail;
@@ -118,8 +124,12 @@ public class BoardController {
         // 이전글 및 다음글 가져오기
         Integer prevPostId = postService.findPrevIdx(post.getBoardIdx(), postId);
         Integer nextPostId = postService.findNextIdx(post.getBoardIdx(), postId);
+        Integer replyPostId = postService.findReplyIdx(post.getIdx());
+        Integer parentPostId = postService.findParentIdx(post.getParentIdx());
         model.addAttribute("prevPostId", prevPostId);
         model.addAttribute("nextPostId", nextPostId);
+        model.addAttribute("replyPostId", replyPostId);
+        model.addAttribute("parentPostId", parentPostId);
 
         return "front/postDetail";
     }

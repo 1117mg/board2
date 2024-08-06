@@ -34,6 +34,10 @@ public class PostService {
         return postMapper.findPostByIdx(postId);
     }
 
+    public Post getHierarchy(int postId){
+        return postMapper.findHierarchy(postId);
+    }
+
     public Integer findPrevIdx(int boardIdx, int postId) {
         return postMapper.findPrevIdx(boardIdx, postId);
     }
@@ -44,6 +48,14 @@ public class PostService {
 
     public Post getPostByParentId(int parentId){
         return postMapper.findByParentId(parentId);
+    }
+
+    public Integer findParentIdx(int parentIdx){
+        return postMapper.findParentIdx(parentIdx);
+    }
+
+    public Integer findReplyIdx(int idx){
+        return postMapper.findReplyIdx(idx);
     }
 
     public int hit(int postId) {

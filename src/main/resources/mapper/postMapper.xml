@@ -15,7 +15,7 @@
             -- 최상위 부모 글 선택
             SELECT
                 bp.*,
-                hb.parent_id,
+                hb.parent_idx,
                 hb.depth,
                 hb.sorts,
                 bp.idx AS root_idx,  -- 최상위 부모의 idx를 유지
@@ -26,14 +26,14 @@
             WHERE
                 bp.board_idx = #{boardIdx}
               AND bp.delete_yn = 0
-              AND hb.parent_id IS NULL
+              AND hb.parent_idx IS NULL
 
             UNION ALL
 
             -- 부모 아래에 자식 글 추가
             SELECT
                 bp.*,
-                hb.parent_id,
+                hb.parent_idx,
                 hb.depth,
                 hb.sorts,
                 h.root_idx,  -- 같은 계층 구조의 부모 글을 유지
@@ -41,7 +41,7 @@
             FROM
                 board_post bp
                     JOIN hierarchical_board hb ON bp.idx = hb.post_idx
-                    JOIN Hierarchy h ON hb.parent_id = h.idx
+                    JOIN Hierarchy h ON hb.parent_idx = h.idx
             WHERE
                 bp.board_idx = #{boardIdx}
               AND bp.delete_yn = 0
@@ -64,6 +64,10 @@
         SELECT * FROM board_post WHERE idx = #{idx} AND delete_yn = 0
     </select>
 
+    <select id="findHierarchy" parameterType="int" resultType="com.study.board2.dto.Post">
+        SELECT * FROM hierarchical_board WHERE post_idx = #{idx}
+    </select>
+
     <select id="findPrevIdx" parameterType="int" resultType="int">
         SELECT MAX(idx) FROM board_post WHERE board_idx = #{boardIdx} AND idx &lt; #{postId} AND delete_yn = 0
     </select>
@@ -74,6 +78,14 @@
 
     <select id="findByParentId" parameterType="int" resultType="com.study.board2.dto.Post">
         SELECT * FROM hierarchical_board WHERE post_idx = #{parentIdx}
+    </select>
+
+    <select id="findParentIdx" parameterType="int" resultType="int">
+        SELECT MIN(post_idx) FROM hierarchical_board WHERE post_idx = #{parentIdx}
+    </select>
+
+    <select id="findReplyIdx" parameterType="int" resultType="int">
+        SELECT MIN(post_idx) FROM hierarchical_board WHERE parent_idx = #{idx}
     </select>
 
     <update id="hit" parameterType="int">
@@ -89,7 +101,7 @@
 
     <insert id="replyPost" parameterType="com.study.board2.dto.Post">
         INSERT INTO hierarchical_board (
-            post_idx, parent_id, depth, sorts
+            post_idx, parent_idx, depth, sorts
         ) SELECT
               #{idx},
               #{parentIdx},
@@ -98,7 +110,7 @@
         FROM
             hierarchical_board  parent
                 LEFT JOIN
-            hierarchical_board sibling ON parent.post_idx = sibling.parent_id
+            hierarchical_board sibling ON parent.post_idx = sibling.parent_idx
         WHERE
             parent.post_idx = #{parentIdx}
     </insert>
