@@ -49,7 +49,7 @@ public class AdminController {
         if (authentication instanceof AnonymousAuthenticationToken){
             model.addAttribute("loginForm", new LoginForm());
             return "master/login";}
-        return "master/main";
+        return "redirect:/master/main";
     }
 
     @GetMapping("/auth/logout")
