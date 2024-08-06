@@ -40,7 +40,7 @@ public class UserController {
         if (authentication instanceof AnonymousAuthenticationToken){
             model.addAttribute("loginForm", new LoginForm());
             return "front/login";}
-        return "front/main";
+        return "redirect:/front/main";
     }
 
     @GetMapping("/auth/logout")
