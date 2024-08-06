@@ -130,16 +130,62 @@ button[type="button"] {
     box-shadow: none; /* 포커스 시 외곽선 제거 */
 }
 
+/* 이전글/다음글 버튼 */
 .nav-buttons {
     display: flex;
     justify-content: space-between;
-    margin-top: 1rem;
+    margin-top: 30px;
+    padding: 10px 0;
 }
-.nav-buttons button {
-    width: 120px; /* 버튼 너비 설정 */
+
+.nav-buttons .btn {
+    width: 48%; /* 버튼 너비 설정 */
+    font-size: 1.1rem; /* 글자 크기 증가 */
+    font-weight: bold; /* 글자 굵게 */
+    color: #fff; /* 글자 색상 흰색 */
+    background-color: #007bff; /* 버튼 배경색 */
+    border: none; /* 테두리 제거 */
+    border-radius: 5px; /* 모서리 둥글게 */
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2); /* 그림자 추가 */
+    transition: background-color 0.3s ease; /* 호버 효과 추가 */
+}
+
+.nav-buttons .btn:hover {
+    background-color: #0056b3; /* 호버 시 배경색 */
 }
 
 /* 비밀글일 때 내용 숨기기 => 글 상세 */
 .hidden-content {
     display: none;
+}
+
+.content-text{
+    margin-bottom: 100px !important;
+}
+
+#contentArea {
+    max-width: 800px; /* 내용 영역의 최대 너비 설정 */
+    margin: auto; /* 중앙 정렬 */
+    padding: 20px; /* 패딩 추가 */
+}
+
+/* 첨부파일 영역 */
+.attachments {
+    margin-top: 30px; /* 내용과 첨부 파일 간의 간격 */
+    padding: 20px;
+    background-color: whitesmoke;
+    border: 1px solid #e0e0e0;
+    border-radius: 5px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+}
+.attachments h6 {
+    margin-bottom: 15px;
+    font-weight: bold;
+}
+.attachments ul {
+    list-style-type: none; /* 글머리 기호 제거 */
+    padding-left: 0;
+}
+.attachments li {
+    margin-bottom: 5px; /* 항목 간의 간격 */
 }
