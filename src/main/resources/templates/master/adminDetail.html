@@ -13,7 +13,7 @@
 <div th:replace="include/header::master"></div>
 <h1>관리자 상세</h1>
 <form id="adminForm" th:action="@{'/master/user/' + ${user.idx}}" method="post" th:object="${user}">
-    <table class="tb tb_row">
+    <table class="table table-bordered">
         <colgroup>
             <col style="width:15%;" /><col style="width:35%;" /><col style="width:15%;" /><col style="width:35%;" />
         </colgroup>
@@ -51,64 +51,62 @@
         <tr>
             <th>사용 여부</th>
             <td>
-                <div class="form-check">
-                    <input type="radio" id="Use" name="useYn" value="true" class="form-check-input"
-                           th:checked="*{useYn}" />
+                <div class="form-check form-check-inline">
+                    <input type="radio" id="Use" name="useYn" value="true" class="form-check-input" th:checked="*{useYn}" />
                     <label for="Use" class="form-check-label">사용</label>
                 </div>
-                <div class="form-check">
-                    <input type="radio" id="notUse" name="useYn" value="false" class="form-check-input"
-                           th:checked="*{!useYn}" />
+                <div class="form-check form-check-inline">
+                    <input type="radio" id="notUse" name="useYn" value="false" class="form-check-input" th:checked="*{!useYn}" />
                     <label for="notUse" class="form-check-label">미사용</label>
                 </div>
             </td>
         </tr>
         </tbody>
     </table>
-    <table class="tb tb_row">
-        <thead>
+    <h2>메뉴 접근 권한</h2>
+    <table class="table table-bordered">
+        <thead class="thead-light">
         <tr>
-            <th class="one wide">메뉴 접근 권한</th>
-            <th class="ten wide">읽기</th>
-            <th class="two wide">쓰기</th>
-            <th class="three wide">다운로드</th>
+            <th>메뉴</th>
+            <th>
+                <input type="checkbox" id="selectAllRead" />
+                <label for="selectAllRead" class="form-check-label">읽기</label>
+            </th>
+            <th>
+                <input type="checkbox" id="selectAllWrite" />
+                <label for="selectAllWrite" class="form-check-label">쓰기</label>
+            </th>
+            <th>
+                <input type="checkbox" id="selectAllDownload" />
+                <label for="selectAllDownload" class="form-check-label">다운로드</label>
+            </th>
         </tr>
         </thead>
         <tbody>
         <tr th:each="board : ${boards}">
             <td th:text="${board.boardTitle}"></td>
             <td>
-                <label>
-                    <input type="checkbox" th:id="'read_' + ${board.idx}"
-                           th:name="${board.idx} + '_read'"
-                           th:value="true"
-                           th:checked="${readMap[board.idx]?.canRead == true}"/>
-                    읽기
-                </label>
+                <input type="checkbox" class="readCheckbox" th:id="'read_' + ${board.idx}"
+                       th:name="${board.idx} + '_read'"
+                       th:value="true"
+                       th:checked="${readMap[board.idx]?.canRead == true}"/>
             </td>
             <td>
-                <label>
-                    <input type="checkbox" th:id="'write_' + ${board.idx}"
-                           th:name="${board.idx} + '_write'"
-                           th:value="true"
-                           th:checked="${readMap[board.idx]?.canWrite == true}"/>
-                    쓰기
-                </label>
+                <input type="checkbox" class="writeCheckbox" th:id="'write_' + ${board.idx}"
+                       th:name="${board.idx} + '_write'"
+                       th:value="true"
+                       th:checked="${readMap[board.idx]?.canWrite == true}"/>
             </td>
             <td>
-                <label>
-                    <input type="checkbox" th:id="'download_' + ${board.idx}"
-                           th:name="${board.idx} + '_download'"
-                           th:value="true"
-                           th:checked="${readMap[board.idx]?.canDownload == true}"/>
-                    다운로드
-                </label>
+                <input type="checkbox" class="downloadCheckbox" th:id="'download_' + ${board.idx}"
+                       th:name="${board.idx} + '_download'"
+                       th:value="true"
+                       th:checked="${readMap[board.idx]?.canDownload == true}"/>
             </td>
         </tr>
-
         </tbody>
     </table>
-    <div class="button-container">
+    <div class="button-container text-right">
         <button type="submit" class="btn btn-primary">수정</button>
         <button type="button" id="listButton" class="btn btn-secondary">
             목록 <i class="fas fa-list"></i>
@@ -121,6 +119,60 @@
         // 목록 버튼 클릭 이벤트
         $("#listButton").on('click', function () {
             window.location.href = "/master/users";
+        });
+
+        // 전체 선택 및 해제 이벤트
+        $("#selectAllRead").on('change', function() {
+            $(".readCheckbox").prop('checked', this.checked);
+        });
+
+        $("#selectAllWrite").on('change', function() {
+            $(".writeCheckbox").prop('checked', this.checked);
+        });
+
+        $("#selectAllDownload").on('change', function() {
+            $(".downloadCheckbox").prop('checked', this.checked);
+        });
+
+        // 각 행의 체크박스 상태에 따라 상위 체크박스 상태 업데이트
+        function updateHeaderCheckbox(checkboxClass, headerCheckboxId) {
+            const allChecked = $(checkboxClass).length === $(checkboxClass + ":checked").length;
+            $(headerCheckboxId).prop('checked', allChecked);
+        }
+
+        function updateAllHeaderCheckboxes() {
+            updateHeaderCheckbox(".readCheckbox", "#selectAllRead");
+            updateHeaderCheckbox(".writeCheckbox", "#selectAllWrite");
+            updateHeaderCheckbox(".downloadCheckbox", "#selectAllDownload");
+        }
+
+        updateAllHeaderCheckboxes();
+
+        $(".readCheckbox").on('change', function() {
+            updateAllHeaderCheckboxes();
+        });
+
+        $(".writeCheckbox").on('change', function() {
+            updateAllHeaderCheckboxes();
+        });
+
+        $(".downloadCheckbox").on('change', function() {
+            updateAllHeaderCheckboxes();
+        });
+
+        $('tbody tr').each(function() {
+            const row = $(this);
+            row.find('input[type=checkbox]').on('change', function() {
+                const readChecked = row.find('.readCheckbox').is(':checked');
+                const writeChecked = row.find('.writeCheckbox').is(':checked');
+                const downloadChecked = row.find('.downloadCheckbox').is(':checked');
+
+                if (readChecked && writeChecked && downloadChecked) {
+                    updateAllHeaderCheckboxes();
+                } else {
+                    updateAllHeaderCheckboxes();
+                }
+            });
         });
 
         // 폼 제출 이벤트

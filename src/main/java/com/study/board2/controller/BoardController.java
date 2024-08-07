@@ -63,9 +63,6 @@ public class BoardController {
             model.addAttribute("posts", hposts.getContent());
             model.addAttribute("currentPage", hposts.getPageNumber());
             model.addAttribute("totalPages", hposts.getTotalPages());
-            model.addAttribute("boardIdx", boardIdx);
-            model.addAttribute("currentUserIdx", currentUserIdx);
-            model.addAttribute("userRole", userRole);
         } else {
             if (authentication instanceof AnonymousAuthenticationToken) {
                 model.addAttribute("loginRequired", true);
@@ -75,10 +72,10 @@ public class BoardController {
             model.addAttribute("posts", posts.getContent());
             model.addAttribute("currentPage", posts.getPageNumber());
             model.addAttribute("totalPages", posts.getTotalPages());
-            model.addAttribute("boardIdx", boardIdx);
-            model.addAttribute("currentUserIdx", currentUserIdx);
-            model.addAttribute("userRole", userRole);
         }
+        model.addAttribute("boardIdx", boardIdx);
+        model.addAttribute("currentUserIdx", currentUserIdx);
+        model.addAttribute("userRole", userRole);
 
         return "front/postList";
     }
