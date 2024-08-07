@@ -121,6 +121,21 @@
             window.location.href = "/master/users";
         });
 
+        // 사용 여부에 따른 체크박스 활성/비활성화 설정
+        function toggleCheckboxesBasedOnUsage() {
+            const isUseChecked = $('#Use').is(':checked');
+            $(".readCheckbox, .writeCheckbox, .downloadCheckbox").prop('disabled', !isUseChecked);
+            $("#selectAllRead, #selectAllWrite, #selectAllDownload").prop('disabled', !isUseChecked);
+        }
+
+        // 페이지 로드 시 사용 여부에 따른 체크박스 상태 설정
+        toggleCheckboxesBasedOnUsage();
+
+        // 사용 여부 변경 시 체크박스 상태 업데이트
+        $("input[name='useYn']").on('change', function() {
+            toggleCheckboxesBasedOnUsage();
+        });
+
         // 전체 선택 및 해제 이벤트
         $("#selectAllRead").on('change', function() {
             $(".readCheckbox").prop('checked', this.checked);
