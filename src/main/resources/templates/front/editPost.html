@@ -96,7 +96,14 @@
     $(document).ready(function() {
         let editor;
         ClassicEditor
-            .create(document.querySelector('#content'))
+            .create(document.querySelector('#content'), {
+                // CKEditor 설정 추가
+                toolbar: [ 'heading', '|', 'bold', 'italic', 'link', 'bulletedList', 'numberedList', 'blockQuote', 'undo', 'redo' ],
+                // 영역 크기 조정
+                initialHeight: '400px',
+                height: '400px',
+                width: '100%',
+            })
             .then(newEditor => {
                 editor = newEditor;
 

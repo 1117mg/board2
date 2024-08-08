@@ -170,6 +170,11 @@ button[type="button"] {
     padding: 20px; /* 패딩 추가 */
 }
 
+.ck-editor__editable {
+    min-height: 300px; /* 최소 높이 설정 */
+    height: 400px; /* 높이 설정 */
+}
+
 /* 첨부파일 영역 */
 .attachments {
     margin-top: 30px; /* 내용과 첨부 파일 간의 간격 */
