@@ -99,6 +99,9 @@
             .create(document.querySelector('#content'))
             .then(newEditor => {
                 editor = newEditor;
+
+                // CKEditor의 내용을 textarea에 로드
+                editor.setData($('#content').val());
             })
             .catch(error => {
                 console.error(error);
@@ -142,10 +145,11 @@
                 return;
             }
 
-            const content = editor.getData();
+            $('#content').val(editor.getData());
 
             // 제목과 내용 값 가져오기
             var title = $("#title").val().trim();
+            var content = $("#content").val();
             var regDate = $("#uploadDate").val();
 
             // 제목 또는 내용이 비어있는지 체크
@@ -162,7 +166,7 @@
             $.ajax({
                 type: "POST",
                 url: $(this).attr('action'),
-                data: $(this).serialize() + '&content=' + encodeURIComponent(content),
+                data: $(this).serialize(),
                 success: function(response) {
                     Swal.fire({
                         icon: 'success',
