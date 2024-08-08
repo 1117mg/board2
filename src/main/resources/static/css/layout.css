@@ -106,6 +106,7 @@ button[type="button"] {
     color: gray; /* 빨간색 */
     font-weight: bold;
     margin-right: 5px;
+    text-decoration : underline;
 }
 
 /* 공지글 아이콘 추가 스타일 */

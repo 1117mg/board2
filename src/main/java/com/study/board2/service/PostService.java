@@ -13,6 +13,7 @@ import java.util.List;
 public class PostService {
 
     private final PostMapper postMapper;
+    private final BoardService boardService;
 
     public Page<Post> getPostsPageByBoardId(int boardIdx, int pageNumber, int pageSize) {
         int offset = (pageNumber - 1) * pageSize;
@@ -64,6 +65,13 @@ public class PostService {
 
     public void createPost(Post post) {
         postMapper.insertPost(post);
+
+        // 계층형 게시판의 경우, 최상위 부모 글로 추가
+        if ("200".equals(boardService.getBoardType(post.getBoardIdx()))) {
+            post.setParentIdx(null);
+            post.setDepth(0);
+            postMapper.replyPost(post);  // 계층형 게시판 테이블에 삽입
+        }
     }
 
     public void replyPost(Post post) {

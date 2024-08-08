@@ -14,8 +14,8 @@
 
 <div class="container mt-4">
     <div class="d-flex justify-content-between align-items-center mb-3">
-        <h1 th:if="${boardIdx == 1}">공지사항</h1>
-        <h1 th:if="${boardIdx == 2}">1:1 문의</h1>
+        <h1 th:if="${boardIdx == 1}">NOTICE</h1>
+        <h1 th:if="${boardIdx == 2}">QNA</h1>
         <a id="writePostBtn" th:href="@{'/front/board/' + ${boardIdx} + '/post/write'}" class="btn btn-primary">글 작성</a>
     </div>
     <table class="table board">
@@ -31,7 +31,7 @@
         <tbody>
         <tr th:each="post : ${posts}" th:classappend="${post.noticeYn == true} ? 'notice'">
             <td>
-                <span th:if="${post.noticeYn == true}" class="notice-tag">공지</span>
+                <span th:if="${post.noticeYn == true}" class="notice-tag">NOTICE</span>
                 <span th:unless="${post.noticeYn == true}" th:text="${post.idx}">1</span>
             </td>
             <td>
@@ -40,11 +40,11 @@
                         <i class="fas fa-bullhorn"></i> <!-- 공지 아이콘 -->
                     </span>
                     <span th:if="${post.depth > 0}" th:each="i : ${#numbers.sequence(1, post.depth)}" class="reply">&nbsp;↪RE:</span>
-                    <!-- 비밀글 처리 -->
+                    <span th:text="${post.title}">제목</span>
+                    <!-- 비밀글 아이콘 -->
                     <span th:if="${post.secretYn == true && (currentUserIdx == null || currentUserIdx != post.userNo) && userRole != 'ROLE_ADMIN'}" class="text-muted small">
-                        <i class="fas fa-lock"></i>비밀글
+                        <i class="fas fa-lock"></i>
                     </span>
-                    <span th:unless="${post.secretYn == true && (currentUserIdx == null || currentUserIdx != post.userNo) && userRole != 'ROLE_ADMIN'}" th:text="${post.title}">제목</span>
                 </a>
             </td>
             <td th:text="${post.userNo}">작성자</td>

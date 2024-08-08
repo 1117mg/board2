@@ -18,11 +18,11 @@
                 hb.parent_idx,
                 hb.depth,
                 hb.sorts,
-                bp.idx AS root_idx,  -- 최상위 부모의 idx를 유지
+                bp.idx AS root_idx,
                 CAST(bp.idx AS CHAR(255)) AS hierarchy_path
             FROM
                 board_post bp
-                    JOIN hierarchical_board hb ON bp.idx = hb.post_idx
+                    LEFT JOIN hierarchical_board hb ON bp.idx = hb.post_idx
             WHERE
                 bp.board_idx = #{boardIdx}
               AND bp.delete_yn = 0
@@ -36,7 +36,7 @@
                 hb.parent_idx,
                 hb.depth,
                 hb.sorts,
-                h.root_idx,  -- 같은 계층 구조의 부모 글을 유지
+                h.root_idx,
                 CONCAT(h.hierarchy_path, '-', LPAD(bp.idx, 10, '0')) AS hierarchy_path
             FROM
                 board_post bp
@@ -51,9 +51,11 @@
         FROM
             Hierarchy
         ORDER BY
-            hierarchy_path,  -- 계층 경로로 정렬하여 부모 글 아래 자식 글이 위치
-            sorts DESC       -- 동일 부모 아래에서 sorts로 내림차순
-        LIMIT #{offset}, #{pageSize}
+            notice_yn DESC, -- 공지 글을 최상위로 정렬
+            root_idx DESC, -- 최상위 부모 글을 최신 순으로 정렬
+            hierarchy_path,
+            sorts DESC
+            LIMIT #{offset}, #{pageSize}
     </select>
 
     <select id="countPostsByBoardId" resultType="int">

@@ -122,7 +122,10 @@ public class BoardController {
         Integer prevPostId = postService.findPrevIdx(post.getBoardIdx(), postId);
         Integer nextPostId = postService.findNextIdx(post.getBoardIdx(), postId);
         Integer replyPostId = postService.findReplyIdx(post.getIdx());
-        Integer parentPostId = postService.findParentIdx(post.getParentIdx());
+        Integer parentPostId = null;
+        if(post.getParentIdx()!=null){
+            parentPostId = postService.findParentIdx(post.getParentIdx());
+        }
         model.addAttribute("prevPostId", prevPostId);
         model.addAttribute("nextPostId", nextPostId);
         model.addAttribute("replyPostId", replyPostId);
