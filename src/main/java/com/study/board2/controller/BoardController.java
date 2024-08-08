@@ -111,7 +111,7 @@ public class BoardController {
         model.addAttribute("writer", writerDetail);
 
         // 권한 체크
-        boolean hasEditPermission = (writer.getIdx() == userNo);
+        boolean hasEditPermission = (writer.getIdx() == userNo || "ROLE_ADMIN".equals(user.getUserRole()));
         model.addAttribute("hasEditPermission", hasEditPermission);
 
         // 답글 작성 권한 체크
@@ -139,6 +139,7 @@ public class BoardController {
     public String writePostForm(@PathVariable("boardIdx") int boardIdx, Model model) {
         String userId= userService.getloginUser();
         User user=userService.findByUserId(userId);
+        model.addAttribute("user", user);
         model.addAttribute("userId",userId);
         Post post = new Post();
         post.setBoardIdx(boardIdx);

@@ -8,6 +8,8 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
     <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script src="https://cdn.ckeditor.com/ckeditor5/12.4.0/classic/ckeditor.js"></script>
+    <script src="https://ckeditor.com/apps/ckfinder/3.5.0/ckfinder.js"></script>
 </head>
 <body>
 <div th:replace="include/header::front"></div>
@@ -92,6 +94,16 @@
 
 <script>
     $(document).ready(function() {
+        let editor;
+        ClassicEditor
+            .create(document.querySelector('#content'))
+            .then(newEditor => {
+                editor = newEditor;
+            })
+            .catch(error => {
+                console.error(error);
+            });
+
         $('input[name="noticeYn"]').on('change', function() {
             $('#noticeYn').val($(this).val());
         });
@@ -120,9 +132,20 @@
         $("#editForm").on('submit', function(event) {
             event.preventDefault();
 
+            if (!editor) {
+                Swal.fire({
+                    icon: 'error',
+                    title: '에러',
+                    text: 'CKEditor가 초기화되지 않았습니다.',
+                    confirmButtonText: '확인'
+                });
+                return;
+            }
+
+            const content = editor.getData();
+
             // 제목과 내용 값 가져오기
             var title = $("#title").val().trim();
-            var content = $("#content").val().trim();
             var regDate = $("#uploadDate").val();
 
             // 제목 또는 내용이 비어있는지 체크
@@ -139,7 +162,7 @@
             $.ajax({
                 type: "POST",
                 url: $(this).attr('action'),
-                data: $(this).serialize(),
+                data: $(this).serialize() + '&content=' + encodeURIComponent(content),
                 success: function(response) {
                     Swal.fire({
                         icon: 'success',
