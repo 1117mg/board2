@@ -138,7 +138,7 @@
 
         // 전체 선택 및 해제 이벤트
         $("#selectAllRead").on('change', function() {
-            $(".readChe ckbox").prop('checked', this.checked);
+            $(".readCheckbox").prop('checked', this.checked);
         });
 
         $("#selectAllWrite").on('change', function() {
@@ -178,15 +178,7 @@
         $('tbody tr').each(function() {
             const row = $(this);
             row.find('input[type=checkbox]').on('change', function() {
-                const readChecked = row.find('.readCheckbox').is(':checked');
-                const writeChecked = row.find('.writeCheckbox').is(':checked');
-                const downloadChecked = row.find('.downloadCheckbox').is(':checked');
-
-                if (readChecked && writeChecked && downloadChecked) {
-                    updateAllHeaderCheckboxes();
-                } else {
-                    updateAllHeaderCheckboxes();
-                }
+                updateAllHeaderCheckboxes();
             });
         });
 
