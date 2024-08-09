@@ -115,7 +115,7 @@ public class BoardController {
         model.addAttribute("hasEditPermission", hasEditPermission);
 
         // 답글 작성 권한 체크
-        boolean canReply = (userNo != 0 && "200".equals(boardType));
+        boolean canReply = (userNo != 0 && "200".equals(boardType) && !post.isNoticeYn());
         model.addAttribute("canReply", canReply);
 
         // 이전글 및 다음글 가져오기
