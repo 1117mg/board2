@@ -10,7 +10,7 @@
   <li>Spring Security : 5.6.2</li>
 </ul>
 
-#AWS EC2 Amazon Linux 2 배포 완료
+# AWS EC2 Amazon Linux 2 배포 완료
 <h3>프로젝트 루트 주소 : /d</h3>
 
 <h2>관리자 페이지 :</h2>
