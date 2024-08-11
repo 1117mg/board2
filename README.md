@@ -9,11 +9,9 @@
   <li>DB: MySQL 8.0.24</li>
   <li>Spring Security : 5.6.2</li>
 </ul>
-
+<br>
 <span>AWS EC2 Amazon Linux 2 배포 완료</span><br>
 <span>프로젝트 루트 주소 : /d</span><br>
-<hr>
-
 <h2>관리자 페이지 :</h2>
 <ul>
   <li>/master/**</li>
