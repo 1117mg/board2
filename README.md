@@ -15,6 +15,8 @@
 <h2>관리자 페이지 :</h2>
 <ul>
   <li>/master/**</li>
+  <li>/master/auth/login</li>
+  <li>/master/auth/join</li>
   <li>/master/main</li>
   <li>/master/users</li>
   <li>/master/user/{userId}</li>
@@ -25,6 +27,8 @@
 <h2>회원 페이지 :</h2>
 <ul>
   <li>/front/**</li>
+  <li>/front/auth/login</li>
+  <li>/front/auth/join</li>
   <li>/front/main</li>
   <li>/front/users</li>
   <li>/front/user/{userId}</li>
