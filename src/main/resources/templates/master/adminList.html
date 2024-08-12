@@ -74,6 +74,7 @@
 <div th:replace="include/footer::master"></div>
 <script>
     document.addEventListener('DOMContentLoaded', function() {
+        var baseURL = window.location.origin;
         const selectAllCheckbox = document.getElementById('selectAll');
         const checkboxes = document.querySelectorAll('.user-checkbox');
 
@@ -123,7 +124,7 @@
             }
 
             $.ajax({
-                url: '@{/master/user/updateStatus}',
+                url: baseURL+'/master/user/updateStatus',
                 method: 'POST',
                 contentType: 'application/json',
                 data: JSON.stringify({

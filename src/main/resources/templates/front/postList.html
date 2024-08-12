@@ -83,6 +83,7 @@
 
 <script>
     $(document).ready(function() {
+        var baseURL = window.location.origin;
         var loginRequired = $("#loginRequired").val();
         console.log('Login Required:', loginRequired);  // 값을 콘솔에 출력해 확인
 
@@ -95,7 +96,7 @@
                     text: '글 작성 권한이 없습니다. 로그인 페이지로 이동합니다.',
                     confirmButtonText: '확인'
                 }).then(() => {
-                    window.location.href = '@{/front/auth/login}';
+                    window.location.href = baseURL+"/front/auth/login";
                 });
             }
         });

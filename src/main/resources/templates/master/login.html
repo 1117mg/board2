@@ -105,6 +105,7 @@
 </div>
 <script>
     $(document).ready(function() {
+        var baseURL = window.location.origin;
         $("#loginForm").submit(function(event) {
             event.preventDefault();
 
@@ -124,7 +125,7 @@
                     }).then((result) => {
                         if (result.isConfirmed) {
                             // 페이지 리다이렉션
-                            window.location.href = '@{/master/main}';
+                            window.location.href = baseURL+"/master/main";
                         }
                     });
                 },
@@ -152,7 +153,7 @@
 
             $.ajax({
                 type: "GET",
-                url: '@{/api/findPassword}',
+                url: baseURL + '/api/findPassword',
                 data: {
                     "userEmail": userEmail,
                     "userName": userName
@@ -168,7 +169,7 @@
                             if (result.isConfirmed) {
                                 $.ajax({
                                     type: "POST",
-                                    url: '@{/api/findPassword/email}',
+                                    url: baseURL + '/api/findPassword/email',
                                     data: {
                                         "userEmail": userEmail,
                                         "userName": userName
@@ -193,7 +194,7 @@
 
             $.ajax({
                 type: "POST",
-                url: '@{/api/findPassword/email/verify}',
+                url: baseURL + '/api/findPassword/email/verify',
                 contentType: "application/json",
                 data: JSON.stringify({
                     "address": $("#userEmail").val(),
@@ -203,7 +204,7 @@
                     if (res['verified']) {
                         $.ajax({
                             type: "POST",
-                            url: '@{/api/updatePassword}',
+                            url: baseURL + '/api/updatePassword',
                             contentType: "application/json",
                             data: JSON.stringify({
                                 "userEmail": $("#userEmail").val(),
@@ -218,7 +219,7 @@
                                         showConfirmButton: true
                                     }).then((result) => {
                                         if (result.isConfirmed) {
-                                            window.location = '@{/master/auth/login}';
+                                            window.location = baseURL+"/master/auth/login";
                                         }
                                     });
                                     $('#verifyModal').modal('hide');

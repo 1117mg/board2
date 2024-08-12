@@ -66,6 +66,7 @@
 </div>
 <script>
     $(document).ready(function() {
+        var baseURL = window.location.origin;
         let isUserIdChecked = false;
         let isUsernameChecked = false;
 
@@ -169,7 +170,7 @@
                         text: '관리자 가입이 성공적으로 완료되었습니다.',
                         confirmButtonText: '확인'
                     }).then(() => {
-                        window.location.href = '@{/master/auth/login}';
+                        window.location.href = baseURL+"/master/auth/login";
                     });
                 },
                 error: function(request, status, error) {
@@ -198,7 +199,7 @@
             }
             $.ajax({
                 type: "get",
-                url: '@{/api/checkUserId}',
+                url: baseURL + '/api/checkUserId',
                 data: { "userId": userId },
                 dataType: "JSON",
                 success: function (result) {
@@ -262,7 +263,7 @@
             }
             $.ajax({
                 type: "get",
-                url: '@{/api/checkUsername}',
+                url: baseURL + '/api/checkUsername',
                 data: { "username": username },
                 dataType: "JSON",
                 success: function (result) {
