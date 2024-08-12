@@ -118,7 +118,7 @@
     $(document).ready(function() {
         // 목록 버튼 클릭 이벤트
         $("#listButton").on('click', function () {
-            window.location.href = "/master/users";
+            window.location.href = '@{/master/users}';
         });
 
         // 사용 여부에 따른 체크박스 활성/비활성화 설정
@@ -210,7 +210,7 @@
                         title: '수정 완료',
                         text: '사용자 정보가 성공적으로 수정되었습니다.',
                     }).then(() => {
-                        window.location.href = "/master/user/"+$("#idx").val(); // 수정 완료 후 목록 페이지로 이동
+                        window.location.href = '@{/master/user/}'+$("#idx").val(); // 수정 완료 후 목록 페이지로 이동
                     });
                 },
                 error: function() {

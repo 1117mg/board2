@@ -157,7 +157,7 @@
                         text: '회원가입이 성공적으로 완료되었습니다.',
                         confirmButtonText: '확인'
                     }).then(() => {
-                        window.location.href = "/front/auth/login";
+                        window.location.href = '@{/front/auth/login}';
                     });
                 },
                 error: function(request, status, error) {
@@ -186,7 +186,7 @@
             }
             $.ajax({
                 type: "get",
-                url: "/api/checkUserId",
+                url: '@{/api/checkUserId}',
                 data: { "userId": userId },
                 dataType: "JSON",
                 success: function (result) {
@@ -250,7 +250,7 @@
             }
             $.ajax({
                 type: "get",
-                url: "/api/checkUsername",
+                url: '@{/api/checkUsername}',
                 data: { "username": username },
                 dataType: "JSON",
                 success: function (result) {

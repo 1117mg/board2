@@ -54,9 +54,17 @@
         </button>
     </div>
 </form>
-<div th:replace="include/footer::front"></div>
+
+<div id="postDetails"
+     th:data-list-url="@{/front/board/{boardIdx}/posts(boardIdx=${boardIdx})}"
+</div>
+
 <script>
     $(document).ready(function() {
+        // Thymeleaf에서 URL을 data-* 속성으로 설정
+        var postDetails = $('#postDetails');
+        var listUrl = postDetails.data('list-url');
+
         $("#setCurrentDateTime").on('click', function() {
             // 현재 날짜와 시간을 가져와서 입력 필드에 설정
             var now = new Date();
@@ -71,7 +79,7 @@
         });
 
         $("#listButton").on('click', function() {
-            window.location.href = "/front/board/" + $("#boardIdx").val() + "/posts";
+            window.location.href = listUrl;
         });
 
         $("#replyForm").on('submit', function(event) {
@@ -105,7 +113,7 @@
                         text: response.message,
                         confirmButtonText: '확인'
                     }).then(() => {
-                        window.location.href = "/front/board/" + $("#boardIdx").val() + "/posts";
+                        window.location.href = listUrl;
                     });
                 },
                 error: function(request, status, error) {

@@ -92,8 +92,15 @@
 
 <div th:replace="include/footer::front"></div>
 
+<div id="postDetails"
+     th:data-list-url="@{/front/board/{boardIdx}/posts(boardIdx=${boardIdx})}"
+</div>
+
 <script>
     $(document).ready(function() {
+        var postDetails = $('#postDetails');
+        var listUrl = postDetails.data('list-url');
+
         let editor;
         ClassicEditor
             .create(document.querySelector('#content'), {
@@ -181,7 +188,7 @@
                         text: '게시글이 성공적으로 수정되었습니다.',
                         confirmButtonText: '확인'
                     }).then(() => {
-                        window.location.href = "/front/board/" + $("#boardIdx").val() + "/posts";
+                        window.location.href = listUrl;
                     });
                 },
                 error: function(request, status, error) {

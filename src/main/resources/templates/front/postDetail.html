@@ -99,7 +99,15 @@
      th:data-can-reply="${canReply}"
      th:data-board-idx="${boardIdx}"
      th:data-post-idx="${post.idx}"
-     th:data-secret-yn="${post.secretYn}">
+     th:data-secret-yn="${post.secretYn}"
+     th:data-edit-url="@{/front/board/{boardIdx}/post/{postIdx}/edit(boardIdx=${boardIdx}, postIdx=${post.idx})}"
+     th:data-delete-url="@{/front/board/post/{postIdx}/delete(postIdx=${post.idx})}"
+     th:data-list-url="@{/front/board/{boardIdx}/posts(boardIdx=${boardIdx})}"
+     th:data-prev-post-url="@{/front/board/post/{postId}(postId=${prevPostId})}"
+     th:data-next-post-url="@{/front/board/post/{postId}(postId=${nextPostId})}"
+     th:data-parent-post-url="@{/front/board/post/{postId}(postId=${parentPostId})}"
+     th:data-reply-post-url="@{/front/board/post/{postId}(postId=${replyPostId})}"
+     th:data-reply-write-url="@{/front/board/{boardIdx}/post/{postIdx}/reply(boardIdx=${boardIdx}, postIdx=${post.idx})}">
 </div>
 
 <div th:replace="include/footer::front"></div>
@@ -113,6 +121,14 @@
         var boardIdx = postDetails.data('board-idx');
         var postIdx = postDetails.data('post-idx');
         var secretYn = postDetails.data('secret-yn');
+        var editUrl = postDetails.data('edit-url');
+        var deleteUrl = postDetails.data('delete-url');
+        var listUrl = postDetails.data('list-url');
+        var prevPostUrl = postDetails.data('prev-post-url');
+        var nextPostUrl = postDetails.data('next-post-url');
+        var parentPostUrl = postDetails.data('parent-post-url');
+        var replyPostUrl = postDetails.data('reply-post-url');
+        var replyWriteUrl = postDetails.data('reply-write-url');
 
         // 비밀글 및 권한 체크
         if (secretYn == 1 && !hasEditPermission) {
@@ -131,7 +147,7 @@
             // 수정 권한이 있을 때 수정 버튼 표시 및 클릭 시 동작
             if (hasEditPermission) {
                 $('#editButton').show().on('click', function() {
-                    window.location.href = '/front/board/' + boardIdx + '/post/' + postIdx + '/edit';
+                    window.location.href = editUrl;
                 });
 
                 $('#deleteButton').show().on('click', function() {
@@ -146,13 +162,13 @@
                         cancelButtonText: '취소'
                     }).then((result) => {
                         if (result.isConfirmed) {
-                            $.post('/front/board/post/' + postIdx + '/delete', function(response) {
+                            $.post(deleteUrl, function(response) {
                                 Swal.fire(
                                     '삭제 완료!',
                                     '게시글이 삭제되었습니다.',
                                     'success'
                                 ).then(() => {
-                                    window.location.href = '/front/board/' + boardIdx + '/posts';
+                                    window.location.href = listUrl;
                                 });
                             }).fail(function(error) {
                                 Swal.fire({
@@ -179,40 +195,40 @@
             // 답글 작성 권한이 있을 때 답글쓰기 버튼 표시 및 클릭 시 동작
             if (canReply) {
                 $('#replyButton').show().on('click', function() {
-                    window.location.href = '/front/board/' + boardIdx + '/post/' + postIdx + '/reply';
+                    window.location.href = replyWriteUrl;
                 });
             }
 
             // 목록 버튼 클릭 시 게시글 목록 페이지로 이동
             $("#listButton").on('click', function() {
-                window.location.href = '/front/board/' + boardIdx + '/posts';
+                window.location.href = listUrl;
             });
 
             $("#prevPostButton").on('click', function() {
                 var prevPostId = $(this).data('post-id');
                 if (prevPostId) {
-                    window.location.href = '/front/board/post/' + prevPostId;
+                    window.location.href = prevPostUrl.replace('{postId}', prevPostId);
                 }
             });
 
             $("#nextPostButton").on('click', function() {
                 var nextPostId = $(this).data('post-id');
                 if (nextPostId) {
-                    window.location.href = '/front/board/post/' + nextPostId;
+                    window.location.href = nextPostUrl.replace('{postId}', nextPostId);
                 }
             });
 
             $("#parentPostButton").on('click', function() {
                 var parentPostId = $(this).data('post-id');
                 if (parentPostId) {
-                    window.location.href = '/front/board/post/' + parentPostId;
+                    window.location.href = parentPostUrl.replace('{postId}', parentPostId);
                 }
             });
 
             $("#replyPostButton").on('click', function() {
                 var replyPostId = $(this).data('post-id');
                 if (replyPostId) {
-                    window.location.href = '/front/board/post/' + replyPostId;
+                    window.location.href = replyPostUrl.replace('{postId}', replyPostId);
                 }
             });
         }

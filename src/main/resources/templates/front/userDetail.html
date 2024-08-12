@@ -60,7 +60,7 @@
 <script>
     $(document).ready(function() {
         $("#listButton").on('click', function() {
-            window.location.href = "/front/users";
+            window.location.href = '@{/front/users}';
         });
 
         $("#editForm").on('submit', function(event) {
@@ -90,7 +90,7 @@
                         text: '회원 정보가 성공적으로 수정되었습니다.',
                         confirmButtonText: '확인'
                     }).then(() => {
-                        window.location.href = "/front/user/" + $("#idx").val();
+                        window.location.href = '@{/front/user/}' + $("#idx").val();
                     });
                 },
                 error: function(request, status, error) {

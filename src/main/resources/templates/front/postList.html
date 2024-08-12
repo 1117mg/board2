@@ -95,7 +95,7 @@
                     text: '글 작성 권한이 없습니다. 로그인 페이지로 이동합니다.',
                     confirmButtonText: '확인'
                 }).then(() => {
-                    window.location.href = /*[[${#request.contextPath}]]*/ '/front/auth/login';
+                    window.location.href = '@{/front/auth/login}';
                 });
             }
         });
