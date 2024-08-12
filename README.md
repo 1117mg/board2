@@ -11,6 +11,8 @@
 </ul>
 <br>
 <span>AWS EC2 Amazon Linux 2 배포 완료</span><br>
+<span>퍼블릭 IP:포트번호</span><br>
+<p>http://52.90.241.44:8080</p><br>
 <span>프로젝트 루트 주소 : /b</span><br>
 <h2>관리자 페이지 :</h2>
 <ul>
