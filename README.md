@@ -11,7 +11,6 @@
 </ul>
 <br>
 <span>AWS EC2 Amazon Linux 2 배포 완료</span><br>
-<p>http://52.90.241.44:8080/b + url</p><br>
 <h2>관리자 페이지 :</h2>
 <ul>
   <li>/master/**</li>
