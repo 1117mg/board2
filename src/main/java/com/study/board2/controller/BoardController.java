@@ -83,39 +83,57 @@ public class BoardController {
     // 게시글 상세
     @GetMapping("/post/{postId}")
     public String postDetail(@PathVariable("postId") int postId, Model model) {
+        // 로그인한 사용자 ID 가져오기
         String userId = userService.getloginUser();
         User user = userService.findByUserId(userId);
 
+        // 로그인한 사용자 정보가 없으면 userNo를 0으로 설정
         int userNo = (user != null) ? user.getIdx() : 0;
         model.addAttribute("userNo", userNo);
 
+        // 게시글 정보 가져오기
         Post post = postService.getPostById(postId);
         Post postInfo = postService.getHierarchy(postId);
-        if(postInfo!=null){
+        if (postInfo != null) {
             post.setDepth(postInfo.getDepth());
             post.setParentIdx(postInfo.getParentIdx());
         }
         post.setHits(postService.hit(postId));
         model.addAttribute("post", post);
         model.addAttribute("boardIdx", post.getBoardIdx());
-        String boardType= boardService.getBoardType(post.getBoardIdx());
-        model.addAttribute("boardType",boardType);
 
-        User writer=userService.findUserByIdx(post.getUserNo());
-        User writerDetail;
-        if("ROLE_USER".equals(writer.getUserRole())){
-            writerDetail = userService.findMemberByIdx(writer.getIdx());
-        }else{
-            writerDetail = userService.findAdminByIdx(writer.getIdx());
+        // 게시판 타입 정보 가져오기
+        String boardType = boardService.getBoardType(post.getBoardIdx());
+        model.addAttribute("boardType", boardType);
+
+        // 게시글 작성자 정보 가져오기
+        User writer = userService.findUserByIdx(post.getUserNo());
+        User writerDetail = null;
+        boolean hasEditPermission = false;
+        boolean canReply = false;
+
+        if (writer != null) {
+            // 작성자의 역할에 따른 세부 정보 가져오기
+            if ("ROLE_USER".equals(writer.getUserRole())) {
+                writerDetail = userService.findMemberByIdx(writer.getIdx());
+            } else {
+                writerDetail = userService.findAdminByIdx(writer.getIdx());
+            }
+            model.addAttribute("writer", writerDetail);
+
+            // 로그인 사용자와 작성자의 권한 비교
+            if (user != null) {
+                hasEditPermission = (writer.getIdx() == userNo || "ROLE_ADMIN".equals(user.getUserRole()));
+            }
+        } else {
+            // writer가 null인 경우
+            model.addAttribute("writer", null);
         }
-        model.addAttribute("writer", writerDetail);
-
-        // 권한 체크
-        boolean hasEditPermission = (writer.getIdx() == userNo || "ROLE_ADMIN".equals(user.getUserRole()));
-        model.addAttribute("hasEditPermission", hasEditPermission);
 
         // 답글 작성 권한 체크
-        boolean canReply = (userNo != 0 && "200".equals(boardType) && !post.isNoticeYn());
+        canReply = (userNo != 0 && "200".equals(boardType) && !post.isNoticeYn());
+
+        model.addAttribute("hasEditPermission", hasEditPermission);
         model.addAttribute("canReply", canReply);
 
         // 이전글 및 다음글 가져오기
@@ -123,7 +141,7 @@ public class BoardController {
         Integer nextPostId = postService.findNextIdx(post.getBoardIdx(), postId);
         Integer replyPostId = postService.findReplyIdx(post.getIdx());
         Integer parentPostId = null;
-        if(post.getParentIdx()!=null){
+        if (post.getParentIdx() != null) {
             parentPostId = postService.findParentIdx(post.getParentIdx());
         }
         model.addAttribute("prevPostId", prevPostId);

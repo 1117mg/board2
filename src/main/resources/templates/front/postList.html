@@ -16,7 +16,7 @@
     <div class="d-flex justify-content-between align-items-center mb-3">
         <h1 th:if="${boardIdx == 1}">NOTICE</h1>
         <h1 th:if="${boardIdx == 2}">QNA</h1>
-        <a id="writePostBtn" th:href="@{'/front/board/' + ${boardIdx} + '/post/write'}" class="btn btn-primary">글 작성</a>
+        <a id="writePostBtn" th:href="@{'post/write'}" class="btn btn-primary">글 작성</a>
     </div>
     <table class="table board">
         <thead>
@@ -95,7 +95,7 @@
                     text: '글 작성 권한이 없습니다. 로그인 페이지로 이동합니다.',
                     confirmButtonText: '확인'
                 }).then(() => {
-                    window.location.href = '/front/auth/login';
+                    window.location.href = /*[[${#request.contextPath}]]*/ '/front/auth/login';
                 });
             }
         });
