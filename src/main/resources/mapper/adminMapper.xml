@@ -8,14 +8,15 @@
     </select>
 
     <select id="countTodayLogins" resultType="int">
-        SELECT COUNT(DISTINCT user_idx)
+        SELECT COUNT(user_idx)
         FROM login_history
         WHERE DATE(login_time) = CURRENT_DATE
     </select>
 
     <insert id="insertLoginHistory">
         INSERT INTO login_history (user_idx, login_time)
-        VALUES (#{idx}, NOW())
+        VALUES (#{user_idx}, NOW())
+            ON DUPLICATE KEY UPDATE login_time = NOW();
     </insert>
 
     <update id="updateUseYn" parameterType="com.study.board2.util.UpdateStatusRequest">
