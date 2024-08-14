@@ -14,9 +14,15 @@
 
 <div class="container mt-4">
     <div class="d-flex justify-content-between align-items-center mb-3">
-        <h1 th:if="${boardIdx == 1}">NOTICE</h1>
-        <h1 th:if="${boardIdx == 2}">QNA</h1>
-        <a id="writePostBtn" th:href="@{'post/write'}" class="btn btn-primary">글 작성</a>
+        <div th:if="${boardIdx == 1}">
+            <h1>NOTICE</h1>
+            <p>공지사항 게시판입니다.</p>
+        </div>
+        <div th:if="${boardIdx == 2}">
+            <h1>QNA</h1>
+            <p>1:1 문의 게시판입니다.</p>
+        </div>
+        <a th:href="@{'post/write'}" class="btn btn-black">글 작성</a>
     </div>
     <table class="table board">
         <thead>

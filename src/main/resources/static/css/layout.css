@@ -5,10 +5,12 @@ input[readonly] {
     cursor: not-allowed; /* 사용자가 변경할 수 없음을 나타내는 커서 */
 }
 
-/* 기본 스타일 및 다른 요소들 */
+/* 공통 스타일 */
 body {
     font-family: Arial, sans-serif;
     margin: 50px;
+    background-color: #fff;
+    color: #000;
 }
 
 table {
@@ -19,27 +21,40 @@ table {
 
 th, td {
     padding: 8px;
-    border: 1px solid #ddd;
+    border-bottom: 1px solid #ddd; /* 가로줄 */
     text-align: left;
 }
 
-th {
-    background-color: #f4f4f4;
+/* 테이블의 세로줄 제거 */
+th, td {
+    border-left: none;
+    border-right: none;
 }
 
 thead th {
     text-align: center; /* 중앙 정렬 */
+    border-top: 4px solid #000 !important;
+}
+
+/* 하단 가로줄 강조 */
+tbody tr:last-child td {
+    border-bottom: 2px solid #000; /* 하단 가로줄 두껍고 검정색으로 설정 */
+}
+
+/* 가운데 가로줄들은 기본으로 유지 (얇은 회색) */
+tbody td {
+    border-bottom: 1px solid #ddd; /* 가운데 가로줄은 얇은 회색으로 설정 */
 }
 
 .board th:nth-child(2),
 .board td:nth-child(2) {
-    width: 400px; /* 폭 조정 (원하는 크기로 변경 가능) */
+    width: 400px; /* 폭 조정 */
 }
 
 /* 조회수 열 폭 조정 */
 .board th:nth-child(5),
 .board td:nth-child(5) {
-    width: 100px; /* 폭 조정 (원하는 크기로 변경 가능) */
+    width: 100px; /* 폭 조정 */
 }
 
 .chkbox input[type="checkbox"] {
@@ -51,17 +66,10 @@ thead th {
 }
 
 /* 버튼 스타일 */
-button[type="submit"] {
-    color: white;
-    padding: 10px 20px;
-    border: none;
-    border-radius: 4px;
-    cursor: pointer;
-    font-size: 16px;
-}
-
+button[type="submit"],
 button[type="button"] {
     color: white;
+    background-color: #000; /* 블랙 배경 */
     padding: 10px 20px;
     border: none;
     border-radius: 4px;
@@ -70,27 +78,28 @@ button[type="button"] {
 }
 
 .button-container {
-    margin-top: 20px; /* 버튼들 사이에 여백 추가 */
-    text-align: center; /* 버튼들을 가운데 정렬 */
+    margin-top: 20px;
+    text-align: center;
 }
 
 .table-container {
-    max-width: 100%; /* 테이블 최대 너비를 100%로 설정 */
+    max-width: 100%;
 }
+
 .table-container table {
-    width: 100%; /* 테이블 폭을 100%로 설정 */
+    width: 100%;
 }
+
 .table-container input[type="text"],
 .table-container textarea {
-    width: 100%; /* 입력 및 텍스트 영역 폭을 100%로 설정 */
-    box-sizing: border-box; /* 패딩과 보더를 포함한 전체 폭을 100%로 설정 */
+    width: 100%;
+    box-sizing: border-box;
 }
 
 /* 공지글 강조 스타일 */
 .notice {
-    background-color: whitesmoke !important; /* 밝은 노란색 배경으로 강조 */
-    border: 2px solid gray !important; /* 연한 노란색 테두리 */
-    border-left: 5px solid dimgray !important; /* 오렌지색 왼쪽 테두리 */
+    background-color: #f0f0f0 !important; /* 밝은 회색 배경 */
+    border-left: 5px solid #000 !important; /* 강조된 왼쪽 테두리 */
     font-weight: bold !important; /* 글씨 두껍게 */
     padding: 10px; /* 내부 여백 추가 */
     margin-bottom: 15px; /* 하단 여백 추가 */
@@ -98,20 +107,28 @@ button[type="button"] {
 }
 
 .notice .board-title {
-    color: gray;
+    color: #000;
     font-size: 1.1em;
 }
 
+/* 글 제목을 검정색으로 변경 */
+.board-title {
+    color: #000; /* 글자색 검정 */
+}
+.board-title:hover {
+    color: #333; /* 호버 시 약간 밝은 검정 */
+}
+
 .notice-tag {
-    color: gray; /* 빨간색 */
+    color: #000; /* 강조된 태그 색상 */
     font-weight: bold;
     margin-right: 5px;
-    text-decoration : underline;
+    text-decoration: underline;
 }
 
 /* 공지글 아이콘 추가 스타일 */
 .notice-icon {
-    color: gray; /* 오렌지색 아이콘 */
+    color: #000; /* 강조된 아이콘 색상 */
     font-size: 1.1em; /* 아이콘 크기 */
     margin-right: 10px; /* 아이콘과 텍스트 사이 여백 */
 }
@@ -121,14 +138,23 @@ button[type="button"] {
     height: 30px;
     padding: 0;
     border: none;
-    background: transparent;
+    background: #fff !important;
 }
 .btn-icon i {
     font-size: 1.2rem; /* 아이콘 크기 설정 */
-    color: #007bff; /* 아이콘 색상 설정 */
+    color: #000; /* 아이콘 색상 설정 */
+}
+.btn-icon i:hover {
+    color: #f0f0f0; /* 호버 시 배경색 약간 회색 */
 }
 .btn-icon:focus {
     box-shadow: none; /* 포커스 시 외곽선 제거 */
+}
+
+/* 기존 배지 스타일을 회색으로 재정의 */
+.badge-primary {
+    background-color: #000; /* 회색 */
+    color: #fff; /* 텍스트 색상 */
 }
 
 /* 이전글/다음글 버튼 */
@@ -139,20 +165,44 @@ button[type="button"] {
     padding: 10px 0;
 }
 
+/* 이전글/다음글 버튼 */
 .nav-buttons .btn {
-    width: 48%; /* 버튼 너비 설정 */
-    font-size: 1.1rem; /* 글자 크기 증가 */
-    font-weight: bold; /* 글자 굵게 */
-    color: #fff; /* 글자 색상 흰색 */
-    background-color: #007bff; /* 버튼 배경색 */
-    border: none; /* 테두리 제거 */
-    border-radius: 5px; /* 모서리 둥글게 */
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2); /* 그림자 추가 */
-    transition: background-color 0.3s ease; /* 호버 효과 추가 */
+    width: 48%;
+    font-size: 1.1rem;
+    font-weight: bold;
+    color: #fff;
+    background-color: #000;
+    border: none;
 }
 
-.nav-buttons .btn:hover {
-    background-color: #0056b3; /* 호버 시 배경색 */
+.btn-black {
+    background-color: #000;
+    border-color: #000;
+    color: #fff;
+}
+
+.btn-black:hover {
+    background-color: #333;
+    border-color: #333;
+    color: #fff;
+}
+
+/* 페이지네이션 버튼을 검정색으로 변경 */
+.pagination .page-link {
+    color: #000; /* 글자색 검정 */
+}
+.pagination .page-item.active .page-link {
+    background-color: #000; /* 활성화된 페이지의 배경색 검정 */
+    border-color: #000; /* 활성화된 페이지의 테두리색 검정 */
+    color: #fff; /* 활성화된 페이지의 글자색 흰색 */
+}
+.pagination .page-item .page-link:hover {
+    background-color: #333; /* 호버 시 약간 밝은 검정 */
+    border-color: #333;
+    color: #fff; /* 글자색 흰색 */
+}
+.pagination .page-item.disabled .page-link {
+    color: #999; /* 비활성화된 페이지의 글자색 회색 */
 }
 
 /* 비밀글일 때 내용 숨기기 => 글 상세 */
@@ -179,19 +229,42 @@ button[type="button"] {
 .attachments {
     margin-top: 30px; /* 내용과 첨부 파일 간의 간격 */
     padding: 20px;
-    background-color: whitesmoke;
-    border: 1px solid #e0e0e0;
+    background-color: #f9f9f9; /* 배경색을 연한 회색으로 변경 */
+    border: 1px solid #ccc; /* 경계선을 중간 회색으로 변경 */
     border-radius: 5px;
-    box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* 그림자를 조금 더 강조 */
 }
+
 .attachments h6 {
     margin-bottom: 15px;
     font-weight: bold;
+    color: #333; /* 제목 색상을 진한 회색으로 변경 */
 }
+
 .attachments ul {
     list-style-type: none; /* 글머리 기호 제거 */
     padding-left: 0;
 }
+
 .attachments li {
-    margin-bottom: 5px; /* 항목 간의 간격 */
+    margin-bottom: 10px; /* 항목 간의 간격을 조금 더 넓게 */
+}
+
+.attachments li a {
+    text-decoration: none; /* 밑줄 제거 */
+    color: #000; /* 링크 색상을 검정색으로 변경 */
+    transition: color 0.3s ease; /* 마우스 오버 시 색상 전환 효과 */
+}
+
+.attachments li a:hover {
+    color: #555; /* 마우스 오버 시 진한 회색으로 변경 */
+}
+
+.text-gray {
+    color: gray;
+}
+
+.text-gray:hover {
+    color: #000;
+    text-decoration: none;
 }

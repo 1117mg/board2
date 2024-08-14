@@ -12,7 +12,7 @@
 <h1>회원 메인 페이지</h1>
 <ul>
     <li th:each="board : ${boards}">
-        <a th:href="@{'/front/board/' + ${board.idx} + '/posts'}" th:text="${board.boardTitle}">게시판 제목</a>
+        <a th:href="@{'/front/board/' + ${board.idx} + '/posts'}" th:text="${board.boardTitle}" class="text-gray">게시판 제목</a>
     </li>
 </ul>
 <div>
