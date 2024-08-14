@@ -27,12 +27,12 @@ th, td {
 
 /* 테이블의 세로줄 제거 */
 th, td {
-    border-left: none;
-    border-right: none;
+    border-left: none !important;
+    border-right: none !important;
 }
 
 thead th {
-    text-align: center; /* 중앙 정렬 */
+    text-align: center;
     border-top: 4px solid #000 !important;
 }
 
@@ -176,14 +176,12 @@ button[type="button"] {
 }
 
 .btn-black {
-    background-color: #000;
-    border-color: #000;
+    background-color: #343a40;
     color: #fff;
 }
 
 .btn-black:hover {
-    background-color: #333;
-    border-color: #333;
+    background-color: #23272b;
     color: #fff;
 }
 
