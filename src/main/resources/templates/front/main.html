@@ -9,14 +9,30 @@
 <body>
 <div th:replace="include/header::front"></div>
 
-<h1>회원 메인 페이지</h1>
-<ul>
-    <li th:each="board : ${boards}">
-        <a th:href="@{'/front/board/' + ${board.idx} + '/posts'}" th:text="${board.boardTitle}" class="text-gray">게시판 제목</a>
-    </li>
-</ul>
-<div>
-    <a class="text-dark" th:href="@{/front/users}">회원 목록 바로가기</a>
+<div class="container mt-4">
+    <div class="row">
+        <aside class="col-md-3 sidebar">
+            <h5>게시판 목록</h5>
+            <ul class="list-unstyled">
+                <li th:each="board : ${boards}">
+                    <a th:href="@{'/front/board/' + ${board.idx} + '/posts'}" th:text="${board.boardTitle}">게시판 제목</a>
+                </li>
+            </ul>
+        </aside>
+
+        <main class="col-md-9 main-content">
+            <h1 class="mb-4">회원 메인 페이지</h1>
+
+            <div class="card">
+                <div class="card-header bg-dark text-white">
+                    <h5 class="card-title">회원 목록 바로가기</h5>
+                </div>
+                <div class="card-body text-center">
+                    <a class="btn" th:href="@{/front/users}">회원 목록 보기</a>
+                </div>
+            </div>
+        </main>
+    </div>
 </div>
 </body>
 </html>

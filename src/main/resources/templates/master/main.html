@@ -8,16 +8,44 @@
 </head>
 <body>
 <div th:replace="include/header::master"></div>
-<h1>관리자 메인 페이지</h1>
-<hr>
-<div>
-    <a>최근 7일 내에 가입한 회원수: </a>
-    <a th:text="${weekJoin}"></a>
-    <hr>
-    <a>오늘 기준 회원 로그인한 인원수: </a>
-    <a th:text="${todayLogin}"></a>
-    <hr>
-    <a class="text-dark" th:href="@{/master/users}">관리자 목록 바로가기</a>
+
+<div class="container mt-4">
+    <h1 class="mb-4">관리자 메인 페이지</h1>
+
+    <div class="row">
+        <div class="col-md-4">
+            <div class="card border-info">
+                <div class="card-header bg-info text-white">
+                    <h5 class="card-title">최근 7일 내 가입 회원 수</h5>
+                </div>
+                <div class="card-body">
+                    <p class="card-text" th:text="${weekJoin}">0명</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-4">
+            <div class="card border-success">
+                <div class="card-header bg-success text-white">
+                    <h5 class="card-title">오늘 로그인한 회원 수</h5>
+                </div>
+                <div class="card-body">
+                    <p class="card-text" th:text="${todayLogin}">0명</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-4">
+            <div class="card border-dark">
+                <div class="card-header bg-dark text-white">
+                    <h5 class="card-title">관리자 목록 바로가기</h5>
+                </div>
+                <div class="card-body text-center">
+                    <a class="btn" th:href="@{/master/users}">관리자 목록 보기</a>
+                </div>
+            </div>
+        </div>
+    </div>
 </div>
 </body>
 </html>

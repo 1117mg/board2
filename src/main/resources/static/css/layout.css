@@ -258,11 +258,52 @@ button[type="button"] {
     color: #555; /* 마우스 오버 시 진한 회색으로 변경 */
 }
 
-.text-gray {
-    color: gray;
+.card {
+    margin-bottom: 20px;
 }
-
-.text-gray:hover {
-    color: #000;
+.card-header {
+    font-size: 1.25rem;
+    font-weight: bold;
+}
+.card-body a {
+    display: block;
+    margin-bottom: 10px;
+    color: #007bff;
     text-decoration: none;
+}
+.card-body a:hover {
+    text-decoration: underline;
+}
+.card-title {
+    font-size: 1.25rem;
+    font-weight: bold;
+}
+.card-body {
+    font-size: 1.125rem;
+}
+.text-dark {
+    color: #343a40 !important;
+}
+.btn-dark {
+    background-color: #343a40;
+    border-color: #343a40;
+}
+.btn-dark:hover {
+    background-color: #23272b;
+    border-color: #1d2124;
+}
+@media (max-width: 768px) {
+    .sidebar {
+        border-right: none;
+        border-bottom: 1px solid #dee2e6;
+        margin-bottom: 20px;
+    }
+    .main-content {
+        padding-left: 0;
+    }
+}
+.sidebar {
+    background-color: #f8f9fa;
+    padding: 15px;
+    border-right: 1px solid #dee2e6;
 }

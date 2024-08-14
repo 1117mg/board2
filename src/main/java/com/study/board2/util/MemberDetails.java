@@ -52,4 +52,12 @@ public class MemberDetails implements UserDetails {
     public boolean isEnabled() {
         return true;
     }
+
+    public int getIdx() {
+        return user.getIdx(); // User 객체에 getId() 메소드가 있어야 합니다.
+    }
+
+    public String getRole() {
+        return user.getUserRole(); // User 객체에 getId() 메소드가 있어야 합니다.
+    }
 }

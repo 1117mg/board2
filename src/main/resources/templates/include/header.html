@@ -14,7 +14,12 @@
         <a class="text-dark" th:href="@{/front/auth/join}">회원가입</a>
     </div>
     <div sec:authorize="isAuthenticated()">
-        <a class="text-dark" th:text="${#authentication.name}">회원명</a>
+        <a class="text-dark" th:if="${#authentication.principal.role=='ROLE_USER'}"
+           th:href="@{'/front/user/' + ${#authentication.principal.idx}}"
+           th:text="${#authentication.name}">회원명</a>
+        <a class="text-dark" th:if="${#authentication.principal.role=='ROLE_ADMIN'}"
+           th:href="@{'/master/user/' + ${#authentication.principal.idx}}"
+           th:text="${#authentication.name}">회원명</a>
         <span class="text-muted px-2">|</span>
         <a class="text-dark" th:href="@{/front/auth/logout}">로그아웃</a>
     </div>
@@ -26,7 +31,12 @@
         <a class="text-dark" th:href="@{/master/auth/join}">회원가입</a>
     </div>
     <div sec:authorize="isAuthenticated()">
-        <a class="text-dark" th:text="${#authentication.name}">관리자명</a>
+        <a class="text-dark" th:if="${#authentication.principal.role=='ROLE_USER'}"
+           th:href="@{'/front/user/' + ${#authentication.principal.idx}}"
+           th:text="${#authentication.name}">관리자명</a>
+        <a class="text-dark" th:if="${#authentication.principal.role=='ROLE_ADMIN'}"
+           th:href="@{'/master/user/' + ${#authentication.principal.idx}}"
+           th:text="${#authentication.name}">관리자명</a>
         <span class="text-muted px-2">|</span>
         <a class="text-dark" th:href="@{/master/auth/logout}">로그아웃</a>
     </div>
