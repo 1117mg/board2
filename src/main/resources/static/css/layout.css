@@ -5,10 +5,12 @@ input[readonly] {
     cursor: not-allowed; /* 사용자가 변경할 수 없음을 나타내는 커서 */
 }
 
-/* 기본 스타일 및 다른 요소들 */
+/* 공통 스타일 */
 body {
     font-family: Arial, sans-serif;
     margin: 50px;
+    background-color: #fff;
+    color: #000;
 }
 
 table {
@@ -19,12 +21,40 @@ table {
 
 th, td {
     padding: 8px;
-    border: 1px solid #ddd;
+    border-bottom: 1px solid #ddd; /* 가로줄 */
     text-align: left;
 }
 
-th {
-    background-color: #f4f4f4;
+/* 테이블의 세로줄 제거 */
+th, td {
+    border-left: none !important;
+    border-right: none !important;
+}
+
+thead th {
+    text-align: center;
+    border-top: 4px solid #000 !important;
+}
+
+/* 하단 가로줄 강조 */
+tbody tr:last-child td {
+    border-bottom: 2px solid #000; /* 하단 가로줄 두껍고 검정색으로 설정 */
+}
+
+/* 가운데 가로줄들은 기본으로 유지 (얇은 회색) */
+tbody td {
+    border-bottom: 1px solid #ddd; /* 가운데 가로줄은 얇은 회색으로 설정 */
+}
+
+.board th:nth-child(2),
+.board td:nth-child(2) {
+    width: 400px; /* 폭 조정 */
+}
+
+/* 조회수 열 폭 조정 */
+.board th:nth-child(5),
+.board td:nth-child(5) {
+    width: 100px; /* 폭 조정 */
 }
 
 .chkbox input[type="checkbox"] {
@@ -36,9 +66,10 @@ th {
 }
 
 /* 버튼 스타일 */
-button[type="submit"] {
-    background-color: #007BFF;
+button[type="submit"],
+button[type="button"] {
     color: white;
+    background-color: #000; /* 블랙 배경 */
     padding: 10px 20px;
     border: none;
     border-radius: 4px;
@@ -46,6 +77,233 @@ button[type="submit"] {
     font-size: 16px;
 }
 
-button[type="submit"]:hover {
-    background-color: #0056b3;
+.button-container {
+    margin-top: 20px;
+    text-align: center;
+}
+
+.table-container {
+    max-width: 100%;
+}
+
+.table-container table {
+    width: 100%;
+}
+
+.table-container input[type="text"],
+.table-container textarea {
+    width: 100%;
+    box-sizing: border-box;
+}
+
+/* 공지글 강조 스타일 */
+.notice {
+    background-color: #f0f0f0 !important; /* 밝은 회색 배경 */
+    border-left: 5px solid #000 !important; /* 강조된 왼쪽 테두리 */
+    font-weight: bold !important; /* 글씨 두껍게 */
+    padding: 10px; /* 내부 여백 추가 */
+    margin-bottom: 15px; /* 하단 여백 추가 */
+    border-radius: 5px; /* 테두리 둥글게 */
+}
+
+.notice .board-title {
+    color: #000;
+    font-size: 1.1em;
+}
+
+/* 글 제목을 검정색으로 변경 */
+.board-title {
+    color: #000; /* 글자색 검정 */
+}
+.board-title:hover {
+    color: #333; /* 호버 시 약간 밝은 검정 */
+}
+
+.notice-tag {
+    color: #000; /* 강조된 태그 색상 */
+    font-weight: bold;
+    margin-right: 5px;
+    text-decoration: underline;
+}
+
+/* 공지글 아이콘 추가 스타일 */
+.notice-icon {
+    color: #000; /* 강조된 아이콘 색상 */
+    font-size: 1.1em; /* 아이콘 크기 */
+    margin-right: 10px; /* 아이콘과 텍스트 사이 여백 */
+}
+
+.btn-icon {
+    width: 30px;
+    height: 30px;
+    padding: 0;
+    border: none;
+    background: #fff !important;
+}
+.btn-icon i {
+    font-size: 1.2rem; /* 아이콘 크기 설정 */
+    color: #000; /* 아이콘 색상 설정 */
+}
+.btn-icon i:hover {
+    color: #f0f0f0; /* 호버 시 배경색 약간 회색 */
+}
+.btn-icon:focus {
+    box-shadow: none; /* 포커스 시 외곽선 제거 */
+}
+
+/* 기존 배지 스타일을 회색으로 재정의 */
+.badge-primary {
+    background-color: #000; /* 회색 */
+    color: #fff; /* 텍스트 색상 */
+}
+
+/* 이전글/다음글 버튼 */
+.nav-buttons {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 30px;
+    padding: 10px 0;
+}
+
+/* 이전글/다음글 버튼 */
+.nav-buttons .btn {
+    width: 48%;
+    font-size: 1.1rem;
+    font-weight: bold;
+    color: #fff;
+    background-color: #000;
+    border: none;
+}
+
+.btn-black {
+    background-color: #343a40;
+    color: #fff;
+}
+
+.btn-black:hover {
+    background-color: #23272b;
+    color: #fff;
+}
+
+/* 페이지네이션 버튼을 검정색으로 변경 */
+.pagination .page-link {
+    color: #000; /* 글자색 검정 */
+}
+.pagination .page-item.active .page-link {
+    background-color: #000; /* 활성화된 페이지의 배경색 검정 */
+    border-color: #000; /* 활성화된 페이지의 테두리색 검정 */
+    color: #fff; /* 활성화된 페이지의 글자색 흰색 */
+}
+.pagination .page-item .page-link:hover {
+    background-color: #333; /* 호버 시 약간 밝은 검정 */
+    border-color: #333;
+    color: #fff; /* 글자색 흰색 */
+}
+.pagination .page-item.disabled .page-link {
+    color: #999; /* 비활성화된 페이지의 글자색 회색 */
+}
+
+/* 비밀글일 때 내용 숨기기 => 글 상세 */
+.hidden-content {
+    display: none;
+}
+
+.content-text{
+    margin-bottom: 100px !important;
+}
+
+#contentArea {
+    max-width: 800px; /* 내용 영역의 최대 너비 설정 */
+    margin: auto; /* 중앙 정렬 */
+    padding: 20px; /* 패딩 추가 */
+}
+
+.ck-editor__editable {
+    min-height: 300px; /* 최소 높이 설정 */
+    height: 400px; /* 높이 설정 */
+}
+
+/* 첨부파일 영역 */
+.attachments {
+    margin-top: 30px; /* 내용과 첨부 파일 간의 간격 */
+    padding: 20px;
+    background-color: #f9f9f9; /* 배경색을 연한 회색으로 변경 */
+    border: 1px solid #ccc; /* 경계선을 중간 회색으로 변경 */
+    border-radius: 5px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* 그림자를 조금 더 강조 */
+}
+
+.attachments h6 {
+    margin-bottom: 15px;
+    font-weight: bold;
+    color: #333; /* 제목 색상을 진한 회색으로 변경 */
+}
+
+.attachments ul {
+    list-style-type: none; /* 글머리 기호 제거 */
+    padding-left: 0;
+}
+
+.attachments li {
+    margin-bottom: 10px; /* 항목 간의 간격을 조금 더 넓게 */
+}
+
+.attachments li a {
+    text-decoration: none; /* 밑줄 제거 */
+    color: #000; /* 링크 색상을 검정색으로 변경 */
+    transition: color 0.3s ease; /* 마우스 오버 시 색상 전환 효과 */
+}
+
+.attachments li a:hover {
+    color: #555; /* 마우스 오버 시 진한 회색으로 변경 */
+}
+
+.card {
+    margin-bottom: 20px;
+}
+.card-header {
+    font-size: 1.25rem;
+    font-weight: bold;
+}
+.card-body a {
+    display: block;
+    margin-bottom: 10px;
+    color: #007bff;
+    text-decoration: none;
+}
+.card-body a:hover {
+    text-decoration: underline;
+}
+.card-title {
+    font-size: 1.25rem;
+    font-weight: bold;
+}
+.card-body {
+    font-size: 1.125rem;
+}
+.text-dark {
+    color: #343a40 !important;
+}
+.btn-dark {
+    background-color: #343a40;
+    border-color: #343a40;
+}
+.btn-dark:hover {
+    background-color: #23272b;
+    border-color: #1d2124;
+}
+@media (max-width: 768px) {
+    .sidebar {
+        border-right: none;
+        border-bottom: 1px solid #dee2e6;
+        margin-bottom: 20px;
+    }
+    .main-content {
+        padding-left: 0;
+    }
+}
+.sidebar {
+    background-color: #f8f9fa;
+    padding: 15px;
+    border-right: 1px solid #dee2e6;
 }

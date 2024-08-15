@@ -5,12 +5,15 @@
     <title>관리자 상세</title>
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
     <link rel="stylesheet" th:href="@{/css/layout.css}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 </head>
 <body>
 <div th:replace="include/header::master"></div>
 <h1>관리자 상세</h1>
-<form th:action="@{'/master/user/' + ${user.idx}}" method="post" th:object="${user}">
-    <table class="tb tb_row">
+<form id="adminForm" th:action="@{'/master/user/' + ${user.idx}}" method="post" th:object="${user}">
+    <table class="table table-bordered">
         <colgroup>
             <col style="width:15%;" /><col style="width:35%;" /><col style="width:15%;" /><col style="width:35%;" />
         </colgroup>
@@ -44,53 +47,183 @@
             <th>가입일</th>
             <td colspan="3" th:text="*{#temporals.format(regDate, 'yyyy-MM-dd')}"></td>
         </tr>
+
+        <tr>
+            <th>사용 여부</th>
+            <td>
+                <div class="form-check form-check-inline">
+                    <input type="radio" id="Use" name="useYn" value="true" class="form-check-input" th:checked="*{useYn}" />
+                    <label for="Use" class="form-check-label">사용</label>
+                </div>
+                <div class="form-check form-check-inline">
+                    <input type="radio" id="notUse" name="useYn" value="false" class="form-check-input" th:checked="*{!useYn}" />
+                    <label for="notUse" class="form-check-label">미사용</label>
+                </div>
+            </td>
+        </tr>
         </tbody>
     </table>
-    <table class="tb tb_row">
-        <thead>
+    <h2>메뉴 접근 권한</h2>
+    <table class="table table-bordered">
+        <thead class="thead-light">
         <tr>
-            <th class="one wide">메뉴 접근 권한</th>
-            <th class="ten wide">읽기</th>
-            <th class="two wide">쓰기</th>
-            <th class="three wide">다운로드</th>
+            <th>메뉴</th>
+            <th>
+                <input type="checkbox" id="selectAllRead" />
+                <label for="selectAllRead" class="form-check-label">읽기</label>
+            </th>
+            <th>
+                <input type="checkbox" id="selectAllWrite" />
+                <label for="selectAllWrite" class="form-check-label">쓰기</label>
+            </th>
+            <th>
+                <input type="checkbox" id="selectAllDownload" />
+                <label for="selectAllDownload" class="form-check-label">다운로드</label>
+            </th>
         </tr>
         </thead>
         <tbody>
         <tr th:each="board : ${boards}">
             <td th:text="${board.boardTitle}"></td>
             <td>
-                <label>
-                    <input type="checkbox" th:id="'read_' + ${board.idx}"
-                           th:name="${board.idx} + '_read'"
-                           th:value="true"
-                           th:checked="${readMap[board.idx]?.canRead == true}"/>
-                    읽기
-                </label>
+                <input type="checkbox" class="readCheckbox" th:id="'read_' + ${board.idx}"
+                       th:name="${board.idx} + '_read'"
+                       th:value="true"
+                       th:checked="${readMap[board.idx]?.canRead == true}"/>
             </td>
             <td>
-                <label>
-                    <input type="checkbox" th:id="'write_' + ${board.idx}"
-                           th:name="${board.idx} + '_write'"
-                           th:value="true"
-                           th:checked="${readMap[board.idx]?.canWrite == true}"/>
-                    쓰기
-                </label>
+                <input type="checkbox" class="writeCheckbox" th:id="'write_' + ${board.idx}"
+                       th:name="${board.idx} + '_write'"
+                       th:value="true"
+                       th:checked="${readMap[board.idx]?.canWrite == true}"/>
             </td>
             <td>
-                <label>
-                    <input type="checkbox" th:id="'download_' + ${board.idx}"
-                           th:name="${board.idx} + '_download'"
-                           th:value="true"
-                           th:checked="${readMap[board.idx]?.canDownload == true}"/>
-                    다운로드
-                </label>
+                <input type="checkbox" class="downloadCheckbox" th:id="'download_' + ${board.idx}"
+                       th:name="${board.idx} + '_download'"
+                       th:value="true"
+                       th:checked="${readMap[board.idx]?.canDownload == true}"/>
             </td>
         </tr>
-
         </tbody>
     </table>
-    <button type="submit">수정</button>
+    <div class="button-container text-right">
+        <button type="submit" class="btn btn-primary">수정</button>
+        <button type="button" id="listButton" class="btn btn-secondary">
+            목록 <i class="fas fa-list"></i>
+        </button>
+    </div>
 </form>
-<a th:href="@{'/master/users'}">목록으로</a>
+<div th:replace="include/footer::master"></div>
+<script>
+    $(document).ready(function() {
+        var baseURL = window.location.origin;
+        // 목록 버튼 클릭 이벤트
+        $("#listButton").on('click', function () {
+            window.location.href = baseURL+"/master/users";
+        });
+
+        // 사용 여부에 따른 체크박스 활성/비활성화 설정
+        function toggleCheckboxesBasedOnUsage() {
+            const isUseChecked = $('#Use').is(':checked');
+            $(".readCheckbox, .writeCheckbox, .downloadCheckbox").prop('disabled', !isUseChecked);
+            $("#selectAllRead, #selectAllWrite, #selectAllDownload").prop('disabled', !isUseChecked);
+        }
+
+        // 페이지 로드 시 사용 여부에 따른 체크박스 상태 설정
+        toggleCheckboxesBasedOnUsage();
+
+        // 사용 여부 변경 시 체크박스 상태 업데이트
+        $("input[name='useYn']").on('change', function() {
+            toggleCheckboxesBasedOnUsage();
+        });
+
+        // 전체 선택 및 해제 이벤트
+        $("#selectAllRead").on('change', function() {
+            $(".readCheckbox").prop('checked', this.checked);
+        });
+
+        $("#selectAllWrite").on('change', function() {
+            $(".writeCheckbox").prop('checked', this.checked);
+        });
+
+        $("#selectAllDownload").on('change', function() {
+            $(".downloadCheckbox").prop('checked', this.checked);
+        });
+
+        // 각 행의 체크박스 상태에 따라 상위 체크박스 상태 업데이트
+        function updateHeaderCheckbox(checkboxClass, headerCheckboxId) {
+            const allChecked = $(checkboxClass).length === $(checkboxClass + ":checked").length;
+            $(headerCheckboxId).prop('checked', allChecked);
+        }
+
+        function updateAllHeaderCheckboxes() {
+            updateHeaderCheckbox(".readCheckbox", "#selectAllRead");
+            updateHeaderCheckbox(".writeCheckbox", "#selectAllWrite");
+            updateHeaderCheckbox(".downloadCheckbox", "#selectAllDownload");
+        }
+
+        updateAllHeaderCheckboxes();
+
+        $(".readCheckbox").on('change', function() {
+            updateAllHeaderCheckboxes();
+        });
+
+        $(".writeCheckbox").on('change', function() {
+            updateAllHeaderCheckboxes();
+        });
+
+        $(".downloadCheckbox").on('change', function() {
+            updateAllHeaderCheckboxes();
+        });
+
+        $('tbody tr').each(function() {
+            const row = $(this);
+            row.find('input[type=checkbox]').on('change', function() {
+                updateAllHeaderCheckboxes();
+            });
+        });
+
+        // 폼 제출 이벤트
+        $("#adminForm").on('submit', function(event) {
+            event.preventDefault(); // 기본 폼 제출 방지
+
+            // 입력 값 검증
+            const userName = $("#userName").val().trim();
+            const userEmail = $("#userEmail").val().trim();
+
+            if (!userName || !userEmail) {
+                Swal.fire({
+                    icon: 'error',
+                    title: '입력 오류',
+                    text: '모든 필드를 올바르게 입력해 주세요.',
+                });
+                return;
+            }
+
+            // 폼 데이터 전송
+            $.ajax({
+                url: $(this).attr('action'),
+                method: 'POST',
+                data: $(this).serialize(),
+                success: function(response) {
+                    Swal.fire({
+                        icon: 'success',
+                        title: '수정 완료',
+                        text: '사용자 정보가 성공적으로 수정되었습니다.',
+                    }).then(() => {
+                        window.location.href = baseURL+'/master/user/'+$("#idx").val(); // 수정 완료 후 목록 페이지로 이동
+                    });
+                },
+                error: function() {
+                    Swal.fire({
+                        icon: 'error',
+                        title: '수정 실패',
+                        text: '사용자 정보 수정 중 오류가 발생했습니다.',
+                    });
+                }
+            });
+        });
+    });
+</script>
 </body>
 </html>

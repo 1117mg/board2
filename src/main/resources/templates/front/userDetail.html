@@ -5,11 +5,14 @@
     <title>회원 상세</title>
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
     <link rel="stylesheet" th:href="@{/css/layout.css}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 </head>
 <body>
 <div th:replace="include/header::front"></div>
 <h1>회원 상세</h1>
-<form th:action="@{'/front/user/' + ${user.idx}}" method="post" th:object="${user}">
+<form id="editForm" th:action="@{'/front/user/' + ${user.idx}}" method="post" th:object="${user}">
     <table class="tb tb_row">
         <colgroup>
             <col style="width:15%;" /><col style="width:35%;" /><col style="width:15%;" /><col style="width:35%;" />
@@ -17,7 +20,7 @@
         <tbody>
         <tr>
             <th>번호</th>
-            <td colspan="3"><input type="text" id="idx" name="idx" th:field="*{idx}" maxlength="50" readonly /></td>
+            <td colspan="3"><input type="text" id="idx" name="idx" th:field="*{idx}" th:value="${idx}" maxlength="50" readonly /></td>
         </tr>
 
         <tr>
@@ -46,8 +49,62 @@
         </tr>
         </tbody>
     </table>
-    <button type="submit">수정</button>
+    <div class="button-container text-right">
+        <button type="submit" class="btn btn-primary">수정</button>
+        <button type="button" id="listButton" class="btn btn-secondary" th:if="${user.userRole=='ROLE_ADMIN'}">
+            목록 <i class="fas fa-list"></i>
+        </button>
+    </div>
 </form>
-<a th:href="@{'/front/users'}">목록으로</a>
+<div th:replace="include/footer::front"></div>
+<script>
+    $(document).ready(function() {
+        var baseURL = window.location.origin;
+        $("#listButton").on('click', function() {
+            window.location.href = baseURL+"/front/users";
+        });
+
+        $("#editForm").on('submit', function(event) {
+            event.preventDefault();
+
+            var name = $("#userName").val().trim();
+            var email = $("#userEmail").val().trim();
+
+            if (name === "" || email === "") {
+                Swal.fire({
+                    icon: 'warning',
+                    title: '입력 오류',
+                    text: '이름과 이메일은 필수 입력 항목입니다.',
+                    confirmButtonText: '확인'
+                });
+                return;
+            }
+
+            $.ajax({
+                type: "POST",
+                url: $(this).attr('action'),
+                data: $(this).serialize(),
+                success: function(response) {
+                    Swal.fire({
+                        icon: 'success',
+                        title: '수정 완료!',
+                        text: '회원 정보가 성공적으로 수정되었습니다.',
+                        confirmButtonText: '확인'
+                    }).then(() => {
+                        window.location.href = baseURL+"/front/user/" + $("#idx").val();
+                    });
+                },
+                error: function(request, status, error) {
+                    Swal.fire({
+                        icon: 'error',
+                        title: '수정 실패',
+                        text: '회원 정보 수정에 실패했습니다: ' + (request.responseJSON && request.responseJSON.error ? request.responseJSON.error : error),
+                        confirmButtonText: '확인'
+                    });
+                }
+            });
+        });
+    });
+</script>
 </body>
 </html>

@@ -8,10 +8,20 @@ import java.util.List;
 
 @Mapper
 public interface PostMapper {
-    List<Post> findByBoardIdx(@Param("boardIdx") int boardIdx);
-    List<Post> findHByBoardIdx(@Param("boardIdx") int boardIdx);
-    Post findByIdx(@Param("idx") int idx);
+    List<Post> findByBoardIdx(@Param("boardIdx") int boardIdx,
+                              @Param("offset") int offset,
+                              @Param("pageSize") int pageSize);
+    List<Post> findHByBoardIdx(@Param("boardIdx") int boardIdx,
+                               @Param("offset") int offset,
+                               @Param("pageSize") int pageSize);
+    int countPostsByBoardId(@Param("boardIdx") int boardIdx);
+    Post findPostByIdx(@Param("idx") int idx);
+    Post findHierarchy(int postId);
+    Integer findPrevIdx(int boardIdx, int postId);
+    Integer findNextIdx(int boardIdx, int postId);
     Post findByParentId(@Param("parentIdx") int parentIdx);
+    Integer findParentIdx(int parentIdx);
+    Integer findReplyIdx(int idx);
     void insertPost(Post post);
     void replyPost(Post post);
     void updatePost(Post post);

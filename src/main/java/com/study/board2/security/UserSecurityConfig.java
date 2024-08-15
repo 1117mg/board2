@@ -2,55 +2,49 @@ package com.study.board2.security;
 
 import com.study.board2.service.MyUserDetailsService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.annotation.Order;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.security.web.authentication.rememberme.JdbcTokenRepositoryImpl;
 import org.springframework.security.web.authentication.rememberme.PersistentTokenRepository;
 
-import javax.sql.DataSource;
-
-@RequiredArgsConstructor
 @Configuration
 @EnableWebSecurity
+@RequiredArgsConstructor
 @Order(1)  // 낮은 우선순위
 public class UserSecurityConfig extends WebSecurityConfigurerAdapter {
+
+    private final LoginSuccessHandler successHandler;
+    private final LoginFailureHandler failureHandler;
+    private final MyUserDetailsService userDetailsService;
+    private final PersistentTokenRepository tokenRepository;
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
         http
-                .rememberMe()
-                .userDetailsService(userDetailsService)
-                .tokenRepository(tokenRepository)
-                .tokenValiditySeconds(604800)
-                .and()
-                .requestMatchers().antMatchers("/front/**")
+                .requestMatchers()
+                .antMatchers("/css/**","/front/**")
                 .and()
                 .formLogin()
                 .loginPage("/front/auth/login")
                 .loginProcessingUrl("/front/auth/login")
                 .usernameParameter("loginId")
                 .passwordParameter("loginPw")
-                .defaultSuccessUrl("/front/main")
+                .failureHandler(failureHandler)
+                .successHandler(successHandler)
                 .and()
                 .logout()
                 .logoutUrl("/front/auth/logout")
-                .logoutSuccessUrl("/front/main")  // 로그아웃 성공 후 리다이렉트 설정
+                .logoutSuccessUrl("/front/main")
                 .invalidateHttpSession(true)
                 .deleteCookies("remember-me", "JSESSIONID")
                 .and()
-                .csrf().disable()
-                .rememberMe();
+                .rememberMe()
+                .userDetailsService(userDetailsService)
+                .tokenRepository(tokenRepository)
+                .tokenValiditySeconds(604800)
+                .and()
+                .csrf().disable();
     }
-
-    public final MyUserDetailsService userDetailsService;
-
-    private final PersistentTokenRepository tokenRepository;
 }

@@ -2,21 +2,12 @@ package com.study.board2.security;
 
 import com.study.board2.service.MyUserDetailsService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.annotation.Order;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
-import org.springframework.security.core.userdetails.UserDetailsService;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.security.web.authentication.rememberme.JdbcTokenRepositoryImpl;
 import org.springframework.security.web.authentication.rememberme.PersistentTokenRepository;
-
-import javax.servlet.http.HttpSession;
-import javax.sql.DataSource;
 
 @Configuration
 @EnableWebSecurity
@@ -24,22 +15,24 @@ import javax.sql.DataSource;
 @Order(0)  // 높은 우선순위
 public class AdminSecurityConfig extends WebSecurityConfigurerAdapter {
 
+    private final LoginSuccessHandler successHandler;
+    private final LoginFailureHandler failureHandler;
+    private final MyUserDetailsService userDetailsService;
+    private final PersistentTokenRepository tokenRepository;
+
     @Override
     protected void configure(HttpSecurity http) throws Exception {
         http
-                .rememberMe()
-                .userDetailsService(userDetailsService)
-                .tokenRepository(tokenRepository())
-                .tokenValiditySeconds(604800)
-                .and()
-                .requestMatchers().antMatchers("/master/**")
+                .requestMatchers()
+                .antMatchers("/css/**","/master/**")
                 .and()
                 .formLogin()
                 .loginPage("/master/auth/login")
                 .loginProcessingUrl("/master/auth/login")
                 .usernameParameter("loginId")
                 .passwordParameter("loginPw")
-                .defaultSuccessUrl("/master/main")
+                .failureHandler(failureHandler)
+                .successHandler(successHandler)
                 .and()
                 .logout()
                 .logoutUrl("/master/auth/logout")
@@ -47,23 +40,11 @@ public class AdminSecurityConfig extends WebSecurityConfigurerAdapter {
                 .invalidateHttpSession(true)
                 .deleteCookies("remember-me", "JSESSIONID")
                 .and()
+                .rememberMe()
+                .userDetailsService(userDetailsService)
+                .tokenRepository(tokenRepository)
+                .tokenValiditySeconds(604800)
+                .and()
                 .csrf().disable();
-    }
-
-    @Qualifier("dataSource")
-    private final DataSource dataSource;
-
-    private final MyUserDetailsService userDetailsService;
-
-    @Bean
-    public PasswordEncoder passwordEncoder() {
-        return new BCryptPasswordEncoder();
-    }
-
-    @Bean
-    public PersistentTokenRepository tokenRepository() {
-        JdbcTokenRepositoryImpl jdbcTokenRepository = new JdbcTokenRepositoryImpl();
-        jdbcTokenRepository.setDataSource(dataSource); // dataSource 주입
-        return jdbcTokenRepository;
     }
 }

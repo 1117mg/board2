@@ -2,31 +2,64 @@ package com.study.board2.service;
 
 import com.study.board2.dto.*;
 import com.study.board2.repository.UserMapper;
+import com.study.board2.util.Page;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.HashMap;
 import java.util.List;
-import java.util.Optional;
 
+@Slf4j
 @RequiredArgsConstructor
+@Transactional
 @Service
 public class UserService {
 
     private final UserMapper userMapper;
+    private final PasswordEncoder passwordEncoder;
 
-    public List<User> getAllMembers() {
-        return userMapper.findAllMembers();
+    public boolean userEmailCheck(String userEmail, String userName) {
+
+        User user = userMapper.findByUsername(userName);
+        if(user!=null && user.getUserEmail().equals(userEmail)) {
+            return true;
+        }
+        else {
+            return false;
+        }
     }
 
-    public List<User> getAllAdmins() {
-        return userMapper.findAllAdmins();
+    public void updateUserPassword(String userEmail, String newPassword) {
+        User user = userMapper.findByEmail(userEmail);
+        if (user != null) {
+            user.setUserPw(passwordEncoder.encode(newPassword));
+            userMapper.updateUserPassword(user);
+        } else {
+            throw new RuntimeException("사용자를 찾을 수 없습니다.");
+        }
     }
+
+    public Page<User> getAllMembers(int pageNumber, int pageSize) {
+        int offset = (pageNumber - 1) * pageSize;
+        List<User> users = userMapper.findAllMembers(offset, pageSize);
+        int totalElements = userMapper.countMembers();
+
+        return new Page<>(users, pageNumber, pageSize, totalElements);
+    }
+
+    public Page<User> getAllAdmins(int pageNumber, int pageSize) {
+        int offset = (pageNumber - 1) * pageSize;
+        List<User> users = userMapper.findAllAdmins(offset, pageSize);
+        int totalElements = userMapper.countAdmins();
+
+        return new Page<>(users, pageNumber, pageSize, totalElements);
+    }
+
+    public User findUserByIdx(int idx){return userMapper.findUserByIdx(idx);}
 
     public User findByUserId(String userName){
         return userMapper.findByUserId(userName);

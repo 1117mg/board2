@@ -3,8 +3,11 @@
 
 <mapper namespace="com.study.board2.repository.PostMapper">
     <select id="findByBoardIdx" parameterType="int" resultType="com.study.board2.dto.Post">
-        SELECT * FROM board_post WHERE board_idx = #{boardIdx} AND delete_yn = 0
-        ORDER BY idx DESC
+        SELECT * FROM board_post
+        WHERE board_idx = #{boardIdx}
+          AND delete_yn = 0 AND secret_yn=0
+        ORDER BY notice_yn DESC, idx DESC
+            LIMIT #{offset}, #{pageSize}
     </select>
 
     <select id="findHByBoardIdx" parameterType="int" resultType="com.study.board2.dto.Post">
@@ -12,33 +15,33 @@
             -- 최상위 부모 글 선택
             SELECT
                 bp.*,
-                hb.parent_id,
+                hb.parent_idx,
                 hb.depth,
                 hb.sorts,
-                bp.idx AS root_idx,  -- 최상위 부모의 idx를 유지
+                bp.idx AS root_idx,
                 CAST(bp.idx AS CHAR(255)) AS hierarchy_path
             FROM
                 board_post bp
-                    JOIN hierarchical_board hb ON bp.idx = hb.post_idx
+                    LEFT JOIN hierarchical_board hb ON bp.idx = hb.post_idx
             WHERE
                 bp.board_idx = #{boardIdx}
               AND bp.delete_yn = 0
-              AND hb.parent_id IS NULL
+              AND hb.parent_idx IS NULL
 
             UNION ALL
 
             -- 부모 아래에 자식 글 추가
             SELECT
                 bp.*,
-                hb.parent_id,
+                hb.parent_idx,
                 hb.depth,
                 hb.sorts,
-                h.root_idx,  -- 같은 계층 구조의 부모 글을 유지
+                h.root_idx,
                 CONCAT(h.hierarchy_path, '-', LPAD(bp.idx, 10, '0')) AS hierarchy_path
             FROM
                 board_post bp
                     JOIN hierarchical_board hb ON bp.idx = hb.post_idx
-                    JOIN Hierarchy h ON hb.parent_id = h.idx
+                    JOIN Hierarchy h ON hb.parent_idx = h.idx
             WHERE
                 bp.board_idx = #{boardIdx}
               AND bp.delete_yn = 0
@@ -48,16 +51,43 @@
         FROM
             Hierarchy
         ORDER BY
-            hierarchy_path,  -- 계층 경로로 정렬하여 부모 글 아래 자식 글이 위치
-            sorts DESC       -- 동일 부모 아래에서 sorts로 내림차순 정렬
+            notice_yn DESC, -- 공지 글을 최상위로 정렬
+            root_idx DESC, -- 최상위 부모 글을 최신 순으로 정렬
+            hierarchy_path,
+            sorts DESC
+            LIMIT #{offset}, #{pageSize}
     </select>
 
-    <select id="findByIdx" parameterType="int" resultType="com.study.board2.dto.Post">
+    <select id="countPostsByBoardId" resultType="int">
+        SELECT COUNT(*) FROM board_post WHERE board_idx = #{boardIdx} AND delete_yn = 0
+    </select>
+
+    <select id="findPostByIdx" parameterType="int" resultType="com.study.board2.dto.Post">
         SELECT * FROM board_post WHERE idx = #{idx} AND delete_yn = 0
+    </select>
+
+    <select id="findHierarchy" parameterType="int" resultType="com.study.board2.dto.Post">
+        SELECT * FROM hierarchical_board WHERE post_idx = #{idx}
+    </select>
+
+    <select id="findPrevIdx" parameterType="int" resultType="int">
+        SELECT MAX(idx) FROM board_post WHERE board_idx = #{boardIdx} AND idx &lt; #{postId} AND delete_yn = 0
+    </select>
+
+    <select id="findNextIdx" parameterType="map" resultType="int">
+        SELECT MIN(idx) FROM board_post WHERE board_idx = #{boardIdx} AND idx &gt; #{postId} AND delete_yn = 0
     </select>
 
     <select id="findByParentId" parameterType="int" resultType="com.study.board2.dto.Post">
         SELECT * FROM hierarchical_board WHERE post_idx = #{parentIdx}
+    </select>
+
+    <select id="findParentIdx" parameterType="int" resultType="int">
+        SELECT MIN(post_idx) FROM hierarchical_board WHERE post_idx = #{parentIdx}
+    </select>
+
+    <select id="findReplyIdx" parameterType="int" resultType="int">
+        SELECT MIN(post_idx) FROM hierarchical_board WHERE parent_idx = #{idx}
     </select>
 
     <update id="hit" parameterType="int">
@@ -67,13 +97,13 @@
     </update>
 
     <insert id="insertPost" parameterType="com.study.board2.dto.Post" useGeneratedKeys="true" keyProperty="idx">
-        INSERT INTO board_post (board_idx, board_group_idx, user_no, title, content, notice_yn, secret_yn)
-        VALUES (#{boardIdx}, #{boardGroupIdx}, #{userNo}, #{title}, #{content}, #{noticeYn}, #{secretYn})
+        INSERT INTO board_post (board_idx, board_group_idx, user_no, title, content, upload_date, notice_yn, secret_yn)
+        VALUES (#{boardIdx}, #{boardGroupIdx}, #{userNo}, #{title}, #{content}, #{uploadDate}, #{noticeYn}, #{secretYn})
     </insert>
 
     <insert id="replyPost" parameterType="com.study.board2.dto.Post">
         INSERT INTO hierarchical_board (
-            post_idx, parent_id, depth, sorts
+            post_idx, parent_idx, depth, sorts
         ) SELECT
               #{idx},
               #{parentIdx},
@@ -82,14 +112,14 @@
         FROM
             hierarchical_board  parent
                 LEFT JOIN
-            hierarchical_board sibling ON parent.post_idx = sibling.parent_id
+            hierarchical_board sibling ON parent.post_idx = sibling.parent_idx
         WHERE
             parent.post_idx = #{parentIdx}
     </insert>
 
     <update id="updatePost" parameterType="com.study.board2.dto.Post">
         UPDATE board_post
-        SET title = #{title}, content = #{content}
+        SET title = #{title}, content = #{content}, upload_date=#{uploadDate}, notice_yn=#{noticeYn}, secret_yn=#{secretYn}
         WHERE idx = #{idx}
     </update>
 

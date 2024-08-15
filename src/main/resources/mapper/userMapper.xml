@@ -11,6 +11,7 @@
                 LEFT JOIN
             member m ON u.idx = m.idx
         WHERE u.user_role="ROLE_USER"
+        LIMIT #{offset}, #{pageSize}
     </select>
 
     <select id="findAllAdmins" resultType="com.study.board2.dto.User">
@@ -21,6 +22,21 @@
                 LEFT JOIN
             admin a ON u.idx = a.idx
         WHERE u.user_role="ROLE_ADMIN"
+        LIMIT #{offset}, #{pageSize}
+    </select>
+
+    <select id="countMembers" resultType="int">
+        SELECT COUNT(*) FROM member
+    </select>
+
+    <select id="countAdmins" resultType="int">
+        SELECT COUNT(*) FROM admin
+    </select>
+
+    <select id="findUserByIdx" parameterType="int" resultType="com.study.board2.dto.User">
+        SELECT *
+        FROM user
+        WHERE idx=#{idx}
     </select>
 
     <select id="findByUserId" parameterType="String" resultType="com.study.board2.dto.User">
@@ -30,13 +46,23 @@
     </select>
 
     <select id="findByUsername" parameterType="String" resultType="com.study.board2.dto.User">
-        SELECT user_name
+        SELECT idx, user_name, user_email
         FROM member
         WHERE user_name = #{userName}
         UNION
-        SELECT user_name
+        SELECT idx, user_name, user_email
         FROM admin
         WHERE user_name = #{userName}
+    </select>
+
+    <select id="findByEmail" parameterType="String" resultType="com.study.board2.dto.User">
+        SELECT *
+        FROM member
+        WHERE user_email = #{userEmail}
+        UNION
+        SELECT *
+        FROM admin
+        WHERE user_email = #{userEmail}
     </select>
 
     <select id="findMemberByIdx" parameterType="int" resultType="com.study.board2.dto.User">
@@ -74,8 +100,8 @@
 
     <!-- 관리자 데이터 삽입 -->
     <insert id="insertAdmin" parameterType="com.study.board2.dto.User">
-        INSERT INTO admin (idx, user_name, user_email)
-        VALUES (#{idx}, #{userName}, #{userEmail})
+        INSERT INTO admin (idx, user_name, user_email, use_yn)
+        VALUES (#{idx}, #{userName}, #{userEmail}, default)
     </insert>
 
     <update id="updateMember" parameterType="com.study.board2.dto.User">
@@ -86,7 +112,13 @@
 
     <update id="updateAdmin" parameterType="com.study.board2.dto.User">
         UPDATE admin
-        SET user_name=#{userName}, user_email=#{userEmail}
+        SET user_name=#{userName}, user_email=#{userEmail}, use_yn=#{useYn}
+        WHERE idx=#{idx}
+    </update>
+
+    <update id="updateUserPassword" parameterType="com.study.board2.dto.User">
+        UPDATE user
+        SET user_pw=#{userPw}
         WHERE idx=#{idx}
     </update>
 </mapper>

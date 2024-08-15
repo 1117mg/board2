@@ -5,17 +5,234 @@
     <title>게시글 상세</title>
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
     <link rel="stylesheet" th:href="@{/css/layout.css}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 </head>
 <body>
 <div th:replace="include/header::front"></div>
 
-<h1 th:text="${post.title}">게시글 제목</h1>
-<p th:text="${post.content}">게시글 내용</p>
-<a th:if="${post.userNo==userNo}" th:href="@{'/front/board/' + ${post.boardIdx} + '/post/' + ${post.idx} + '/edit'}">수정</a>
-<a th:if="${userNo!=0}" th:href="@{'/front/board/' + ${post.boardIdx} + '/post/' + ${post.idx} + '/reply'}">답글쓰기</a>
-<form th:if="${post.userNo==userNo}" th:action="@{'/front/board/post/' + ${post.idx} + '/delete'}" method="post">
-    <button type="submit">삭제</button>
-</form>
-<a th:href="@{'/front/board/' + ${post.boardIdx} + '/posts'}">목록으로</a>
+<div class="container mt-4" id="contentArea">
+    <div class="d-flex align-items-center">
+        <h5 class="badge badge-primary mr-2" th:if="${boardIdx==1}">공지사항</h5>
+        <h5 class="badge badge-primary mr-2" th:if="${boardIdx==2}">1:1문의</h5>
+        <span th:if="${post.noticeYn == true}" class="notice-icon">
+                        <i class="fas fa-bullhorn"></i> <!-- 공지 아이콘 -->
+                    </span>
+        <span th:if="${post.depth > 0}" th:each="i : ${#numbers.sequence(1, post.depth)}" class="reply">&nbsp;↪RE:</span>
+        <h1 th:text="${post.title}">게시글 제목</h1>
+    </div>
+
+    <div class="d-flex justify-content-between mt-2 text-muted small">
+        <div>
+            <span th:text="${writer.userName}">작성자</span> |
+            <span th:text="${#temporals.format(post.regDate, 'yyyy-MM-dd HH:mm')}">작성일자</span> |
+            <span th:text="${writer.userEmail}">작성자의 이메일</span>
+        </div>
+        <div>
+            <button type="button" id="listButton" class="btn btn-icon" title="목록">
+                <i class="fas fa-list"></i>
+            </button>
+            <button type="button" id="editButton" class="btn btn-icon" style="display:none;" title="수정">
+                <i class="fas fa-edit"></i>
+            </button>
+            <button type="button" id="deleteButton" class="btn btn-icon" style="display:none;" title="삭제">
+                <i class="fas fa-trash"></i>
+            </button>
+        </div>
+    </div>
+
+    <div class="mt-4 content-text">
+        <p th:utext="${post.content}"></p>
+    </div>
+
+    <div class="text-right mb-3">
+        <button type="button" id="replyButton" class="btn btn-success" style="display:none;">
+            답글쓰기 <i class="fas fa-reply"></i>
+        </button>
+    </div>
+
+    <div class="attachments">
+        <h6>첨부 파일</h6>
+        <ul>
+            <li><a href="#">파일1.pdf</a></li>
+            <li><a href="#">파일2.docx</a></li>
+        </ul>
+    </div>
+
+    <!--일반 게시판-->
+    <div class="nav-buttons" th:if="${boardType=='100'}">
+        <button type="button" class="btn" id="prevPostButton"
+                th:if="${prevPostId != null}"
+                th:data-post-id="${prevPostId}"
+                style="display: block;">
+            이전 글
+        </button>
+
+        <button type="button" class="btn" id="nextPostButton"
+                th:if="${nextPostId != null}"
+                th:data-post-id="${nextPostId}"
+                style="display: block;">
+            다음 글
+        </button>
+    </div>
+
+    <!--계층형 게시판-->
+    <div class="nav-buttons" th:if="${boardType=='200'}">
+        <button type="button" class="btn" id="parentPostButton"
+                th:if="${parentPostId != null}"
+                th:data-post-id="${parentPostId}"
+                style="display: block;">
+            이전 글
+        </button>
+        <button type="button" class="btn" id="replyPostButton"
+                th:if="${replyPostId != null}"
+                th:data-post-id="${replyPostId}"
+                style="display: block;">
+            답변 글
+        </button>
+    </div>
+</div>
+
+<div id="postDetails"
+     th:data-has-edit-permission="${hasEditPermission}"
+     th:data-can-reply="${canReply}"
+     th:data-board-idx="${boardIdx}"
+     th:data-post-idx="${post.idx}"
+     th:data-secret-yn="${post.secretYn}"
+     th:data-edit-url="@{/front/board/{boardIdx}/post/{postIdx}/edit(boardIdx=${boardIdx}, postIdx=${post.idx})}"
+     th:data-delete-url="@{/front/board/post/{postIdx}/delete(postIdx=${post.idx})}"
+     th:data-list-url="@{/front/board/{boardIdx}/posts(boardIdx=${boardIdx})}"
+     th:data-prev-post-url="@{/front/board/post/{postId}(postId=${prevPostId})}"
+     th:data-next-post-url="@{/front/board/post/{postId}(postId=${nextPostId})}"
+     th:data-parent-post-url="@{/front/board/post/{postId}(postId=${parentPostId})}"
+     th:data-reply-post-url="@{/front/board/post/{postId}(postId=${replyPostId})}"
+     th:data-reply-write-url="@{/front/board/{boardIdx}/post/{postIdx}/reply(boardIdx=${boardIdx}, postIdx=${post.idx})}">
+</div>
+
+<div th:replace="include/footer::front"></div>
+
+<script>
+    $(document).ready(function() {
+        // 데이터 속성에서 변수 값 읽기
+        var postDetails = $('#postDetails');
+        var hasEditPermission = postDetails.data('has-edit-permission');
+        var canReply = postDetails.data('can-reply');
+        var boardIdx = postDetails.data('board-idx');
+        var postIdx = postDetails.data('post-idx');
+        var secretYn = postDetails.data('secret-yn');
+        var editUrl = postDetails.data('edit-url');
+        var deleteUrl = postDetails.data('delete-url');
+        var listUrl = postDetails.data('list-url');
+        var prevPostUrl = postDetails.data('prev-post-url');
+        var nextPostUrl = postDetails.data('next-post-url');
+        var parentPostUrl = postDetails.data('parent-post-url');
+        var replyPostUrl = postDetails.data('reply-post-url');
+        var replyWriteUrl = postDetails.data('reply-write-url');
+
+        // 비밀글 및 권한 체크
+        if (secretYn == 1 && !hasEditPermission) {
+            // 비밀글일 때 제목과 내용 숨기기
+            $('#contentArea').addClass('hidden-content');
+
+            Swal.fire({
+                icon: 'warning',
+                title: '비밀글입니다',
+                text: '이 글은 비밀글입니다. 이전 페이지로 돌아갑니다.',
+                confirmButtonText: '확인'
+            }).then(() => {
+                window.history.back();
+            });
+        } else {
+            // 수정 권한이 있을 때 수정 버튼 표시 및 클릭 시 동작
+            if (hasEditPermission) {
+                $('#editButton').show().on('click', function() {
+                    window.location.href = editUrl;
+                });
+
+                $('#deleteButton').show().on('click', function() {
+                    Swal.fire({
+                        title: '정말 삭제하시겠습니까?',
+                        text: "삭제하면 복구할 수 없습니다!",
+                        icon: 'warning',
+                        showCancelButton: true,
+                        confirmButtonColor: '#d33',
+                        cancelButtonColor: '#3085d6',
+                        confirmButtonText: '삭제',
+                        cancelButtonText: '취소'
+                    }).then((result) => {
+                        if (result.isConfirmed) {
+                            $.post(deleteUrl, function(response) {
+                                Swal.fire(
+                                    '삭제 완료!',
+                                    '게시글이 삭제되었습니다.',
+                                    'success'
+                                ).then(() => {
+                                    window.location.href = listUrl;
+                                });
+                            }).fail(function(error) {
+                                Swal.fire({
+                                    icon: 'error',
+                                    title: '삭제 실패',
+                                    text: error.responseJSON.error || error.statusText,
+                                    confirmButtonText: '확인'
+                                });
+                            });
+                        }
+                    });
+                });
+            } else {
+                $('#editButton, #deleteButton').click(function() {
+                    Swal.fire({
+                        icon: 'warning',
+                        title: '권한 없음',
+                        text: '수정 또는 삭제 권한이 없습니다.',
+                        confirmButtonText: '확인'
+                    });
+                });
+            }
+
+            // 답글 작성 권한이 있을 때 답글쓰기 버튼 표시 및 클릭 시 동작
+            if (canReply) {
+                $('#replyButton').show().on('click', function() {
+                    window.location.href = replyWriteUrl;
+                });
+            }
+
+            // 목록 버튼 클릭 시 게시글 목록 페이지로 이동
+            $("#listButton").on('click', function() {
+                window.location.href = listUrl;
+            });
+
+            $("#prevPostButton").on('click', function() {
+                var prevPostId = $(this).data('post-id');
+                if (prevPostId) {
+                    window.location.href = prevPostUrl.replace('{postId}', prevPostId);
+                }
+            });
+
+            $("#nextPostButton").on('click', function() {
+                var nextPostId = $(this).data('post-id');
+                if (nextPostId) {
+                    window.location.href = nextPostUrl.replace('{postId}', nextPostId);
+                }
+            });
+
+            $("#parentPostButton").on('click', function() {
+                var parentPostId = $(this).data('post-id');
+                if (parentPostId) {
+                    window.location.href = parentPostUrl.replace('{postId}', parentPostId);
+                }
+            });
+
+            $("#replyPostButton").on('click', function() {
+                var replyPostId = $(this).data('post-id');
+                if (replyPostId) {
+                    window.location.href = replyPostUrl.replace('{postId}', replyPostId);
+                }
+            });
+        }
+    });
+</script>
 </body>
 </html>

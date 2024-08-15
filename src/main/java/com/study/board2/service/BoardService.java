@@ -16,4 +16,8 @@ public class BoardService {
     public List<Board> getAllBoards() {
         return boardMapper.findAll();
     }
+
+    public String getBoardType(int idx){
+        return boardMapper.findBoardTypeByIdx(idx);
+    }
 }

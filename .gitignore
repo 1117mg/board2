@@ -32,7 +32,4 @@ build/
 ### VS Code ###
 .vscode/
 
-.application.properties
-mvnw
-mvnw.cmd
-pom.xml
+/src/main/resources/application.properties

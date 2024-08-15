@@ -5,22 +5,40 @@
     <title>게시글 수정</title>
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
     <link rel="stylesheet" th:href="@{/css/layout.css}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script src="https://cdn.ckeditor.com/ckeditor5/12.4.0/classic/ckeditor.js"></script>
+    <script src="https://ckeditor.com/apps/ckfinder/3.5.0/ckfinder.js"></script>
 </head>
 <body>
 <div th:replace="include/header::front"></div>
 
-<h1>게시글 수정</h1>
-<form th:action="@{'/front/board/' + ${boardIdx} + '/post/' + ${post.idx} + '/edit'}" method="post" th:object="${post}">
-    <input type="hidden" name="boardIdx" th:value="${boardIdx}" />
+<h1>글 수정</h1>
+<form id="editForm" th:action="@{'/front/board/' + ${boardIdx} + '/post/' + ${post.idx} + '/edit'}" method="post" th:object="${post}">
+    <input type="hidden" id="boardIdx" name="boardIdx" th:field="*{boardIdx}" th:value="${boardIdx}" />
     <input type="hidden" id="noticeYn" name="noticeYn" th:field="*{noticeYn}"/>
+    <input type="hidden" id="secretYn" name="secretYn" th:field="*{secretYn}"/>
+    <div class="table-container">
     <table class="tb tb_row">
         <colgroup>
             <col style="width:15%;" /><col style="width:35%;" /><col style="width:15%;" /><col style="width:35%;" />
         </colgroup>
         <tbody>
-        <tr th:if="${boardIdx==1}">
-            <th scope="row">공지글</th>
-            <td><span class="chkbox"><input type="checkbox" id="isNotice" name="isNotice" class="chk" /><i></i><label for="isNotice"> 설정</label></span></td>
+        <tr>
+            <th scope="row">공지글 여부*</th>
+            <td>
+                <div class="form-check">
+                    <input type="radio" id="isNotice" name="noticeYn" value="true" class="form-check-input"
+                           th:checked="${post.noticeYn}" />
+                    <label for="isNotice" class="form-check-label">공지글</label>
+                </div>
+                <div class="form-check">
+                    <input type="radio" id="notNotice" name="noticeYn" value="false" class="form-check-input"
+                           th:checked="${!post.noticeYn}" />
+                    <label for="notNotice" class="form-check-label">일반글</label>
+                </div>
+            </td>
         </tr>
 
         <tr>
@@ -37,9 +55,153 @@
             <th>내용</th>
             <td colspan="3"><textarea id="content" name="content" th:field="*{content}" cols="50" rows="10" placeholder="내용을 입력해 주세요."></textarea></td>
         </tr>
+
+        <tr>
+            <th>수정일자</th>
+            <td colspan="3">
+                <input type="datetime-local" id="uploadDate" name="uploadDate" th:field="*{uploadDate}" />
+                <button type="button" id="setCurrentDateTime" class="btn btn-secondary mt-2">
+                    <i class="fas fa-sync-alt"></i> 초기화
+                </button>
+            </td>
+        </tr>
+
+        <tr>
+            <th scope="row">노출 여부*</th>
+            <td>
+                <div class="form-check">
+                    <input type="radio" id="notSecret" name="secretYn" value="false" class="form-check-input"
+                           th:checked="${!post.secretYn}" />
+                    <label for="notSecret" class="form-check-label">Y</label>
+                </div>
+                <div class="form-check">
+                    <input type="radio" id="isSecret" name="secretYn" value="true" class="form-check-input"
+                           th:checked="${post.secretYn}" />
+                    <label for="isSecret" class="form-check-label">N</label>
+                </div>
+            </td>
+        </tr>
         </tbody>
     </table>
-    <button type="submit">수정</button>
+    </div>
+    <div class="button-container">
+        <button type="submit" class="btn btn-primary">작성</button>
+        <button type="button" class="btn btn-secondary" id="cancelButton">취소</button>
+    </div>
 </form>
+
+<div th:replace="include/footer::front"></div>
+
+<div id="postDetails"
+     th:data-list-url="@{/front/board/{boardIdx}/posts(boardIdx=${boardIdx})}"
+</div>
+
+<script>
+    $(document).ready(function() {
+        var postDetails = $('#postDetails');
+        var listUrl = postDetails.data('list-url');
+
+        let editor;
+        ClassicEditor
+            .create(document.querySelector('#content'), {
+                // CKEditor 설정 추가
+                toolbar: [ 'heading', '|', 'bold', 'italic', 'link', 'bulletedList', 'numberedList', 'blockQuote', 'undo', 'redo' ],
+                // 영역 크기 조정
+                initialHeight: '400px',
+                height: '400px',
+                width: '100%',
+            })
+            .then(newEditor => {
+                editor = newEditor;
+
+                // CKEditor의 내용을 textarea에 로드
+                editor.setData($('#content').val());
+            })
+            .catch(error => {
+                console.error(error);
+            });
+
+        $('input[name="noticeYn"]').on('change', function() {
+            $('#noticeYn').val($(this).val());
+        });
+
+        $('input[name="secretYn"]').on('change', function() {
+            $('#secretYn').val($(this).val());
+        });
+
+        $("#setCurrentDateTime").on('click', function() {
+            // 현재 날짜와 시간을 가져와서 입력 필드에 설정
+            var now = new Date();
+            var year = now.getFullYear();
+            var month = ("0" + (now.getMonth() + 1)).slice(-2);
+            var day = ("0" + now.getDate()).slice(-2);
+            var hours = ("0" + now.getHours()).slice(-2);
+            var minutes = ("0" + now.getMinutes()).slice(-2);
+            var datetime = `${year}-${month}-${day}T${hours}:${minutes}`;
+
+            $("#uploadDate").val(datetime);
+        });
+
+        $("#cancelButton").on('click', function() {
+            window.history.back(); // 이전 페이지로 이동
+        });
+
+        $("#editForm").on('submit', function(event) {
+            event.preventDefault();
+
+            if (!editor) {
+                Swal.fire({
+                    icon: 'error',
+                    title: '에러',
+                    text: 'CKEditor가 초기화되지 않았습니다.',
+                    confirmButtonText: '확인'
+                });
+                return;
+            }
+
+            $('#content').val(editor.getData());
+
+            // 제목과 내용 값 가져오기
+            var title = $("#title").val().trim();
+            var content = $("#content").val();
+            var regDate = $("#uploadDate").val();
+
+            // 제목 또는 내용이 비어있는지 체크
+            if (title === "" || content === "" || regDate === "") {
+                Swal.fire({
+                    icon: 'warning',
+                    title: '입력 오류',
+                    text: '제목, 내용, 수정일자는 필수 입력 항목입니다.',
+                    confirmButtonText: '확인'
+                });
+                return;
+            }
+
+            $.ajax({
+                type: "POST",
+                url: $(this).attr('action'),
+                data: $(this).serialize(),
+                success: function(response) {
+                    Swal.fire({
+                        icon: 'success',
+                        title: '수정 완료!',
+                        text: '게시글이 성공적으로 수정되었습니다.',
+                        confirmButtonText: '확인'
+                    }).then(() => {
+                        window.location.href = listUrl;
+                    });
+                },
+                error: function(request, status, error) {
+                    Swal.fire({
+                        icon: 'error',
+                        title: '수정 실패',
+                        text: '게시글 수정에 실패했습니다: ' + (request.responseJSON && request.responseJSON.error ? request.responseJSON.error : error),
+                        confirmButtonText: '확인'
+                    });
+                }
+            });
+        });
+    });
+</script>
 </body>
 </html>

@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>header</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <link rel="stylesheet" th:href="@{/css/layout.css}">
+</head>
+<body>
+<div th:fragment="front" style="text-align: center; padding-top: 50px">
+    <a th:href="@{'/front/main'}" class="text-muted">메인으로</a>
+</div>
+<div th:fragment="master" style="text-align: center; padding-top: 50px">
+    <a th:href="@{'/master/main'}" class="text-muted">메인으로</a>
+</div>
+</body>
+</html>

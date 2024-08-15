@@ -1,14 +1,14 @@
 package com.study.board2.controller;
 
-import com.study.board2.dto.Board;
-import com.study.board2.dto.JoinForm;
-import com.study.board2.dto.LoginForm;
-import com.study.board2.dto.User;
+import com.study.board2.dto.*;
 import com.study.board2.service.BoardService;
+import com.study.board2.service.SendEmailService;
 import com.study.board2.service.UserService;
+import com.study.board2.util.JoinForm;
+import com.study.board2.util.LoginForm;
+import com.study.board2.util.Page;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AnonymousAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -31,6 +31,7 @@ public class UserController {
     private final BoardService boardService;
     private final UserService userService;
     private final PasswordEncoder passwordEncoder;
+    private final SendEmailService sendEmailService;
 
     @GetMapping("/auth/login")
     public String loginForm(Model model){
@@ -39,7 +40,7 @@ public class UserController {
         if (authentication instanceof AnonymousAuthenticationToken){
             model.addAttribute("loginForm", new LoginForm());
             return "front/login";}
-        return "front/main";
+        return "redirect:/front/main";
     }
 
     @GetMapping("/auth/logout")
@@ -51,7 +52,7 @@ public class UserController {
             new SecurityContextLogoutHandler().logout(request,response,authentication);
         }
 
-        return "redirect:/master/main";
+        return "redirect:/front/main";
     }
 
     @GetMapping("/auth/join")
@@ -81,9 +82,12 @@ public class UserController {
     }
 
     @GetMapping("/users")
-    public String userList(Model model) {
-        List<User> users = userService.getAllMembers();
-        model.addAttribute("users", users);
+    public String userList(@RequestParam(value = "page", defaultValue = "1") int page, Model model) {
+        int pageSize = 7;
+        Page<User> users = userService.getAllMembers(page, pageSize);
+        model.addAttribute("users", users.getContent());
+        model.addAttribute("currentPage", users.getPageNumber());
+        model.addAttribute("totalPages", users.getTotalPages());
         return "front/userList";
     }
 
@@ -99,5 +103,4 @@ public class UserController {
         userService.updateMember(user);
         return "redirect:/front/user/"+user.getIdx();
     }
-
 }
