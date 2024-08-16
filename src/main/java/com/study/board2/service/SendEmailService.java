@@ -1,6 +1,5 @@
 package com.study.board2.service;
 
-
 import com.study.board2.util.Mail;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
