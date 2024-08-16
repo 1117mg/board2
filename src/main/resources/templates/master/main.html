@@ -10,11 +10,10 @@
 <body>
 <div th:replace="include/header::master"></div>
 
-<button class="openbtn" onclick="openNav()">☰</button>
+<button class="openbtn" onclick="toggleNav()">☰</button>
 
 <aside class="sidebar" id="mySidebar">
-    <a href="javascript:void(0)" class="closebtn" onclick="closeNav()">×</a>
-    <a href="/master/main">home</a>
+    <a href="/master/main">HOME</a>
     <a href="/front/users">회원 목록</a>
     <a href="/master/users">관리자 목록</a>
 </aside>
@@ -45,30 +44,22 @@
                     </div>
                 </div>
             </div>
-
-            <div class="col-md-4">
-                <div class="card border-dark">
-                    <div class="card-header bg-dark text-white">
-                        <h5 class="card-title">관리자 목록 바로가기</h5>
-                    </div>
-                    <div class="card-body text-center">
-                        <a class="btn" th:href="@{/master/users}">관리자 목록 보기</a>
-                    </div>
-                </div>
-            </div>
         </div>
     </div>
 </div>
 
 <script>
-    function openNav() {
-        document.getElementById("mySidebar").style.width = "250px";
-        document.querySelector(".main-content").style.marginLeft = "250px";
-    }
+    function toggleNav() {
+        var sidebar = document.getElementById("mySidebar");
+        var mainContent = document.querySelector(".main-content");
 
-    function closeNav() {
-        document.getElementById("mySidebar").style.width = "0";
-        document.querySelector(".main-content").style.marginLeft = "0";
+        if (sidebar.style.width === "250px") {
+            sidebar.style.width = "0";
+            mainContent.style.marginLeft = "0";
+        } else {
+            sidebar.style.width = "250px";
+            mainContent.style.marginLeft = "250px";
+        }
     }
 </script>
 </body>
