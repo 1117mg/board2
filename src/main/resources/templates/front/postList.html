@@ -35,7 +35,8 @@
         </tr>
         </thead>
         <tbody>
-        <tr th:each="post : ${posts}" th:classappend="${post.noticeYn == true} ? 'notice'">
+        <tr th:each="post : ${posts}"
+            th:classappend="${(post.depth > 0 ? 'reply-row':'') + (post.noticeYn == true ? 'notice':'')}">
             <td>
                 <span th:if="${post.noticeYn == true}" class="notice-tag">NOTICE</span>
                 <span th:unless="${post.noticeYn == true}" th:text="${post.idx}">1</span>
