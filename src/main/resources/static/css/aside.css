@@ -1,0 +1,56 @@
+.sidebar {
+    height: 100%;
+    width: 250px;
+    position: fixed;
+    z-index: 1000;
+    top: 0;
+    left: 0;
+    background-color: #111;
+    overflow-x: hidden;
+    transition: 0.5s;
+    padding-top: 60px;
+}
+
+.sidebar a {
+    padding: 10px 15px;
+    text-decoration: none;
+    font-size: 18px;
+    color: #818181;
+    display: block;
+    transition: 0.3s;
+    text-transform: uppercase; /*카테고리는 대문자로 보이게*/
+}
+
+.sidebar a:hover {
+    color: #f1f1f1;
+}
+
+.sidebar .closebtn {
+    position: absolute;
+    top: 10px;
+    right: 20px;
+    font-size: 36px;
+}
+
+.openbtn {
+    font-size: 20px;
+    cursor: pointer;
+    background-color: #111;
+    color: white;
+    padding: 10px 15px;
+    border: none;
+    position: fixed;
+    top: 10px;
+    left: 10px;
+    z-index: 1001;
+}
+
+.openbtn:hover {
+    background-color: #444;
+}
+
+.main-content {
+    transition: margin-left 0.5s;
+    margin-left: 250px;
+    padding: 16px;
+}

@@ -5,34 +5,52 @@
     <title>회원 메인 페이지</title>
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
     <link rel="stylesheet" th:href="@{/css/layout.css}">
+    <link rel="stylesheet" th:href="@{/css/aside.css}">
 </head>
 <body>
 <div th:replace="include/header::front"></div>
 
-<div class="container mt-4">
-    <div class="row">
-        <aside class="col-md-3 sidebar">
-            <h5>게시판 목록</h5>
-            <ul class="list-unstyled">
-                <li th:each="board : ${boards}">
-                    <a th:href="@{'/front/board/' + ${board.idx} + '/posts'}" th:text="${board.boardTitle}">게시판 제목</a>
-                </li>
-            </ul>
-        </aside>
+<button class="openbtn" onclick="openNav()">☰</button>
 
-        <main class="col-md-9 main-content">
-            <h1 class="mb-4">회원 메인 페이지</h1>
+<aside class="sidebar" id="mySidebar">
+    <a href="javascript:void(0)" class="closebtn" onclick="closeNav()">×</a>
+    <a href="/front/main">home</a>
+    <ul class="list-unstyled">
+        <li th:each="board : ${boards}">
+            <a th:href="@{'/front/board/' + ${board.idx} + '/posts'}"
+               th:text="${board.boardId}">게시판 제목</a>
+        </li>
+    </ul>
+</aside>
 
-            <div class="card">
-                <div class="card-header bg-dark text-white">
-                    <h5 class="card-title">회원 목록 바로가기</h5>
+<div class="main-content">
+    <div class="container mt-4">
+        <div class="row">
+            <main class="col-md-12">
+                <h1 class="mb-4">회원 메인 페이지</h1>
+                <div class="card">
+                    <div class="card-header bg-dark text-white">
+                        <h5 class="card-title">회원 목록 바로가기</h5>
+                    </div>
+                    <div class="card-body text-center">
+                        <a class="btn" th:href="@{/front/users}">회원 목록 보기</a>
+                    </div>
                 </div>
-                <div class="card-body text-center">
-                    <a class="btn" th:href="@{/front/users}">회원 목록 보기</a>
-                </div>
-            </div>
-        </main>
+            </main>
+        </div>
     </div>
 </div>
+
+<script>
+    function openNav() {
+        document.getElementById("mySidebar").style.width = "250px";
+        document.querySelector(".main-content").style.marginLeft = "250px";
+    }
+
+    function closeNav() {
+        document.getElementById("mySidebar").style.width = "0";
+        document.querySelector(".main-content").style.marginLeft = "0";
+    }
+</script>
 </body>
 </html>
