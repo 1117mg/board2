@@ -12,12 +12,11 @@
 
 <aside class="sidebar" id="mySidebar">
     <a href="/front/main">home</a>
-    <ul class="list-unstyled">
-        <li th:each="board : ${boards}">
-            <a th:href="@{'/front/board/' + ${board.idx} + '/posts'}"
-               th:text="${board.boardId}">게시판 제목</a>
-        </li>
-    </ul>
+    <a href="/front/users">members</a>
+    <div th:each="board : ${boards}">
+        <a th:href="@{'/front/board/' + ${board.idx} + '/posts'}"
+           th:text="${board.boardId}">게시판 제목</a>
+    </div>
 </aside>
 
 <div class="main-content">

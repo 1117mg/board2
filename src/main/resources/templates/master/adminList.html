@@ -5,11 +5,17 @@
     <title>관리자 목록</title>
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
     <link rel="stylesheet" th:href="@{/css/layout.css}">
+    <link rel="stylesheet" th:href="@{/css/aside.css}">
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 </head>
 <body>
 <div th:replace="include/header::master"></div>
+
+<aside class="sidebar" id="mySidebar">
+    <a href="/master/main">home</a>
+    <a href="/master/users">admins</a>
+</aside>
 
 <div class="container mt-4">
     <div class="d-flex justify-content-between align-items-center mb-3">
