@@ -1,48 +1,48 @@
 .sidebar {
     height: 100%;
-    width: 0px;
+    width: 0;
     position: fixed;
-    z-index: 1000;
     top: 0;
     left: 0;
     background-color: #111;
     overflow-x: hidden;
-    transition: 0.5s;
+    transition: 0.3s;
     padding-top: 60px;
 }
 
+.sidebar:hover {
+    width: 250px;
+}
+
 .sidebar a {
-    padding: 10px 15px;
+    text-transform: uppercase;
+    padding: 8px 8px 8px 32px;
     text-decoration: none;
-    font-size: 18px;
+    font-size: 25px;
     color: #818181;
     display: block;
     transition: 0.3s;
-    text-transform: uppercase; /*카테고리는 대문자로 보이게*/
 }
 
 .sidebar a:hover {
     color: #f1f1f1;
 }
 
-.openbtn {
-    font-size: 20px;
-    cursor: pointer;
-    background-color: #111;
-    color: white;
-    padding: 10px 15px;
-    border: none;
-    position: fixed;
-    top: 15px;
-    left: 15px;
-    z-index: 1001;
-}
-
-.openbtn:hover {
-    background-color: #444;
-}
-
 .main-content {
-    transition: margin-left 0.5s;
+    transition: margin-left .3s;
     padding: 16px;
+}
+
+.sidebar {
+    display: flex;
+    flex-direction: column;
+}
+
+.sidebar ul {
+    list-style-type: none;
+    padding: 0;
+}
+
+.sidebar li {
+    margin: 10px 0;
 }

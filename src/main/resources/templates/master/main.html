@@ -10,18 +10,15 @@
 <body>
 <div th:replace="include/header::master"></div>
 
-<button class="openbtn" onclick="toggleNav()">☰</button>
-
 <aside class="sidebar" id="mySidebar">
-    <a href="/master/main">HOME</a>
-    <a href="/front/users">회원 목록</a>
-    <a href="/master/users">관리자 목록</a>
+    <a href="/master/main">home</a>
+    <a href="/front/users">members</a>
+    <a href="/master/users">admins</a>
 </aside>
 
 <div class="main-content">
     <div class="container mt-4">
         <h1 class="mb-4">관리자 메인 페이지</h1>
-
         <div class="row">
             <div class="col-md-4">
                 <div class="card border-info">
@@ -47,20 +44,5 @@
         </div>
     </div>
 </div>
-
-<script>
-    function toggleNav() {
-        var sidebar = document.getElementById("mySidebar");
-        var mainContent = document.querySelector(".main-content");
-
-        if (sidebar.style.width === "250px") {
-            sidebar.style.width = "0";
-            mainContent.style.marginLeft = "0";
-        } else {
-            sidebar.style.width = "250px";
-            mainContent.style.marginLeft = "250px";
-        }
-    }
-</script>
 </body>
 </html>
