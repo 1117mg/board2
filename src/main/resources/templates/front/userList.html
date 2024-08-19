@@ -5,13 +5,26 @@
     <title>회원 목록</title>
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
     <link rel="stylesheet" th:href="@{/css/layout.css}">
+    <link rel="stylesheet" th:href="@{/css/aside.css}">
 </head>
 <body>
 <div th:replace="include/header::front"></div>
 
+<aside class="sidebar" id="mySidebar">
+    <a href="/front/main">home</a>
+    <a href="/front/users">members</a>
+    <div th:each="board : ${boards}">
+        <a th:href="@{'/front/board/' + ${board.idx} + '/posts'}"
+           th:text="${board.boardId}">게시판 제목</a>
+    </div>
+</aside>
+
 <div class="container mt-4">
     <div class="d-flex justify-content-between align-items-center mb-3">
-        <h1>회원 목록</h1>
+        <div>
+            <h1>MEMBERS</h1>
+            <p>회원 목록</p>
+        </div>
     </div>
     <table class="table table-bordered">
         <thead class="thead-dark">

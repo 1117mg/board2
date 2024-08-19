@@ -5,33 +5,29 @@
     <title>회원 메인 페이지</title>
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
     <link rel="stylesheet" th:href="@{/css/layout.css}">
+    <link rel="stylesheet" th:href="@{/css/aside.css}">
 </head>
 <body>
 <div th:replace="include/header::front"></div>
 
-<div class="container mt-4">
-    <div class="row">
-        <aside class="col-md-3 sidebar">
-            <h5>게시판 목록</h5>
-            <ul class="list-unstyled">
-                <li th:each="board : ${boards}">
-                    <a th:href="@{'/front/board/' + ${board.idx} + '/posts'}" th:text="${board.boardTitle}">게시판 제목</a>
-                </li>
-            </ul>
-        </aside>
+<aside class="sidebar" id="mySidebar">
+    <a href="/front/main">home</a>
+    <a href="/front/users">members</a>
+    <div th:each="board : ${boards}">
+        <a th:href="@{'/front/board/' + ${board.idx} + '/posts'}"
+           th:text="${board.boardId}">게시판 제목</a>
+    </div>
+</aside>
 
-        <main class="col-md-9 main-content">
-            <h1 class="mb-4">회원 메인 페이지</h1>
-
-            <div class="card">
-                <div class="card-header bg-dark text-white">
-                    <h5 class="card-title">회원 목록 바로가기</h5>
-                </div>
-                <div class="card-body text-center">
-                    <a class="btn" th:href="@{/front/users}">회원 목록 보기</a>
-                </div>
+<div class="main-content">
+    <div class="container mt-4">
+        <div class="row">
+            <div class="col-md-12">
+                <h1 class="mb-4">회원 메인 페이지</h1>
+                <p>회원에게 보이는 메인페이지입니다.</p>
+                <p>상세 카테고리는 좌측 사이드바에서 확인 가능합니다.</p>
             </div>
-        </main>
+        </div>
     </div>
 </div>
 </body>

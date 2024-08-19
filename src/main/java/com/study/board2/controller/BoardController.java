@@ -1,5 +1,6 @@
 package com.study.board2.controller;
 
+import com.study.board2.dto.Board;
 import com.study.board2.util.LoginForm;
 import com.study.board2.dto.Post;
 import com.study.board2.dto.User;
@@ -19,7 +20,6 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
-import javax.servlet.http.HttpServletRequest;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -37,6 +37,9 @@ public class BoardController {
     // 게시판 글 목록
     @GetMapping("/{boardIdx}/posts")
     public String postList(@PathVariable("boardIdx") int boardIdx, @RequestParam(value = "page", defaultValue = "1") int page, Model model) {
+        List<Board> boards = boardService.getAllBoards();
+        model.addAttribute("boards", boards);
+
         String boardType = boardService.getBoardType(boardIdx);
 
         int pageSize = 7;

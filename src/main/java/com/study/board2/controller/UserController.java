@@ -83,6 +83,8 @@ public class UserController {
 
     @GetMapping("/users")
     public String userList(@RequestParam(value = "page", defaultValue = "1") int page, Model model) {
+        List<Board> boards = boardService.getAllBoards();
+        model.addAttribute("boards", boards);
         int pageSize = 7;
         Page<User> users = userService.getAllMembers(page, pageSize);
         model.addAttribute("users", users.getContent());

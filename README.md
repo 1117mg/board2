@@ -1,4 +1,4 @@
-# Spring boot Mybatis 게시판 2  
+# Spring boot Mybatis 게시판 2 
 <ul>
   <li>언어: java</li>
   <li>Spring Boot ver : 2.3.1.RELEASE</li>
@@ -10,7 +10,7 @@
   <li>Spring Security : 5.6.2</li>
 </ul>
 <br>
-<span>AWS EC2 Amazon Linux 2 배포 완료</span><br> 
+<span>AWS EC2 Amazon Linux 2 배포 완료</span><br><br>
 <h2>관리자 페이지 :</h2>
 <ul>
   <li>/master/**</li>

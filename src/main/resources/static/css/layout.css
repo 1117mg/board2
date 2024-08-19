@@ -96,6 +96,14 @@ button[type="button"] {
     box-sizing: border-box;
 }
 
+.reply-row {
+    background-color: #f5f5f5;
+}
+
+.reply-row .board-title{
+    font-weight: bolder;
+}
+
 /* 공지글 강조 스타일 */
 .notice {
     background-color: #f0f0f0 !important; /* 밝은 회색 배경 */
@@ -172,16 +180,27 @@ button[type="button"] {
     font-weight: bold;
     color: #fff;
     background-color: #000;
+    transition: background-color 0.3s ease;
     border: none;
+}
+
+.nav-buttons .btn:hover {
+    background-color: #f0f0f0; /* 연한 회색 배경색 */
 }
 
 .btn-black {
     background-color: #343a40;
+    transition: background-color 0.3s ease;
     color: #fff;
 }
 
+.btn:focus{
+    outline: none; /* 기본 포커스 링 제거 */
+    box-shadow: none; /* 버튼에 추가된 그림자 제거 */
+}
+
 .btn-black:hover {
-    background-color: #23272b;
+    background-color: #f0f0f0;
     color: #fff;
 }
 
