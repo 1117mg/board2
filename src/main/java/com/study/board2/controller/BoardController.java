@@ -36,12 +36,15 @@ public class BoardController {
 
     // 게시판 글 목록
     @GetMapping("/{boardIdx}/posts")
-    public String postList(@PathVariable("boardIdx") int boardIdx, @RequestParam(value = "page", defaultValue = "1") int page, Model model) {
+    public String postList(@PathVariable("boardIdx") int boardIdx,
+                           @RequestParam(value = "page", defaultValue = "1") int page,
+                           @RequestParam(value = "keyword", required = false) String keyword,
+                           @RequestParam(value = "searchType", required = false) String searchType,
+                           Model model) {
         List<Board> boards = boardService.getAllBoards();
         model.addAttribute("boards", boards);
 
         String boardType = boardService.getBoardType(boardIdx);
-
         int pageSize = 7;
 
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
@@ -54,31 +57,28 @@ public class BoardController {
             userRole = ((MemberDetails) authentication.getPrincipal()).getUser().getUserRole();
         }
 
-        // board_type이 200이면 계층형 게시판
+        Page<Post> posts;
         if ("200".equals(boardType)) {
-            // 1:1 게시판은 비로그인 시 접근 불가
             if (authentication instanceof AnonymousAuthenticationToken) {
                 model.addAttribute("loginForm", new LoginForm());
                 return "front/login";
             }
-
-            Page<Post> hposts = postService.getHPostsPageByBoardId(boardIdx, page, pageSize);
-            model.addAttribute("posts", hposts.getContent());
-            model.addAttribute("currentPage", hposts.getPageNumber());
-            model.addAttribute("totalPages", hposts.getTotalPages());
+            posts = postService.getHPostsPageByBoardId(boardIdx, page, pageSize, keyword, searchType);
         } else {
             if (authentication instanceof AnonymousAuthenticationToken) {
                 model.addAttribute("loginRequired", true);
             }
-            // 공지사항 게시판(board_type=="100")
-            Page<Post> posts = postService.getPostsPageByBoardId(boardIdx, page, pageSize);
-            model.addAttribute("posts", posts.getContent());
-            model.addAttribute("currentPage", posts.getPageNumber());
-            model.addAttribute("totalPages", posts.getTotalPages());
+            posts = postService.getPostsPageByBoardId(boardIdx, page, pageSize, keyword, searchType);
         }
+
+        model.addAttribute("posts", posts.getContent());
+        model.addAttribute("currentPage", posts.getPageNumber());
+        model.addAttribute("totalPages", posts.getTotalPages());
         model.addAttribute("boardIdx", boardIdx);
         model.addAttribute("currentUserIdx", currentUserIdx);
         model.addAttribute("userRole", userRole);
+        model.addAttribute("keyword", keyword);
+        model.addAttribute("searchType", searchType);
 
         return "front/postList";
     }

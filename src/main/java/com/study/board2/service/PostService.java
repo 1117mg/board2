@@ -15,18 +15,34 @@ public class PostService {
     private final PostMapper postMapper;
     private final BoardService boardService;
 
-    public Page<Post> getPostsPageByBoardId(int boardIdx, int pageNumber, int pageSize) {
+//    public Page<Post> getPostsPageByBoardId(int boardIdx, int pageNumber, int pageSize) {
+//        int offset = (pageNumber - 1) * pageSize;
+//        List<Post> posts = postMapper.findByBoardIdx(boardIdx, offset, pageSize);
+//        int totalElements = postMapper.countPostsByBoardId(boardIdx);
+//
+//        return new Page<>(posts, pageNumber, pageSize, totalElements);
+//    }
+//
+//    public Page<Post> getHPostsPageByBoardId(int boardIdx, int pageNumber, int pageSize) {
+//        int offset = (pageNumber - 1) * pageSize;
+//        List<Post> posts = postMapper.findHByBoardIdx(boardIdx, offset, pageSize);
+//        int totalElements = postMapper.countPostsByBoardId(boardIdx);
+//
+//        return new Page<>(posts, pageNumber, pageSize, totalElements);
+//    }
+
+    public Page<Post> getPostsPageByBoardId(int boardIdx, int pageNumber, int pageSize, String keyword, String searchType) {
         int offset = (pageNumber - 1) * pageSize;
-        List<Post> posts = postMapper.findByBoardIdx(boardIdx, offset, pageSize);
-        int totalElements = postMapper.countPostsByBoardId(boardIdx);
+        List<Post> posts = postMapper.findPosts(boardIdx, keyword, searchType, offset, pageSize);
+        int totalElements = postMapper.countPosts(boardIdx, keyword, searchType);
 
         return new Page<>(posts, pageNumber, pageSize, totalElements);
     }
 
-    public Page<Post> getHPostsPageByBoardId(int boardIdx, int pageNumber, int pageSize) {
+    public Page<Post> getHPostsPageByBoardId(int boardIdx, int pageNumber, int pageSize, String keyword, String searchType) {
         int offset = (pageNumber - 1) * pageSize;
-        List<Post> posts = postMapper.findHByBoardIdx(boardIdx, offset, pageSize);
-        int totalElements = postMapper.countPostsByBoardId(boardIdx);
+        List<Post> posts = postMapper.findHPosts(boardIdx, keyword, searchType, offset, pageSize);
+        int totalElements = postMapper.countPosts(boardIdx, keyword, searchType);
 
         return new Page<>(posts, pageNumber, pageSize, totalElements);
     }
