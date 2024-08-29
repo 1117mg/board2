@@ -11,46 +11,59 @@
 </head>
 <body>
 <div th:replace="include/header::master"></div>
-<h1>관리자 상세</h1>
-<form id="adminForm" th:action="@{'/master/user/' + ${user.idx}}" method="post" th:object="${user}">
-    <table class="table table-bordered">
-        <colgroup>
-            <col style="width:15%;" /><col style="width:35%;" /><col style="width:15%;" /><col style="width:35%;" />
-        </colgroup>
-        <tbody>
-        <tr>
-            <th>번호</th>
-            <td colspan="3"><input type="text" id="idx" name="idx" th:field="*{idx}" maxlength="50" readonly /></td>
-        </tr>
+<div class="container mt-5">
+    <h1 class="mb-4">관리자 상세</h1>
+    <form id="adminForm" th:action="@{'/master/user/' + ${user.idx}}" method="post" th:object="${user}">
+        <div class="form-group row">
+            <label for="idx" class="col-sm-2 col-form-label">번호</label>
+            <div class="col-sm-6">
+                <input type="text" id="idx" name="idx" class="form-control" th:field="*{idx}" maxlength="50" readonly />
+            </div>
+        </div>
 
-        <tr>
-            <th>아이디</th>
-            <td colspan="3"><input type="text" id="userId" name="userId" th:field="*{userId}" maxlength="50" readonly /></td>
-        </tr>
+        <div class="form-group row">
+            <label for="userId" class="col-sm-2 col-form-label">아이디</label>
+            <div class="col-sm-6">
+                <input type="text" id="userId" name="userId" class="form-control" th:field="*{userId}" maxlength="50" readonly />
+            </div>
+        </div>
 
-        <tr>
-            <th>비밀번호</th>
-            <td colspan="3"><input type="password" id="userPw" name="userPw" th:field="*{userPw}" maxlength="50" readonly /></td>
-        </tr>
+        <div class="form-group row">
+            <label for="userPw" class="col-sm-2 col-form-label">비밀번호</label>
+            <div class="col-sm-6 input-group">
+                <input type="password" id="userPw" name="userPw" class="form-control" th:field="*{userPw}" maxlength="50" readonly />
+                <div class="input-group-append">
+                    <button type="button" class="btn btn-outline-secondary" onclick="togglePassword()">
+                        <i class="fas fa-eye"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
 
-        <tr>
-            <th>이름</th>
-            <td colspan="3"><input type="text" id="userName" name="userName" th:field="*{userName}" maxlength="50" /></td>
-        </tr>
+        <div class="form-group row">
+            <label for="userName" class="col-sm-2 col-form-label">이름</label>
+            <div class="col-sm-6">
+                <input type="text" id="userName" name="userName" class="form-control" th:field="*{userName}" maxlength="50" />
+            </div>
+        </div>
 
-        <tr>
-            <th>이메일</th>
-            <td colspan="3"><input type="text" id="userEmail" name="userEmail" th:field="*{userEmail}" maxlength="50" /></td>
-        </tr>
+        <div class="form-group row">
+            <label for="userEmail" class="col-sm-2 col-form-label">이메일</label>
+            <div class="col-sm-6">
+                <input type="email" id="userEmail" name="userEmail" class="form-control" th:field="*{userEmail}" maxlength="50" />
+            </div>
+        </div>
 
-        <tr>
-            <th>가입일</th>
-            <td colspan="3" th:text="*{#temporals.format(regDate, 'yyyy-MM-dd')}"></td>
-        </tr>
+        <div class="form-group row">
+            <label class="col-sm-2 col-form-label">가입일</label>
+            <div class="col-sm-6">
+                <p class="form-control-plaintext" th:text="*{#temporals.format(regDate, 'yyyy-MM-dd')}"></p>
+            </div>
+        </div>
 
-        <tr>
-            <th>사용 여부</th>
-            <td>
+        <div class="form-group row">
+            <label class="col-sm-2 col-form-label">사용 여부</label>
+            <div class="col-sm-6">
                 <div class="form-check form-check-inline">
                     <input type="radio" id="Use" name="useYn" value="true" class="form-check-input" th:checked="*{useYn}" />
                     <label for="Use" class="form-check-label">사용</label>
@@ -59,62 +72,69 @@
                     <input type="radio" id="notUse" name="useYn" value="false" class="form-check-input" th:checked="*{!useYn}" />
                     <label for="notUse" class="form-check-label">미사용</label>
                 </div>
-            </td>
-        </tr>
-        </tbody>
-    </table>
-    <h2>메뉴 접근 권한</h2>
-    <table class="table table-bordered">
-        <thead class="thead-light">
-        <tr>
-            <th>메뉴</th>
-            <th>
-                <input type="checkbox" id="selectAllRead" />
-                <label for="selectAllRead" class="form-check-label">읽기</label>
-            </th>
-            <th>
-                <input type="checkbox" id="selectAllWrite" />
-                <label for="selectAllWrite" class="form-check-label">쓰기</label>
-            </th>
-            <th>
-                <input type="checkbox" id="selectAllDownload" />
-                <label for="selectAllDownload" class="form-check-label">다운로드</label>
-            </th>
-        </tr>
-        </thead>
-        <tbody>
-        <tr th:each="board : ${boards}">
-            <td th:text="${board.boardTitle}"></td>
-            <td>
-                <input type="checkbox" class="readCheckbox" th:id="'read_' + ${board.idx}"
-                       th:name="${board.idx} + '_read'"
-                       th:value="true"
-                       th:checked="${readMap[board.idx]?.canRead == true}"/>
-            </td>
-            <td>
-                <input type="checkbox" class="writeCheckbox" th:id="'write_' + ${board.idx}"
-                       th:name="${board.idx} + '_write'"
-                       th:value="true"
-                       th:checked="${readMap[board.idx]?.canWrite == true}"/>
-            </td>
-            <td>
-                <input type="checkbox" class="downloadCheckbox" th:id="'download_' + ${board.idx}"
-                       th:name="${board.idx} + '_download'"
-                       th:value="true"
-                       th:checked="${readMap[board.idx]?.canDownload == true}"/>
-            </td>
-        </tr>
-        </tbody>
-    </table>
-    <div class="button-container text-right">
-        <button type="submit" class="btn btn-primary">수정</button>
-        <button type="button" id="listButton" class="btn btn-secondary">
-            목록 <i class="fas fa-list"></i>
-        </button>
-    </div>
-</form>
+            </div>
+        </div>
+
+        <h2>메뉴 접근 권한</h2>
+        <table class="table table-bordered">
+            <thead class="thead-light">
+            <tr>
+                <th class="col-sm-4">메뉴</th>
+                <th class="col-sm-2">
+                    <input type="checkbox" id="selectAllRead" />
+                    <label for="selectAllRead" class="form-check-label">읽기</label>
+                </th>
+                <th class="col-sm-2">
+                    <input type="checkbox" id="selectAllWrite" />
+                    <label for="selectAllWrite" class="form-check-label">쓰기</label>
+                </th>
+                <th class="col-sm-2">
+                    <input type="checkbox" id="selectAllDownload" />
+                    <label for="selectAllDownload" class="form-check-label">다운로드</label>
+                </th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each="board : ${boards}">
+                <td th:text="${board.boardTitle}"></td>
+                <td>
+                    <input type="checkbox" class="form-check-input readCheckbox" th:id="'read_' + ${board.idx}"
+                           th:name="${board.idx} + '_read'"
+                           th:value="true"
+                           th:checked="${readMap[board.idx]?.canRead == true}" />
+                </td>
+                <td>
+                    <input type="checkbox" class="form-check-input writeCheckbox" th:id="'write_' + ${board.idx}"
+                           th:name="${board.idx} + '_write'"
+                           th:value="true"
+                           th:checked="${readMap[board.idx]?.canWrite == true}" />
+                </td>
+                <td>
+                    <input type="checkbox" class="form-check-input downloadCheckbox" th:id="'download_' + ${board.idx}"
+                           th:name="${board.idx} + '_download'"
+                           th:value="true"
+                           th:checked="${readMap[board.idx]?.canDownload == true}" />
+                </td>
+            </tr>
+            </tbody>
+        </table>
+
+        <div class="button-container text-right mt-4">
+            <button type="submit" class="btn btn-primary">수정</button>
+            <button type="button" id="listButton" class="btn btn-secondary ml-2">
+                목록 <i class="fas fa-list"></i>
+            </button>
+        </div>
+    </form>
+</div>
 <div th:replace="include/footer::master"></div>
 <script>
+    function togglePassword() {
+        var passwordField = document.getElementById("userPw");
+        var passwordFieldType = passwordField.type === "password" ? "text" : "password";
+        passwordField.type = passwordFieldType;
+    }
+
     $(document).ready(function() {
         var baseURL = window.location.origin;
         // 목록 버튼 클릭 이벤트
