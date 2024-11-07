@@ -1,4 +1,4 @@
-# Spring boot Mybatis 게시판 2  
+# Spring boot Mybatis 게시판 2 
 <ul>
   <li>언어: java</li>
   <li>Spring Boot ver : 2.3.1.RELEASE</li>
