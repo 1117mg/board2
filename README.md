@@ -1,4 +1,4 @@
-# 게시판/관리자페이지 만들기 2
+# 게시판/관리자페이지 만들기
 <ul>
   <li>언어: java</li>
   <li>Spring Boot ver : 2.3.1.RELEASE</li>
