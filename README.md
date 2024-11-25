@@ -100,6 +100,7 @@
 ```bash
 git clone [https://github.com/your-repository-url.git](https://github.com/1117mg/board2.git)
 cd your-repository-folder
+```
 
 ### **3. 환경 설정**
 `application.properties`
@@ -107,10 +108,12 @@ cd your-repository-folder
 spring.datasource.url=jdbc:mysql://<your-database-host>:3306/<your-database-name>
 spring.datasource.username=<your-database-username>
 spring.datasource.password=<your-database-password>
+```
 
 ### **4. 실행**
 ```bash
 mvn spring-boot:run
+```
 
 - 서버가 시작되면 아래 주소에서 접근 가능합니다.
   - 관리자 페이지: `http://localhost:8080/master/main`
