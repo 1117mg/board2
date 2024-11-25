@@ -98,7 +98,7 @@
 
 ### **2. 프로젝트 클론**
 ```bash
-git clone [https://github.com/your-repository-url.git](https://github.com/1117mg/board2.git)
+git clone https://github.com/1117mg/board2.git
 cd your-repository-folder
 ```
 
