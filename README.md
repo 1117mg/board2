@@ -30,20 +30,38 @@
 ## **주요 기능**
 
 ### **관리자 페이지**
-- 사용자 및 게시글 관리.
-- 관리자 전용 경로 제공.
-- `/master/auth/login` 경로를 통해 인증 및 로그인.
+- 사용자 및 게시글 관리
+- 사용자별 메뉴 접근 권한(읽기/쓰기/다운로드) 관리
+- 사용자/관리자 권한 설정
+- 관리자 목록 제어
+- 관리자 전용 경로 제공
+- `/master/auth/login` 경로를 통해 인증 및 로그인
 
 ### **회원 페이지**
-- 게시글 열람 및 상호작용.
-- `/front/auth/login` 경로를 통해 인증 및 로그인.
+- 게시글 열람 및 상호작용
+- 마이페이지 관리
+- `/front/auth/login` 경로를 통해 인증 및 로그인
 
 ### **OAuth 통합**
-- OAuth 기반 로그인 시스템으로 보안 강화.
-- **Spring Security**를 활용한 역할 기반 접근 제어(Role-Based Access Control).
+- OAuth 기반 로그인 시스템으로 보안 강화
+- **Spring Security**를 활용한 역할 기반 접근 제어(Role-Based Access Control)
+- 자동 로그인 체크박스
+
+### **비밀번호 찾기**
+- Redis를 이용한 임시 비밀번호 발급 및 저장
 
 ### **CRUD 기능**
-- 게시판(Board), 사용자(User), 게시글(Post)에 대한 CRUD 기능 제공.
+- 게시판(Board), 사용자(User), 게시글(Post)에 대한 CRUD 기능 제공
+- C/U: 공지글/비밀글 설정 (Post)
+- R: 이전글/다음글 조회 (Post)
+- D: 삭제 시 deleteYN 업데이트로 soft delete (공통)
+
+### **QNA 게시판**
+- WITH RECURSIVE, 재귀 쿼리 구현
+
+### **그외**
+- 페이징 및 검색
+- AWS EC2 배포
 
 ---
 
