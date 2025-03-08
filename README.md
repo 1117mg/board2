@@ -51,10 +51,10 @@
 - Redis를 이용한 임시 비밀번호 발급 및 저장
 
 ### **CRUD 기능**
-- 게시판(Board), 사용자(User), 게시글(Post)에 대한 CRUD 기능 제공
-- C/U: 공지글/비밀글 설정 (Post)
-- R: 이전글/다음글 조회 (Post)
-- D: 삭제 시 deleteYN 업데이트로 soft delete (공통)
+- 게시판(Board), 사용자(User), 게시글(Post)에 대한 CRUD 기능
+- 공지글/비밀글 설정
+- 이전글/다음글 조회
+- 삭제 시 deleteYN 업데이트로 soft delete
 
 ### **QNA 게시판**
 - WITH RECURSIVE, 재귀 쿼리 구현
